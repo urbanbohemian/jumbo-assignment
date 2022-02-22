@@ -13,6 +13,7 @@ public class CommissionInvoiceDTO {
     private BigDecimal grossAmount;
     private BigDecimal netAmount;
     private BigDecimal commissionAmount;
+    private BigDecimal cargoAmount;
 
     public String getSerialNumber() {
         return serialNumber;
@@ -76,6 +77,14 @@ public class CommissionInvoiceDTO {
 
     public void setCommissionAmount(BigDecimal commissionAmount) {
         this.commissionAmount = commissionAmount;
+    }
+
+    public BigDecimal getCargoAmount() {
+        return cargoAmount;
+    }
+
+    public void setCargoAmount(BigDecimal cargoAmount) {
+        this.cargoAmount = cargoAmount;
     }
 
     @Override

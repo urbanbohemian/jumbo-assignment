@@ -15,6 +15,8 @@ import static org.springframework.http.MediaType.APPLICATION_PDF;
 @RequestMapping("/poc")
 public class POCController {
 
+    private static final String ATTACHMENT_FILENAME = "attachment; filename=";
+
     private POCService pocService;
 
     public POCController(POCService pocService) {
@@ -26,7 +28,7 @@ public class POCController {
 
         PDFDocument pdf = pocService.createPDF(commissionInvoiceDTO);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "INTERNATIONAL_PDF_TEST")
+                .header(HttpHeaders.CONTENT_DISPOSITION, ATTACHMENT_FILENAME + pdf.getName())
                 .contentType(APPLICATION_PDF)
                 .contentLength(pdf.getContent().length)
                 .body(new ByteArrayResource(pdf.getContent()));

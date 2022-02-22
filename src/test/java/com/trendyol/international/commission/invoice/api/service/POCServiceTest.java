@@ -92,6 +92,7 @@ class POCServiceTest {
         commissionInvoiceDTO.setCommissionAmount(BigDecimal.valueOf(21.0));
         commissionInvoiceDTO.setGrossAmount(BigDecimal.valueOf(100.0));
         commissionInvoiceDTO.setNetAmount(BigDecimal.valueOf(79.0));
+        commissionInvoiceDTO.setCargoAmount(BigDecimal.valueOf(34.90));
 
         PDFDocument pdfDocument = new PDFDocument();
         pdfDocument.setName("INTERNATIONAL_PDF");

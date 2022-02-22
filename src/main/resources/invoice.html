@@ -107,13 +107,12 @@
                 <table>
                     <tr>
                         <td class="title">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE8oC_1-IfKqrbwJwHNoLsFbJXncZC4QODIQ&usqp=CAU" style="width: 100%; max-width: 300px" />
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE8oC_1-IfKqrbwJwHNoLsFbJXncZC4QODIQ&usqp=CAU" style="width: 100%; max-width: 400px" />
                         </td>
 
                         <td>
                             Invoice #: {invoiceSerialNumber}<br />
                             Created: {createdDate}<br />
-                            Due: March 9, 2022
                         </td>
                     </tr>
                 </table>
@@ -140,6 +139,7 @@
             </td>
         </tr>
 
+<!--        <tr class="heading" style="display: {paymentMethodDisplay};">-->
         <tr class="heading">
             <td>Payment Method</td>
 
@@ -161,19 +161,21 @@
         <tr class="item">
             <td>Net Amount</td>
 
-            <td>€ {netAmount}</td>
+            <td>€{netAmount}</td>
         </tr>
 
         <tr class="item last">
             <td>Commission Amount</td>
 
-            <td>€ {commissionAmount}</td>
+            <td>€{commissionAmount}</td>
         </tr>
+
+        {cargoInvoice}
 
         <tr class="total">
             <td></td>
 
-            <td>Total: € {grossAmount}</td>
+            <td>Total: €{grossAmount}</td>
         </tr>
     </table>
 </div>
