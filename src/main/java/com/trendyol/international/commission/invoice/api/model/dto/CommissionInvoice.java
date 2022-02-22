@@ -1,19 +1,16 @@
 package com.trendyol.international.commission.invoice.api.model.dto;
 
-import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
-public class CommissionInvoiceDTO {
+public class CommissionInvoice {
 
     private String serialNumber;
     private String vatIdentificationNumber;
     private String fullName;
     private String address;
     private Date createdDate;
-    private BigDecimal grossAmount;
-    private BigDecimal netAmount;
-    private BigDecimal commissionAmount;
-    private BigDecimal cargoAmount;
+    private List<InvoiceLineItem> lineItems;
 
     public String getSerialNumber() {
         return serialNumber;
@@ -55,49 +52,26 @@ public class CommissionInvoiceDTO {
         this.createdDate = createdDate;
     }
 
-    public BigDecimal getGrossAmount() {
-        return grossAmount;
+    public List<InvoiceLineItem> getLineItems() {
+        return lineItems;
     }
 
-    public void setGrossAmount(BigDecimal grossAmount) {
-        this.grossAmount = grossAmount;
+    public void setLineItems(List<InvoiceLineItem> lineItems) {
+        this.lineItems = lineItems;
     }
 
-    public BigDecimal getNetAmount() {
-        return netAmount;
-    }
-
-    public void setNetAmount(BigDecimal netAmount) {
-        this.netAmount = netAmount;
-    }
-
-    public BigDecimal getCommissionAmount() {
-        return commissionAmount;
-    }
-
-    public void setCommissionAmount(BigDecimal commissionAmount) {
-        this.commissionAmount = commissionAmount;
-    }
-
-    public BigDecimal getCargoAmount() {
-        return cargoAmount;
-    }
-
-    public void setCargoAmount(BigDecimal cargoAmount) {
-        this.cargoAmount = cargoAmount;
+    public CommissionInvoice() {
     }
 
     @Override
     public String toString() {
-        return "CommissionInvoiceDTO{" +
+        return "CommissionInvoice{" +
                 "serialNumber='" + serialNumber + '\'' +
                 ", vatIdentificationNumber='" + vatIdentificationNumber + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", address='" + address + '\'' +
                 ", createdDate=" + createdDate +
-                ", grossAmount=" + grossAmount +
-                ", netAmount=" + netAmount +
-                ", commissionAmount=" + commissionAmount +
+                ", lineItems=" + lineItems +
                 '}';
     }
 }

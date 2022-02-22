@@ -1,7 +1,7 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
 import com.trendyol.international.commission.invoice.api.model.document.PDFDocument;
-import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceDTO;
+import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.service.POCService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -24,7 +24,7 @@ public class POCController {
     }
 
     @PostMapping("/pdf")
-    public ResponseEntity<Resource> createPDF(@RequestBody CommissionInvoiceDTO commissionInvoiceDTO) {
+    public ResponseEntity<Resource> createPDF(@RequestBody CommissionInvoice commissionInvoiceDTO) {
 
         PDFDocument pdf = pocService.createPDF(commissionInvoiceDTO);
         return ResponseEntity.ok()

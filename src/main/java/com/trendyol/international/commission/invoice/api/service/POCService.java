@@ -1,61 +1,39 @@
 package com.trendyol.international.commission.invoice.api.service;
 
 import com.itextpdf.html2pdf.HtmlConverter;
-import com.itextpdf.kernel.pdf.PdfWriter;
 import com.trendyol.international.commission.invoice.api.model.document.PDFDocument;
-import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceDTO;
+import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoice;
+import com.trendyol.international.commission.invoice.api.model.dto.InvoiceLineItem;
 import com.trendyol.international.commission.invoice.api.util.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Objects;
 
 @Service
 public class POCService {
 
-    public PDFDocument createPDF(CommissionInvoiceDTO commissionInvoiceDTO) {
-        String htmlContent = getHtmlSource();
-
-        htmlContent = pdfFiller(commissionInvoiceDTO,htmlContent);
+    public PDFDocument createPDF(CommissionInvoice commissionInvoice) {
+        String htmlContent = getHtmlSource("classpath:invoice.html");
+        htmlContent = pdfFiller(commissionInvoice, htmlContent);
         PDFDocument document = convertToPDFDocument(htmlContent);
         document.setName("International Commission Invoice");
         return document;
     }
 
-    public String getHtmlSource() {
-        File htmlFile = null;
-        String htmlContent="";
-        try {
-            htmlFile = ResourceUtils.getFile("classpath:invoice.html");
-            htmlContent = new String(Files.readAllBytes(htmlFile.toPath()));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public String pdfFiller(CommissionInvoice commissionInvoice, String htmlContent) {
+        htmlContent = htmlContent.replace("{title}", commissionInvoice.getVatIdentificationNumber());
+        htmlContent = htmlContent.replace("{{genericReplaceValue}}", cargoInvoiceProcessor(commissionInvoice.getLineItems()));
+        htmlContent = htmlContent.replace("{vatIdentificationNumber}", commissionInvoice.getVatIdentificationNumber());
+        htmlContent = htmlContent.replace("{fullName}", commissionInvoice.getFullName());
+        htmlContent = htmlContent.replace("{address}", commissionInvoice.getAddress());
+        htmlContent = htmlContent.replace("{invoiceSerialNumber}", commissionInvoice.getSerialNumber());
+        htmlContent = htmlContent.replace("{invoiceSerialNumber}", commissionInvoice.getSerialNumber());
+        htmlContent = htmlContent.replace("{createdDate}", Objects.requireNonNull(DateUtils.toStringTurkish(commissionInvoice.getCreatedDate())));
         return htmlContent;
-    }
-
-    public String pdfFiller(CommissionInvoiceDTO commissionInvoiceDTO, String htmlContent) {
-
-        if(Objects.nonNull(commissionInvoiceDTO.getCargoAmount())) {
-            htmlContent = htmlContent.replace("{cargoInvoice}",cargoInvoiceProcessor(commissionInvoiceDTO));
-        }
-
-        htmlContent = htmlContent.replace("{vatIdentificationNumber}",commissionInvoiceDTO.getVatIdentificationNumber());
-        htmlContent = htmlContent.replace("{fullName}",commissionInvoiceDTO.getFullName());
-        htmlContent = htmlContent.replace("{address}",commissionInvoiceDTO.getAddress());
-        htmlContent = htmlContent.replace("{invoiceSerialNumber}",commissionInvoiceDTO.getSerialNumber());
-        htmlContent = htmlContent.replace("{invoiceSerialNumber}",commissionInvoiceDTO.getSerialNumber());
-        htmlContent = htmlContent.replace("{grossAmount}",commissionInvoiceDTO.getGrossAmount().toString());
-        htmlContent = htmlContent.replace("{netAmount}",commissionInvoiceDTO.getNetAmount().toString());
-        htmlContent = htmlContent.replace("{commissionAmount}",commissionInvoiceDTO.getCommissionAmount().toString());
-        htmlContent = htmlContent.replace("{createdDate}", DateUtils.toStringTurkish(commissionInvoiceDTO.getCreatedDate()));
-
-        return htmlContent;
-
     }
 
     public PDFDocument convertToPDFDocument(String htmlContent) {
@@ -70,20 +48,24 @@ public class POCService {
         return pdfDocument;
     }
 
-    public String cargoInvoiceProcessor(CommissionInvoiceDTO commissionInvoiceDTO) {
-        return cargoInvoiceFiller(commissionInvoiceDTO,getCargoInvoiceHtml());
+    public String cargoInvoiceProcessor(List<InvoiceLineItem> invoiceLineItems) {
+        return invoiceLineItems.stream()
+                .map(invoiceLineItem -> cargoInvoiceFiller(invoiceLineItem, getHtmlSource("classpath:invoice-line.html")))
+                .reduce(String::concat)
+                .orElse("");
     }
 
-    private String cargoInvoiceFiller(CommissionInvoiceDTO commissionInvoiceDTO, String cargoInvoiceHtml) {
-        cargoInvoiceHtml = cargoInvoiceHtml.replace("{cargoAmount}",commissionInvoiceDTO.getCargoAmount().toString());
-        return cargoInvoiceHtml;
+    private String cargoInvoiceFiller(InvoiceLineItem invoiceLineItemDto, String invoiceLineHtmlTemplate) {
+        return invoiceLineHtmlTemplate
+                .replace("{title}", invoiceLineItemDto.getTitle())
+                .replace("{currency}", invoiceLineItemDto.getCurrency())
+                .replace("{amount}", invoiceLineItemDto.getAmount().toString());
     }
 
-    private String getCargoInvoiceHtml() {
-        File htmlFile = null;
-        String htmlContent="";
+    public String getHtmlSource(String resourceLocation) {
+        String htmlContent = "";
         try {
-            htmlFile = ResourceUtils.getFile("classpath:invoice-line.html");
+            File htmlFile = ResourceUtils.getFile(resourceLocation);
             htmlContent = new String(Files.readAllBytes(htmlFile.toPath()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();

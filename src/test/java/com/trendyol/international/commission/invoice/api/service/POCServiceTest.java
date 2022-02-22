@@ -1,11 +1,12 @@
 package com.trendyol.international.commission.invoice.api.service;
 
 import com.trendyol.international.commission.invoice.api.model.document.PDFDocument;
-import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceDTO;
+import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoice;
+import com.trendyol.international.commission.invoice.api.model.dto.InvoiceLineItem;
+import com.trendyol.international.commission.invoice.api.model.dto.InvoiceLineItemDtoBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.ResourceUtils;
@@ -15,12 +16,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,22 +33,33 @@ class POCServiceTest {
     @Test
     void it_should_create_pdf(){
         //given
-        CommissionInvoiceDTO commissionInvoiceDTO = new CommissionInvoiceDTO();
+        CommissionInvoice commissionInvoiceDTO = new CommissionInvoice();
         commissionInvoiceDTO.setCreatedDate(new Date());
         commissionInvoiceDTO.setSerialNumber("BV1");
         commissionInvoiceDTO.setVatIdentificationNumber("NV1234567890");
         commissionInvoiceDTO.setFullName("Seller Finance");
         commissionInvoiceDTO.setAddress("Zuidplein 116 Tower H, F");
-        commissionInvoiceDTO.setCommissionAmount(BigDecimal.valueOf(21.0));
-        commissionInvoiceDTO.setGrossAmount(BigDecimal.valueOf(100.0));
-        commissionInvoiceDTO.setNetAmount(BigDecimal.valueOf(79.0));
+        List<InvoiceLineItem> invoiceLineItems = new ArrayList<>();
+        invoiceLineItems.add(InvoiceLineItemDtoBuilder.anInvoiceLineItemDto()
+                .Title("Commission Amount")
+                .Amount(BigDecimal.valueOf(29.95))
+                .Currency("€")
+                .build());
+
+        invoiceLineItems.add(InvoiceLineItemDtoBuilder.anInvoiceLineItemDto()
+                .Title("Net Amount")
+                .Amount(BigDecimal.valueOf(21.95))
+                .Currency("$")
+                .build());
+
+        commissionInvoiceDTO.setLineItems(invoiceLineItems);
 
         PDFDocument pdfDocument = new PDFDocument();
         pdfDocument.setName("INTERNATIONAL_PDF");
         pdfDocument.setContent(new byte[]{1, 2, 3});
 
 
-        when(pocService.getHtmlSource()).thenReturn("content");
+        when(pocService.getHtmlSource("classpath:invoice.html")).thenReturn("content");
         when(pocService.convertToPDFDocument("content")).thenReturn(pdfDocument);
 
         //then
@@ -74,7 +85,7 @@ class POCServiceTest {
         }
 
         //when
-        String actualHtmlSource = pocService.getHtmlSource();
+        String actualHtmlSource = pocService.getHtmlSource("classpath:invoice.html");
 
         assertThat(actualHtmlSource).isNotBlank();
         assertThat(actualHtmlSource).isEqualTo(htmlContent);
@@ -83,16 +94,26 @@ class POCServiceTest {
     @Test
     void it_should_fill_html_source(){
         //given
-        CommissionInvoiceDTO commissionInvoiceDTO = new CommissionInvoiceDTO();
+        CommissionInvoice commissionInvoiceDTO = new CommissionInvoice();
         commissionInvoiceDTO.setCreatedDate(new Date());
         commissionInvoiceDTO.setSerialNumber("BV1");
         commissionInvoiceDTO.setVatIdentificationNumber("NV1234567890");
         commissionInvoiceDTO.setFullName("Seller Finance");
         commissionInvoiceDTO.setAddress("Zuidplein 116 Tower H, F");
-        commissionInvoiceDTO.setCommissionAmount(BigDecimal.valueOf(21.0));
-        commissionInvoiceDTO.setGrossAmount(BigDecimal.valueOf(100.0));
-        commissionInvoiceDTO.setNetAmount(BigDecimal.valueOf(79.0));
-        commissionInvoiceDTO.setCargoAmount(BigDecimal.valueOf(34.90));
+        List<InvoiceLineItem> invoiceLineItems = new ArrayList<>();
+        invoiceLineItems.add(InvoiceLineItemDtoBuilder.anInvoiceLineItemDto()
+                .Title("Commission Amount")
+                .Amount(BigDecimal.valueOf(29.95))
+                .Currency("€")
+                .build());
+
+        invoiceLineItems.add(InvoiceLineItemDtoBuilder.anInvoiceLineItemDto()
+                .Title("Net Amount")
+                .Amount(BigDecimal.valueOf(21.95))
+                .Currency("$")
+                .build());
+
+        commissionInvoiceDTO.setLineItems(invoiceLineItems);
 
         PDFDocument pdfDocument = new PDFDocument();
         pdfDocument.setName("INTERNATIONAL_PDF");
@@ -115,7 +136,6 @@ class POCServiceTest {
         assertThat(filledHtml).isNotBlank();
         assertThat(filledHtml).contains("Zuidplein 116 Tower H, F");
         assertThat(filledHtml).contains("NV1234567890");
-        assertThat(filledHtml).doesNotContain("{grossAmount}");
     }
 
     @Test
