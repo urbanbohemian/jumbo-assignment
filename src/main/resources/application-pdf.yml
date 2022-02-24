@@ -1,0 +1,28 @@
+pdf-config:
+  components:
+    trendyol-logo:
+      resource-type: image
+      resource-value: trendyol_logo
+      coordinates:
+        off-set-x: 419
+        off-set-y: 32
+    invoice:
+      resource-type: text
+      resource-value: Invoice
+      coordinates:
+        off-set-x: 419
+        off-set-y: 32
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 22
+        font-family: rubik-regular
+    inditext:
+      resource-type: text
+      resource-value: Invoice
+      coordinates:
+        off-set-x: 419
+        off-set-y: 32
+
