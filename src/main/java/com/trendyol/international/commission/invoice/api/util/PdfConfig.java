@@ -8,7 +8,7 @@ import java.util.Map;
 @Component
 @ConfigurationProperties(prefix = "pdf-config")
 public class PdfConfig {
-
+    private String outputFileName;
     private Map<String,PDFModel> components;
 
     public Map<String, PDFModel> getComponents() {
@@ -17,5 +17,13 @@ public class PdfConfig {
 
     public void setComponents(Map<String, PDFModel> components) {
         this.components = components;
+    }
+
+    public String getOutputFileName() {
+        return outputFileName;
+    }
+
+    public void setOutputFileName(String outputFileName) {
+        this.outputFileName = outputFileName;
     }
 }

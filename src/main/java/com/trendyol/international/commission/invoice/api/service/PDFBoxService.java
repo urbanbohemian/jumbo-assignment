@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.util.Matrix;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -45,31 +46,46 @@ public class PDFBoxService {
         fontMap.put("rubik-regular", RUBIK_REGULAR_FONT_FILE);
     }
 
+    public Color getColor(ColorValue colorValue) {
+        if (Objects.nonNull(colorValue)) {
+            return new Color(colorValue.getRed(), colorValue.getGreen(), colorValue.getBlue());
+        } else {
+            return Color.BLACK;
+        }
+    }
+
     @SneakyThrows
     private void writeText(Float lineOffSetX, Float lineOffSetY, String message, Font font, ColorValue colorValue) {
         PDFont pdFont = PDType0Font.load(document, fontMap.get("rubik-regular"));
         Float fontSize = 12F;
-        if(Objects.nonNull(font)) {
-            if(Objects.nonNull(font.getFontFamily())) {
+        if (Objects.nonNull(font)) {
+            if (Objects.nonNull(font.getFontFamily())) {
                 pdFont = PDType0Font.load(document, fontMap.get(font.getFontFamily()));
             }
-            if(Objects.nonNull(font.getFontSize())) {
+            if (Objects.nonNull(font.getFontSize())) {
                 fontSize = font.getFontSize();
             }
         }
         contentStream.beginText();
         contentStream.setFont(pdFont, fontSize);
-        contentStream.setStrokingColor(getColor(colorValue));
-        contentStream.newLineAtOffset(lineOffSetX, pageHeight-lineOffSetY-fontSize);
+        contentStream.setNonStrokingColor(getColor(colorValue));
+        contentStream.newLineAtOffset(lineOffSetX, pageHeight - lineOffSetY - fontSize);
         contentStream.showText(message);
         contentStream.endText();
     }
 
     @SneakyThrows
-    private void drawImage(Float lineOffSetX, Float lineOffSetY, String imageName,Integer width, Integer height) {
+    private void drawImage(Float lineOffSetX, Float lineOffSetY, String imageName, Integer width, Integer height) {
         File imageFile = ResourceUtils.getFile("classpath:" + imageName + ".png");
         PDImageXObject pdImage = PDImageXObject.createFromFileByContent(imageFile, document);
-        contentStream.drawImage(pdImage, lineOffSetX, pageHeight-lineOffSetY-height,width,height);
+        contentStream.drawImage(pdImage, lineOffSetX, pageHeight - lineOffSetY - height, width, height);
+    }
+
+    @SneakyThrows
+    private void drawRect(Float lineOffSetX, Float lineOffSetY, ColorValue fillColor, Integer width, Integer height) {
+        contentStream.setNonStrokingColor(getColor(fillColor));
+        contentStream.addRect(lineOffSetX, pageHeight - lineOffSetY - height, width, height);
+        contentStream.fill();
     }
 
 
@@ -78,37 +94,31 @@ public class PDFBoxService {
         switch (pdfModel.getResourceType()) {
             case "text":
                 writeText(pdfModel.getCoordinates().getOffSetX(),
-                          pdfModel.getCoordinates().getOffSetY(),
-                          pdfModel.getResourceValue(),
-                          pdfModel.getFont(),
-                          pdfModel.getColor());
+                        pdfModel.getCoordinates().getOffSetY(),
+                        pdfModel.getResourceValue(),
+                        pdfModel.getFont(),
+                        pdfModel.getColor());
                 break;
             case "image":
                 drawImage(pdfModel.getCoordinates().getOffSetX(),
-                          pdfModel.getCoordinates().getOffSetY(),
-                          pdfModel.getResourceValue(),
-                          pdfModel.getResourceWidth(),
-                          pdfModel.getResourceHeight());
+                        pdfModel.getCoordinates().getOffSetY(),
+                        pdfModel.getResourceValue(),
+                        pdfModel.getResourceWidth(),
+                        pdfModel.getResourceHeight());
                 break;
             case "table":
 //                drawTable();
                 break;
+            case "rect":
+                drawRect(pdfModel.getCoordinates().getOffSetX(),
+                        pdfModel.getCoordinates().getOffSetY(),
+                        pdfModel.getColor(),
+                        pdfModel.getResourceWidth(),
+                        pdfModel.getResourceHeight()
+                );
+                break;
             default:
                 System.out.println("ERROR");
-        }
-    }
-
-
-//    @SneakyThrows
-//    public Float calculateTextWidth(String message, PDFont font, Float fontSize) {
-//        return (font.getStringWidth(message) / 1000.0f) * fontSize;
-//    }
-
-    public Color getColor(ColorValue colorValue) {
-        if (Objects.nonNull(colorValue)) {
-            return new Color(colorValue.getRed(), colorValue.getGreen(), colorValue.getBlue());
-        } else {
-            return Color.BLACK;
         }
     }
 
@@ -121,35 +131,11 @@ public class PDFBoxService {
         contentStream = new PDPageContentStream(document, page);
         pdfConfig.getComponents().entrySet().forEach(this::processComponent);
         contentStream.close();
-        document.save("example.pdf");
-//                File trendyolPng = ResourceUtils.getFile("classpath:trendyol_logo.png");
-//                PDImageXObject pdImage = PDImageXObject.createFromFileByContent(trendyolPng, document);
-//                contentStream.drawImage(pdImage, pageWidth-pdImageWidth-getPadding(PADDING.RIGHT), page.getMediaBox().getUpperRightY() - pdImageHeight - getPadding(PADDING.TOP),pdImageWidth,pdImageHeight);
+        document.save(pdfConfig.getOutputFileName() + ".pdf");
+    }
+}
+
 //
-//                this.lineOffSetY = page.getMediaBox().getUpperRightY() - pdImage.getHeight() - getPadding(PADDING.TOP);
-//
-//                this.lineOffSetY -= captionFontSize*2;
-//
-//                PDType0Font pdFontRubikBold = PDType0Font.load(document, RUBICK_BOLD_FONT_FILE);
-//
-//
-//                contentStream.beginText();
-//                contentStream.setFont(pdFontRubikBold, captionFontSize);
-//                contentStream.newLineAtOffset(getPadding(PADDING.LEFT), lineOffSetY);
-//                contentStream.showText("Invoice");
-//                contentStream.endText();
-//
-//                this.lineOffSetY -= regularFontSize*2;
-//
-//                contentStream.beginText();
-//                contentStream.setFont(PDType1Font.HELVETICA, regularFontSize);
-//                contentStream.newLineAtOffset(getPadding(PADDING.LEFT), lineOffSetY);
-//                contentStream.showText("BittiBitiyor");
-//                contentStream.endText();
-//
-//                contentStream.beginText();
-//                contentStream.setFont(PDType1Font.HELVETICA, regularFontSize);
-//                contentStream.newLineAtOffset( PAGE_WIDTH - calculateTextWidth("Invoice Number: TYF20212000000220",PDType1Font.HELVETICA,regularFontSize) - getPadding(PADDING.RIGHT),
 //                        lineOffSetY);
 //                contentStream.showText("Invoice Number: TYF20212000000220");
 //                contentStream.endText();
@@ -347,5 +333,3 @@ public class PDFBoxService {
 //                contentStream.newLineAtOffset( getPadding(PADDING.LEFT) + 12, getPadding(PADDING.BOTTOM) + 60);
 //                contentStream.showText("TRENDYOL B.V");
 //                contentStream.endText();
-    }
-}

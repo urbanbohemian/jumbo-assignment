@@ -1,4 +1,5 @@
 pdf-config:
+  output-file-name: International Commission Invoice
   components:
     trendyol-logo:
       resource-type: image
@@ -60,3 +61,515 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-regular
+    mail:
+      resource-type: text
+      resource-value: mehmetustundag@gmail.com
+      coordinates:
+        off-set-x: 32
+        off-set-y: 192
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    phone:
+      resource-type: text
+      resource-value: 0576 087 12 32
+      coordinates:
+        off-set-x: 32
+        off-set-y: 208
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    invoice-number-field-header:
+      resource-type: text
+      resource-value: Invoice Number
+      coordinates:
+        off-set-x: 336
+        off-set-y: 146
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    invoice-number-field-delimeter:
+      resource-type: text
+      resource-value: ':'
+      coordinates:
+        off-set-x: 468
+        off-set-y: 146
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    invoice-number-field-value:
+      resource-type: text
+      resource-value: DSM20212000000220
+      coordinates:
+        off-set-x: 476
+        off-set-y: 146
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    invoice-date-field-header:
+      resource-type: text
+      resource-value: Invoice Date
+      coordinates:
+        off-set-x: 336
+        off-set-y: 162
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    invoice-date-field-delimeter:
+      resource-type: text
+      resource-value: ':'
+      coordinates:
+        off-set-x: 468
+        off-set-y: 162
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    invoice-date-field-value:
+      resource-type: text
+      resource-value: 12.05.2022
+      coordinates:
+        off-set-x: 476
+        off-set-y: 162
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    due-date-field-header:
+      resource-type: text
+      resource-value: Due Date
+      coordinates:
+        off-set-x: 336
+        off-set-y: 178
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    due-date-field-delimeter:
+      resource-type: text
+      resource-value: ':'
+      coordinates:
+        off-set-x: 468
+        off-set-y: 178
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    due-date-field-value:
+      resource-type: text
+      resource-value: 29.05.2022
+      coordinates:
+        off-set-x: 476
+        off-set-y: 178
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    vat-id-number-field-header:
+      resource-type: text
+      resource-value: VAT Identification Number
+      coordinates:
+        off-set-x: 336
+        off-set-y: 194
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    vat-id-number-field-delimeter:
+      resource-type: text
+      resource-value: ':'
+      coordinates:
+        off-set-x: 468
+        off-set-y: 194
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    vat-id-number-field-value:
+      resource-type: text
+      resource-value: TR98459357
+      coordinates:
+        off-set-x: 476
+        off-set-y: 194
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    vat-registration-number-field-header:
+      resource-type: text
+      resource-value: VAT Registration Date
+      coordinates:
+        off-set-x: 336
+        off-set-y: 210
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    vat-registration-number-delimeter:
+      resource-type: text
+      resource-value: ':'
+      coordinates:
+        off-set-x: 468
+        off-set-y: 210
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    vat-registration-number-value:
+      resource-type: text
+      resource-value: TR98459357
+      coordinates:
+        off-set-x: 476
+        off-set-y: 210
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    total-eu-excl-vat-field-header:
+      resource-type: text
+      resource-value: Total EUR Excl. VAT
+      coordinates:
+        off-set-x: 432
+        off-set-y: 389
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    total-eu-excl-vat-delimeter:
+      resource-type: text
+      resource-value: ':'
+      coordinates:
+        off-set-x: 531
+        off-set-y: 390
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    total-eu-excl-vat-value:
+      resource-type: text
+      resource-value: 100,00
+      coordinates:
+        off-set-x: 546
+        off-set-y: 389
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    vat-amount-field-header:
+      resource-type: text
+      resource-value: VAT Amount
+      coordinates:
+        off-set-x: 432
+        off-set-y: 405
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    vat-amount-delimeter:
+      resource-type: text
+      resource-value: ':'
+      coordinates:
+        off-set-x: 531
+        off-set-y: 405
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    vat-amount-vat-value:
+      resource-type: text
+      resource-value: 21,00
+      coordinates:
+        off-set-x: 546
+        off-set-y: 405
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    total-eu-incl-vat-field-header:
+      resource-type: text
+      resource-value: Total EUR Incl. VAT
+      coordinates:
+        off-set-x: 432
+        off-set-y: 421
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    total-eu-incl-vat-delimeter:
+      resource-type: text
+      resource-value: ':'
+      coordinates:
+        off-set-x: 531
+        off-set-y: 421
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    total-eu-incl-vat-value:
+      resource-type: text
+      resource-value: 100,00
+      coordinates:
+        off-set-x: 546
+        off-set-y: 421
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    notes:
+      resource-type: text
+      resource-value: Notes
+      coordinates:
+        off-set-x: 16
+        off-set-y: 726
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    notes-sub:
+      resource-type: text
+      resource-value: VAT is reverse charged to the customer
+      coordinates:
+        off-set-x: 16
+        off-set-y: 742
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    rect-footer:
+      resource-type: rect
+      resource-width: 563
+      resource-height: 52
+      coordinates:
+        off-set-x: 16
+        off-set-y: 774
+      color:
+        red: 247
+        green: 247
+        blue: 250
+    trendyol-bv:
+      resource-type: text
+      resource-value: Trendyol B.V.
+      coordinates:
+        off-set-x: 28
+        off-set-y: 786
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-bold
+    trendyol-address:
+      resource-type: text
+      resource-value: Zuidplein 116 1077XV, AMSTERDAM
+      coordinates:
+        off-set-x: 28
+        off-set-y: 802
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    phone-bv:
+      resource-type: text
+      resource-value: 'Phone:'
+      coordinates:
+        off-set-x: 211
+        off-set-y: 786
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-bold
+    phone-value:
+      resource-type: text
+      resource-value: +31 (0)20 3338320
+      coordinates:
+        off-set-x: 211
+        off-set-y: 802
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    tax-id:
+      resource-type: text
+      resource-value: 'Tax ID:'
+      coordinates:
+        off-set-x: 334
+        off-set-y: 786
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-bold
+    tax-id-value:
+      resource-type: text
+      resource-value: 2345670
+      coordinates:
+        off-set-x: 334
+        off-set-y: 802
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    tax-number-header:
+      resource-type: text
+      resource-value: 'Tax Number:'
+      coordinates:
+        off-set-x: 457
+        off-set-y: 786
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-bold
+    tax-number-header-value:
+      resource-type: text
+      resource-value: NL6121410291
+      coordinates:
+        off-set-x: 457
+        off-set-y: 802
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    rect-footer-delimeter-1:
+      resource-type: rect
+      resource-width: 1
+      resource-height: 27
+      coordinates:
+        off-set-x: 198
+        off-set-y: 786
+      color:
+        red: 213
+        green: 217
+        blue: 225
+    rect-footer-delimeter-2:
+      resource-type: rect
+      resource-width: 1
+      resource-height: 27
+      coordinates:
+        off-set-x: 321
+        off-set-y: 786
+      color:
+        red: 213
+        green: 217
+        blue: 225
+    rect-footer-delimeter-3:
+      resource-type: rect
+      resource-width: 1
+      resource-height: 27
+      coordinates:
+        off-set-x: 444
+        off-set-y: 786
+      color:
+        red: 213
+        green: 217
+        blue: 225
