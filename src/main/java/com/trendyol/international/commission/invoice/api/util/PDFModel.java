@@ -1,10 +1,10 @@
 package com.trendyol.international.commission.invoice.api.util;
 
-import java.awt.*;
-
 public class PDFModel {
     private String resourceType;
     private String resourceValue;
+    private Integer resourceHeight;
+    private Integer resourceWidth;
     private Coordinate coordinates;
     private String sourcePath;
     private ColorValue color;
@@ -56,5 +56,21 @@ public class PDFModel {
 
     public void setFont(Font font) {
         this.font = font;
+    }
+
+    public Integer getResourceHeight() {
+        return resourceHeight;
+    }
+
+    public void setResourceHeight(Integer resourceHeight) {
+        this.resourceHeight = resourceHeight;
+    }
+
+    public Integer getResourceWidth() {
+        return resourceWidth;
+    }
+
+    public void setResourceWidth(Integer resourceWidth) {
+        this.resourceWidth = resourceWidth;
     }
 }

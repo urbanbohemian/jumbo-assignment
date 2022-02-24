@@ -3,6 +3,8 @@ pdf-config:
     trendyol-logo:
       resource-type: image
       resource-value: trendyol_logo
+      resource-width: 144
+      resource-height: 48
       coordinates:
         off-set-x: 419
         off-set-y: 32
@@ -10,19 +12,51 @@ pdf-config:
       resource-type: text
       resource-value: Invoice
       coordinates:
-        off-set-x: 419
-        off-set-y: 32
+        off-set-x: 32
+        off-set-y: 104
       color:
         red: 0
         green: 0
         blue: 0
       font:
         font-size: 22
-        font-family: rubik-regular
+        font-family: rubik-bold
     inditext:
       resource-type: text
-      resource-value: Invoice
+      resource-value: Inditext
       coordinates:
-        off-set-x: 419
-        off-set-y: 32
-
+        off-set-x: 32
+        off-set-y: 148
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-medium
+    LuminaHause:
+      resource-type: text
+      resource-value: Lumina Hause, 89 New Bond Street
+      coordinates:
+        off-set-x: 32
+        off-set-y: 164
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
+    w1s:
+      resource-type: text
+      resource-value: W1S 1DA Amsterdam/Netherland
+      coordinates:
+        off-set-x: 32
+        off-set-y: 178
+      color:
+        red: 0
+        green: 0
+        blue: 0
+      font:
+        font-size: 10
+        font-family: rubik-regular
