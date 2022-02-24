@@ -9,6 +9,9 @@ public class PDFModel {
     private String sourcePath;
     private ColorValue color;
     private Font font;
+    private TableInfo tableInfo;
+    private String dependsOn;
+    private Coordinate shiftValues;
 
     public String getResourceType() {
         return resourceType;
@@ -72,5 +75,29 @@ public class PDFModel {
 
     public void setResourceWidth(Integer resourceWidth) {
         this.resourceWidth = resourceWidth;
+    }
+
+    public TableInfo getTableInfo() {
+        return tableInfo;
+    }
+
+    public void setTableInfo(TableInfo tableInfo) {
+        this.tableInfo = tableInfo;
+    }
+
+    public String getDependsOn() {
+        return dependsOn;
+    }
+
+    public void setDependsOn(String dependsOn) {
+        this.dependsOn = dependsOn;
+    }
+
+    public Coordinate getShiftValues() {
+        return shiftValues;
+    }
+
+    public void setShiftValues(Coordinate shiftValues) {
+        this.shiftValues = shiftValues;
     }
 }

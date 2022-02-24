@@ -282,9 +282,45 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-regular
+    table-header-component:
+      resource-type: table
+      coordinates:
+        off-set-x: 16
+        off-set-y: 296
+      font:
+        font-size: 10
+        font-family: rubik-medium
+      table-info:
+        column-names:
+          title: Description
+          title2: Quantity
+          title3: Unit
+          title4: Unit Price
+          title5: VAT Rate
+          title6: Amount
+        column-widths:
+          width: 243
+          width2: 63
+          width3: 60
+          width4: 63
+          width5: 57
+          width6: 79
+        border-color:
+          red: 213
+          green: 217
+          blue: 225
+        background-color:
+          red: 247
+          green: 246
+          blue: 251
+        border-width: 1
+      shift-values:
+        off-set-x: 0
+        off-set-y: 0
     total-eu-excl-vat-field-header:
       resource-type: text
       resource-value: Total EUR Excl. VAT
+      depends-on: table-header-component
       coordinates:
         off-set-x: 432
         off-set-y: 389
@@ -298,6 +334,7 @@ pdf-config:
     total-eu-excl-vat-delimeter:
       resource-type: text
       resource-value: ':'
+      depends-on: table-header-component
       coordinates:
         off-set-x: 531
         off-set-y: 390
@@ -311,6 +348,7 @@ pdf-config:
     total-eu-excl-vat-value:
       resource-type: text
       resource-value: 100,00
+      depends-on: table-header-component
       coordinates:
         off-set-x: 546
         off-set-y: 389
@@ -324,6 +362,7 @@ pdf-config:
     vat-amount-field-header:
       resource-type: text
       resource-value: VAT Amount
+      depends-on: table-header-component
       coordinates:
         off-set-x: 432
         off-set-y: 405
@@ -337,6 +376,7 @@ pdf-config:
     vat-amount-delimeter:
       resource-type: text
       resource-value: ':'
+      depends-on: table-header-component
       coordinates:
         off-set-x: 531
         off-set-y: 405
@@ -350,6 +390,7 @@ pdf-config:
     vat-amount-vat-value:
       resource-type: text
       resource-value: 21,00
+      depends-on: table-header-component
       coordinates:
         off-set-x: 546
         off-set-y: 405
@@ -363,6 +404,7 @@ pdf-config:
     total-eu-incl-vat-field-header:
       resource-type: text
       resource-value: Total EUR Incl. VAT
+      depends-on: table-header-component
       coordinates:
         off-set-x: 432
         off-set-y: 421
@@ -376,6 +418,7 @@ pdf-config:
     total-eu-incl-vat-delimeter:
       resource-type: text
       resource-value: ':'
+      depends-on: table-header-component
       coordinates:
         off-set-x: 531
         off-set-y: 421
@@ -389,6 +432,7 @@ pdf-config:
     total-eu-incl-vat-value:
       resource-type: text
       resource-value: 100,00
+      depends-on: table-header-component
       coordinates:
         off-set-x: 546
         off-set-y: 421
