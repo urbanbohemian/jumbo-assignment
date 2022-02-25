@@ -9,13 +9,13 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "pdf-config")
 public class PdfConfig {
     private String outputFileName;
-    private Map<String,PDFModel> components;
+    private Map<String, PdfComponent> components;
 
-    public Map<String, PDFModel> getComponents() {
+    public Map<String, PdfComponent> getComponents() {
         return components;
     }
 
-    public void setComponents(Map<String, PDFModel> components) {
+    public void setComponents(Map<String, PdfComponent> components) {
         this.components = components;
     }
 
