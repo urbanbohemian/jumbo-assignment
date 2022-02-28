@@ -22,9 +22,9 @@ pdf-config:
       font:
         font-size: 22
         font-family: rubik-bold
-    inditext:
+    seller-title:
       resource-type: text
-      resource-value: Inditext
+      resource-value: Inditex
       coordinates:
         off-set-x: 32
         off-set-y: 148
@@ -35,7 +35,7 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-medium
-    LuminaHause:
+    address-line1:
       resource-type: text
       resource-value: Lumina Hause, 89 New Bond Street
       coordinates:
@@ -48,7 +48,7 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-regular
-    w1s:
+    address-line2:
       resource-type: text
       resource-value: W1S 1DA Amsterdam/Netherland
       coordinates:
@@ -61,7 +61,7 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-regular
-    mail:
+    seller-mail:
       resource-type: text
       resource-value: mehmetustundag@gmail.com
       coordinates:
@@ -74,7 +74,7 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-regular
-    phone:
+    seller-phone:
       resource-type: text
       resource-value: 0576 087 12 32
       coordinates:
@@ -113,7 +113,7 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-medium
-    invoice-number-field-value:
+    invoice-number:
       resource-type: text
       resource-value: DSM20212000000220
       coordinates:
@@ -152,7 +152,7 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-medium
-    invoice-date-field-value:
+    invoice-date:
       resource-type: text
       resource-value: 12.05.2022
       coordinates:
@@ -191,7 +191,7 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-medium
-    due-date-field-value:
+    due-date:
       resource-type: text
       resource-value: 29.05.2022
       coordinates:
@@ -230,7 +230,7 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-medium
-    vat-id-number-field-value:
+    vat-id-number:
       resource-type: text
       resource-value: TR98459357
       coordinates:
@@ -269,7 +269,7 @@ pdf-config:
       font:
         font-size: 10
         font-family: rubik-medium
-    vat-registration-number-value:
+    vat-registration-date:
       resource-type: text
       resource-value: TR98459357
       coordinates:

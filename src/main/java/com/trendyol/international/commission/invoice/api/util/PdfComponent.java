@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.util;
 
-public class PDFModel {
+public class PdfComponent {
     private String resourceType;
     private String resourceValue;
     private Integer resourceHeight;
