@@ -25,4 +25,60 @@
             );
         </sql>
     </changeSet>
+
+    <changeSet id="2022-02-28 13:50" author="mert.okan">
+        <sql>
+            create table settlement_items
+            (
+            id                      bigint       not null
+            constraint pk_settlement_items
+            primary key,
+            created_date            timestamp    not null,
+            last_modified_date      timestamp,
+            order_number            varchar(50)  not null,
+            shipment_package_id     bigint,
+            supplier_name           varchar(255) not null,
+            supplier_id             bigint       not null,
+            transaction_type_id     integer      not null,
+            product_name            varchar(255) not null,
+            barcode                 varchar(100) not null,
+            payment_period          integer      not null,
+            delivery_date           timestamp,
+            payment_date            timestamp,
+            order_line_item_id      bigint,
+            order_date              timestamp,
+            first_name              varchar(50),
+            last_name               varchar(50),
+            current_account_name    varchar(255),
+            origin_id               varchar(50),
+            priority                integer,
+            settlement_date         timestamp,
+            supplier_revenue        numeric      not null,
+            involved_in_ps          boolean,
+            settlement_reference_id bigint,
+            with_initial_charge     boolean,
+            price                   numeric      not null,
+            commission              numeric      not null,
+            commission_rate         numeric      not null,
+            store_id                bigint,
+            delivery_model          integer
+            );
+
+            create unique index idx_settlement_items_unique_transaction
+            on settlement_items (order_line_item_id, transaction_type_id, origin_id);
+
+            create table commission_invoice_settlement_items
+            (
+            commission_invoice_id bigint not null,
+            constraint fk_commission_invoice_settlement_items_commission_invoice
+            references commission_invoices settlement_item_id bigint not null,
+            constraint commission_invoice_settlement_items_settlement_item_id_key
+            unique constraint fk_commission_invoice_settlement_items_settlement_item
+            references settlement_items
+            );
+
+            create unique index idx_commission_invoice_settlement_items_settlement_item
+            on commission_invoice_settlement_items (settlement_item_id desc);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

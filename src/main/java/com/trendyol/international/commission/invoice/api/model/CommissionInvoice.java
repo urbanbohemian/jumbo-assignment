@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -61,4 +62,14 @@ public class CommissionInvoice extends AuditingEntity {
 
     @Column(name = "store_front_id", nullable = false)
     private String storeFrontId;
+
+    @OneToMany
+    @JoinTable(
+            name = "commission_invoice_settlement_items",
+            joinColumns = {@JoinColumn(name = "commission_invoice_id")},
+            inverseJoinColumns = {@JoinColumn(name = "settlement_item_id")},
+            uniqueConstraints = @UniqueConstraint(columnNames = {"settlement_item_id"})
+
+    )
+    private Set<SettlementItem> settlementItems;
 }
