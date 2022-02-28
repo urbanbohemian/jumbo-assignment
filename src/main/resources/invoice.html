@@ -1,170 +1,441 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title>Trendyol BV</title>
-
-    <style>
-        .invoice-box {
-            max-width: 800px;
-            margin: auto;
-            padding: 30px;
-            border: 1px solid #eee;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-            font-size: 16px;
-            line-height: 24px;
-            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-            color: #555;
+    <style type="text/css">
+        html, body {
+            font-family: Rubik;
+            height: 100%;
+            margin: 10px 0 0 0;
         }
 
-        .invoice-box table {
+        .content {
+            font-family: Rubik;
+            font-size: 14px;
+            color: black;
+            line-height: 110%;
             width: 100%;
-            line-height: inherit;
-            text-align: left;
         }
 
-        .invoice-box table td {
-            padding: 5px;
-            vertical-align: top;
+        .header {
+            display: flex;
+            padding: 0 16px;
+        }
+        .empty-div{
+            flex: 1;
         }
 
-        .invoice-box table tr td:nth-child(2) {
-            text-align: right;
+        .body {
+            clear: right;
+            margin-top: 78px;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 22px;
+            line-height: 26px;
         }
 
-        .invoice-box table tr.top table td {
-            padding-bottom: 20px;
+        .invoice-title{
+            padding: 0 16px;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 22px;
+            line-height: 26px;
+            color: #273142;
         }
 
-        .invoice-box table tr.top table td.title {
-            font-size: 45px;
-            line-height: 45px;
-            color: #333;
+        .invoice-company-info {
+            display: flex;
+            margin-top: 14px;
+            padding: 0 16px;
         }
 
-        .invoice-box table tr.information table td {
-            padding-bottom: 40px;
+        .company-info {
+            font-style: normal;
+            font-weight: normal;
+            font-size: 10px;
+            line-height: 12px;
+            color: #273142;
         }
 
-        .invoice-box table tr.heading td {
-            background: #eee;
-            border-bottom: 1px solid #ddd;
+        .company-name {
             font-weight: bold;
         }
 
-        .invoice-box table tr.details td {
-            padding-bottom: 20px;
+        .company-data {
+            margin-top: 4px;
         }
 
-        .invoice-box table tr.item td {
-            border-bottom: 1px solid #eee;
+        .invoice-info-container {
+            float: right;
+            width: 100%;
         }
-
-        .invoice-box table tr.item.last td {
-            border-bottom: none;
+        .invoice-info{
+            display: table;
+            float: right;
         }
-
-        .invoice-box table tr.total td:nth-child(2) {
-            border-top: 2px solid #eee;
+        .invoice-data {
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            line-height: 12px;
+            font-weight: 400;
+            color: #273142;
+        }
+        .invoice-data-key {
+            display: flex;
+            width: 135px;
             font-weight: bold;
         }
-
-        @media only screen and (max-width: 600px) {
-            .invoice-box table tr.top table td {
-                width: 100%;
-                display: block;
-                text-align: center;
-            }
-
-            .invoice-box table tr.information table td {
-                width: 100%;
-                display: block;
-                text-align: center;
-            }
+        .invoice-data-value {
+            margin-left: 5px;
         }
-
-        /** RTL **/
-        .invoice-box.rtl {
-            direction: rtl;
-            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        .invoice-total-container{
+            width: 100%;
+            margin-top: 35px;
         }
-
-        .invoice-box.rtl table {
+        .invoice-total{
+            display: table;
+            float: right;
+        }
+        .invoice-total-data {
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            line-height: 12px;
+            font-weight: 400;
+            color: #273142;
+        }
+        .invoice-total-data-key {
+            display: flex;
+            width: 102px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .invoice-total-data-value {
+            float: right;
             text-align: right;
+            flex: 1;
         }
 
-        .invoice-box.rtl table tr td:nth-child(2) {
+        .footer-container {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+        }
+
+        .footer {
+            height: 28px;
+            background-color: #F7F7FA;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+        }
+
+        .footer-item{
+            flex: 1;
+            padding: 0 12px;
+        }
+        .footer-title{
+            font-style: normal;
+            font-weight: bold;
+            font-size: 10px;
+            line-height: 12px;
+            color: #273142;
+            margin-bottom: 4px;
+        }
+        .footer-content{
+            font-style: normal;
+            font-weight: normal;
+            font-size: 10px;
+            line-height: 12px;
+            color: #273142;
+        }
+        .ty-title{
+            font-size: 12px;
+        }
+
+        .separator-line {
+            width: 1px;
+            height: 100%;
+            background-color: #D5D9E1;
+            margin-left: 9px;
+        }
+
+        .table-container{
+            margin-top: 76px;
+            border-radius: 6px;
+            border: 1px solid #D5D9E1;
+        }
+
+        table.roundedCorners {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #FFFFFF;
+            border-radius: 6px;
+        }
+
+        table.roundedCorners tr th {
+            background-color: #F7F7FA;
             text-align: left;
+            padding: 8px;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 10px;
+            line-height: 14px;
+            color: #273142;
+        }
+
+        table.roundedCorners tr td {
+            font-style: normal;
+            font-weight: normal;
+            font-size: 10px;
+            line-height: 14px;
+            color: #273142;
+        }
+
+        table.roundedCorners tr th:last-child {
+            border-top-right-radius: 6px;
+        }
+
+        table.roundedCorners tr th:first-child {
+            border-top-left-radius: 6px;
+        }
+        table.roundedCorners tr:last-child td:last-child {
+            border-bottom-right-radius: 6px;
+        }
+
+        table.roundedCorners tr:last-child td:first-child {
+            border-bottom-left-radius: 6px;
+        }
+
+        table.roundedCorners tr td:not(:last-child),table.roundedCorners tr th:not(:last-child) {
+            border-right: 1px solid #D5D9E1;
+        }
+
+        table.roundedCorners tr td {
+            border-top: 1px solid #D5D9E1;
+            padding: 8px;
+        }
+
+        .notes-container{
+            margin-bottom: 16px;
+        }
+
+        .notes-title{
+            font-style: normal;
+            font-weight: bold;
+            font-size: 10px;
+            line-height: 16px;
+            color: #273142;
+        }
+
+        .notes-content{
+            font-style: normal;
+            font-weight: 400;
+            font-size: 10px;
+            line-height: 16px;
+            color: #273142;
+            margin-top: 4px;
+        }
+
+        .ml-auto{
+            text-align: right;
+            flex: 1;
         }
     </style>
+
+    <title>e-Arşiv Fatura</title>
 </head>
-
 <body>
-<div class="invoice-box">
-    <table cellpadding="0" cellspacing="0">
-        <tr class="top">
-            <td colspan="2">
-                <table>
-                    <tr>
-                        <td class="title">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE8oC_1-IfKqrbwJwHNoLsFbJXncZC4QODIQ&usqp=CAU" style="width: 100%; max-width: 400px" />
-                        </td>
+<div class="content">
+    <div class="header">
+        <div class="empty-div"></div>
+        <img src="data:image/png;base64,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" alt="" class="logo">
+    </div>
+    <div class="body">
+        <span class="invoice-title">Invoice</span>
+        <div class="invoice-company-info">
+            <div class="company-info">
+                <div class="company-data">
+					 <span class="company-name">
+						Inditex
+					 </span>
+                </div>
+                <div class="company-data">
+					 <span class="company-email">
+						Lumina Hause, 89 New Bond Street W1S 1DA Amsterdam/Netherland
+					 </span>
+                </div>
+                <div class="company-data">
+					 <span class="company-email">
+						mehmetustundag@gmail.com
+					 </span>
+                </div>
+                <div class="company-data">
+					 <span class="company-phone">
+						0576 087 12 32
+					 </span>
+                </div>
+            </div>
+            <div class="invoice-info-container">
 
-                        <td>
-                            Invoice #: {invoiceSerialNumber}<br />
-                            Created: {createdDate}<br />
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
+                <div class="invoice-info">
+                    <div class="invoice-data">
+                        <div class="invoice-data-key">
+                            <span>Invoice Number</span>
+                            <div class="ml-auto">
+                                <span>:</span>
+                            </div>
+                        </div>
+                        <div class="invoice-data-value">
+                            <span>DSM20212000000220</span>
+                        </div>
+                    </div>
+                    <div class="invoice-data">
+                        <div class="invoice-data-key">
+                            <span>Invoice Date</span>
+                            <span class="ml-auto">:</span>
+                        </div>
+                        <div class="invoice-data-value">
+                            <span>12.05.2022</span>
+                        </div>
+                    </div>
+                    <div class="invoice-data">
+                        <div class="invoice-data-key">
+                            <span>Due Date</span>
+                            <div class="ml-auto">
+                                <span>:</span>
+                            </div>
+                        </div>
+                        <div class="invoice-data-value">
+                            <span>29.05.2022</span>
+                        </div>
+                    </div>
+                    <div class="invoice-data">
+                        <div class="invoice-data-key">
+                            <span>VAT Identification Number</span>
+                            <div class="ml-auto">
+                                <span>:</span>
+                            </div>
+                        </div>
+                        <div class="invoice-data-value">
+                            <span>TR98459357</span>
+                        </div>
+                    </div>
+                    <div class="invoice-data">
+                        <div class="invoice-data-key">
+                            <span>VAT Registration Date</span>
+                            <div class="ml-auto">
+                                <span>:</span>
+                            </div>
+                        </div>
+                        <div class="invoice-data-value">
+                            <span>TR98459357</span>
+                        </div>
+                    </div>
 
-        <tr class="information">
-            <td colspan="2">
-                <table>
-                    <tr>
-                        <td>
-                            DSM Group B.V.<br />
-                            {address}
-                        </td>
+                </div>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="roundedCorners">
+                <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Unit Price</th>
+                    <th>VAT Rate</th>
+                    <th>Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Commission Fee</td>
+                    <td>1</td>
+                    <td>Item</td>
+                    <td>100,00</td>
+                    <td>%0</td>
+                    <td>100,00</td>
 
-                        <td>
-                            Seller Finance Corp.<br />
-                            {fullName}<br />
-                            Vat ID: {vatIdentificationNumber} <br />
-                            kaan.tuncer@trendyol.com
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-<!--        <tr class="heading" style="display: {paymentMethodDisplay};">-->
-        <tr class="heading">
-            <td>Payment Method</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="invoice-total-container">
+            <div class="invoice-total ml-auto">
+                <div class="invoice-total-data">
+                    <div class="invoice-total-data-key">
+                        <span>Total EUR Excl. VAT</span>
+                        <div class="ml-auto">
+                            <span>:</span>
+                        </div>
+                    </div>
+                    <div class="invoice-total-data-value">
+                        <span>100,00</span>
+                    </div>
+                </div>
+                <div class="invoice-total-data">
+                    <div class="invoice-total-data-key">
+                        <span>VAT Amount</span>
+                        <div class="ml-auto">
+                            <span>:</span>
+                        </div>
+                    </div>
+                    <div class="invoice-total-data-value">
+                        <span>00,00</span>
+                    </div>
+                </div>
+                <div class="invoice-total-data">
+                    <div class="invoice-total-data-key">
+                        <span>Total EUR Incl. VAT</span>
+                        <div class="ml-auto">
+                            <span>:</span>
+                        </div>
+                    </div>
+                    <div class="invoice-total-data-value">
+                        <span>100,00</span>
+                    </div>
+                </div>
 
-            <td>Check #</td>
-        </tr>
+            </div>
+        </div>
+    </div>
 
-        <tr class="details">
-            <td>Check</td>
-
-            <td>€ {grossAmount}</td>
-        </tr>
-
-        <tr class="heading">
-            <td>Item</td>
-
-            <td>Price</td>
-        </tr>
-
-        {{genericReplaceValue}}
-
-        <tr class="total">
-            <td></td>
-
-            <td>Total: €{grossAmount}</td>
-        </tr>
-    </table>
+    <div class="footer-container">
+        <div class="notes-container">
+            <div class="notes-title">
+                Notes
+            </div>
+            <div class="notes-content">
+                VAT is reverse charged to the customer
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-item">
+                <div class="footer-title ty-title">Trendyol B.V.</div>
+                <div class="footer-content">Zuidplein 116 1077XV, AMSTERDAM</div>
+            </div>
+            <div class="separator-line"></div>
+            <div class="footer-item">
+                <div class="footer-title">Phone: </div>
+                <div class="footer-content">+31 (0)20 3338320</div>
+            </div>
+            <div class="separator-line"></div>
+            <div class="footer-item">
+                <div class="footer-title">Tax ID: </div>
+                <div class="footer-content">2345670</div>
+            </div>
+            <div class="separator-line"></div>
+            <div class="footer-item">
+                <div class="footer-title">TTax Number: </div>
+                <div class="footer-content">NL6121410291</div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

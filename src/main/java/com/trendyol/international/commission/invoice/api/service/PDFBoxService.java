@@ -42,9 +42,9 @@ public class PDFBoxService {
 
     @PostConstruct
     public void init() throws FileNotFoundException {
-        File RUBIK_MEDIUM_FONT_FILE = ResourceUtils.getFile("classpath:ttf/rubik-medium.ttf");
-        File RUBIK_REGULAR_FONT_FILE = ResourceUtils.getFile("classpath:ttf/rubik-regular.ttf");
-        File RUBIK_BOLD_FONT_FILE = ResourceUtils.getFile("classpath:ttf/rubik-bold.ttf");
+        File RUBIK_MEDIUM_FONT_FILE = ResourceUtils.getFile("classpath:fonts/rubik-medium.ttf");
+        File RUBIK_REGULAR_FONT_FILE = ResourceUtils.getFile("classpath:fonts/rubik-regular.ttf");
+        File RUBIK_BOLD_FONT_FILE = ResourceUtils.getFile("classpath:fonts/rubik-bold.ttf");
         fontMap.put("rubik-bold", RUBIK_BOLD_FONT_FILE);
         fontMap.put("rubik-medium", RUBIK_MEDIUM_FONT_FILE);
         fontMap.put("rubik-regular", RUBIK_REGULAR_FONT_FILE);

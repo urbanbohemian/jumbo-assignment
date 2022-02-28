@@ -1,10 +1,15 @@
 package com.trendyol.international.commission.invoice.api.service;
 
+import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
+import com.itextpdf.io.font.FontProgramFactory;
+import com.itextpdf.layout.font.FontProvider;
 import com.trendyol.international.commission.invoice.api.model.document.PDFDocument;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.model.dto.InvoiceLineItem;
 import com.trendyol.international.commission.invoice.api.util.DateUtils;
+import org.springframework.cglib.core.Converter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -16,6 +21,8 @@ import java.util.Objects;
 @Service
 public class POCService {
 
+    public static final String FONT = "./src/main/resources/fonts/rubik-regular.ttf";
+
     public PDFDocument createPDF(CommissionInvoice commissionInvoice) {
         String htmlContent = getHtmlSource("classpath:invoice.html");
         htmlContent = pdfFiller(commissionInvoice, htmlContent);
@@ -25,22 +32,27 @@ public class POCService {
     }
 
     public String pdfFiller(CommissionInvoice commissionInvoice, String htmlContent) {
-        htmlContent = htmlContent.replace("{title}", commissionInvoice.getVatIdentificationNumber());
+       /* htmlContent = htmlContent.replace("{title}", commissionInvoice.getVatIdentificationNumber());
         htmlContent = htmlContent.replace("{{genericReplaceValue}}", cargoInvoiceProcessor(commissionInvoice.getLineItems()));
         htmlContent = htmlContent.replace("{vatIdentificationNumber}", commissionInvoice.getVatIdentificationNumber());
         htmlContent = htmlContent.replace("{fullName}", commissionInvoice.getFullName());
         htmlContent = htmlContent.replace("{address}", commissionInvoice.getAddress());
         htmlContent = htmlContent.replace("{invoiceSerialNumber}", commissionInvoice.getSerialNumber());
         htmlContent = htmlContent.replace("{invoiceSerialNumber}", commissionInvoice.getSerialNumber());
-        htmlContent = htmlContent.replace("{createdDate}", Objects.requireNonNull(DateUtils.toStringTurkish(commissionInvoice.getCreatedDate())));
+        htmlContent = htmlContent.replace("{createdDate}", Objects.requireNonNull(DateUtils.toStringTurkish(commissionInvoice.getCreatedDate())));*/
         return htmlContent;
     }
 
     public PDFDocument convertToPDFDocument(String htmlContent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PDFDocument pdfDocument = new PDFDocument();
+        ConverterProperties cp = new ConverterProperties();
+        FontProvider fontProvider = new DefaultFontProvider(false, false, false);
+        fontProvider.addFont(FONT);
+        cp.setFontProvider(fontProvider);
+
         try {
-            HtmlConverter.convertToPdf(new ByteArrayInputStream(htmlContent.getBytes()), baos);
+            HtmlConverter.convertToPdf(new ByteArrayInputStream(htmlContent.getBytes()), baos, cp);
             pdfDocument.setContent(baos.toByteArray());
         } catch (IOException e) {
             e.printStackTrace();

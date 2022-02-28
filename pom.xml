@@ -25,12 +25,30 @@
         <html2pdf.version>4.0.2-SNAPSHOT</html2pdf.version>
         <licensekey.version>4.0.2-SNAPSHOT</licensekey.version>
         <typography.version>3.0.1-SNAPSHOT</typography.version>
+        <seller-base-package-registry.project-id>4093</seller-base-package-registry.project-id>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -86,16 +104,17 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.ralfstuckert.pdfbox-layout</groupId>
-            <artifactId>pdfbox2-layout</artifactId>
-            <version>1.0.1</version>
-        </dependency>
     </dependencies>
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>trendyol-releases</id>
+            <name>Trendyol release</name>
+            <url>http://sfrontregistry.trendyol.com:8081/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.trendyol.com/api/v4/projects/${seller-base-package-registry.project-id}/packages/maven
+            </url>
         </repository>
         <repository>
             <releases>
