@@ -5,24 +5,7 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
   profiles:
-    include: pdf
-  jpa:
-    database: postgresql
-    properties:
-      hibernate:
-        jdbc:
-          fetch_size: 2000
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    url: "jdbc:postgresql://10.85.122.1:5001/int_seller_commission_invoice"
-    username: int_seller_commission_invoice_appuser
-    password: sr5@uZD*5!s5NT+g
-    hikari:
-      pool-name: test-db-pool
-      data-source-properties:
-        cachePrepStmts: true
-        prepStmtCacheSize: 250
-        prepStmtCacheSqlLimit: 2048
-        useServerPrepStmts: true
-      connection-timeout: 3000
-      maximum-pool-size: 9
+    include: pdf, postgresql
+  liquibase:
+    enabled: false
+    change-log: classpath:db/changelog/db.changelog-master.xml

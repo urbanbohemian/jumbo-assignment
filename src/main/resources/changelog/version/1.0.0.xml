@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog>
+    <changeSet id="2022-02-28 11:24" author="mert.okan">
+        <sql>
+            CREATE SEQUENCE seq_commission_invoices START 1 INCREMENT 50;
+
+            CREATE TABLE commission_invoices
+            (
+            id INT8 NOT NULL,
+            created_date TIMESTAMP NOT NULL,
+            last_modified_date TIMESTAMP NOT NULL,
+            serial_number VARCHAR NOT NULL,
+            seller_vat_id VARCHAR NOT NULL,
+            seller_full_name VARCHAR NOT NULL,
+            seller_address VARCHAR NOT NULL,
+            delivery_date TIMESTAMP NOT NULL,
+            amount NUMERIC(19, 2) NOT NULL,
+            net_amount NUMERIC(19, 2) NOT NULL,
+            vat_amount NUMERIC(19, 2) NOT NULL,
+            vat_rate NUMERIC(19, 2) NOT NULL,
+            vat_status_type VARCHAR NOT NULL,
+            charged_vat_description VARCHAR NOT NULL,
+            payment_date TIMESTAMP NOT NULL,
+            store_front_id VARCHAR NOT NULL,
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
