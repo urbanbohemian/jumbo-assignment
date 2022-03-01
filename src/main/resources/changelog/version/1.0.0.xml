@@ -23,7 +23,7 @@
             payment_date TIMESTAMP NOT NULL,
             store_front_id VARCHAR NOT NULL,
             country VARCHAR NOT NULL,
-            currency VARCHAR NOT NULL,
+            currency VARCHAR NOT NULL
             );
         </sql>
     </changeSet>
