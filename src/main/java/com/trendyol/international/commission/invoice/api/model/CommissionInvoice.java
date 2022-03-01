@@ -63,6 +63,12 @@ public class CommissionInvoice extends AuditingEntity {
     @Column(name = "store_front_id", nullable = false)
     private String storeFrontId;
 
+    @Column(name = "country", nullable = false)
+    private String country;
+
+    @Column(name = "currency", nullable = false)
+    private String currency;
+
     @OneToMany
     @JoinTable(
             name = "commission_invoice_settlement_items",
