@@ -1,5 +1,6 @@
 package com.trendyol.international.commission.invoice.api.service;
 
+import com.itextpdf.io.util.ResourceUtil;
 import com.trendyol.international.commission.invoice.api.util.Font;
 import com.trendyol.international.commission.invoice.api.util.*;
 import lombok.SneakyThrows;
@@ -10,6 +11,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.vandeseer.easytable.TableDrawer;
@@ -21,7 +23,9 @@ import org.vandeseer.easytable.structure.cell.TextCell;
 import javax.annotation.PostConstruct;
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 
@@ -30,7 +34,7 @@ import static org.vandeseer.easytable.structure.Row.builder;
 
 @Service
 public class PDFBoxService {
-    private final Map<String, File> fontMap = new HashMap<>();
+    private final Map<String, InputStream> fontMap = new HashMap<>();
     private final PdfConfig pdfConfig;
     public PDDocument document;
     public PDPageContentStream contentStream;
@@ -42,10 +46,11 @@ public class PDFBoxService {
     }
 
     @PostConstruct
-    public void init() throws FileNotFoundException {
-        File RUBIK_MEDIUM_FONT_FILE = ResourceUtils.getFile("classpath:fonts/rubik-medium.ttf");
-        File RUBIK_REGULAR_FONT_FILE = ResourceUtils.getFile("classpath:fonts/rubik-regular.ttf");
-        File RUBIK_BOLD_FONT_FILE = ResourceUtils.getFile("classpath:fonts/rubik-bold.ttf");
+    public void init() {
+        InputStream RUBIK_MEDIUM_FONT_FILE = ResourceUtil.getResourceStream("classpath:fonts/rubik-medium.ttf");
+        InputStream RUBIK_REGULAR_FONT_FILE = ResourceUtil.getResourceStream("classpath:fonts/rubik-regular.ttf");
+        InputStream RUBIK_BOLD_FONT_FILE = ResourceUtil.getResourceStream("classpath:fonts/rubik-bold.ttf");
+
         fontMap.put("rubik-bold", RUBIK_BOLD_FONT_FILE);
         fontMap.put("rubik-medium", RUBIK_MEDIUM_FONT_FILE);
         fontMap.put("rubik-regular", RUBIK_REGULAR_FONT_FILE);
