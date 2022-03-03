@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${CI_PROJECT_NAME}${PROFILE_SUFFIX}-service
+  namespace: mpc
+  labels:
+    app: ${CI_PROJECT_NAME}
+    release: ${CI_PROJECT_NAME}-service
+
+  annotations:
+    "consul.hashicorp.com/service-name": seller-sellerfinance-sellerinvoice-service
+    "consul.hashicorp.com/service-sync": "true"
+    "consul.hashicorp.com/service-tags": "app=sellerinvoice-service,team=seller-sellerfinance,internal-lb,backend=http"
+spec:
+  selector:
+    app: ${CI_PROJECT_NAME}${PROFILE_SUFFIX}
+  type: NodePort
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      nodePort: 30181

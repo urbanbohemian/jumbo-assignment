@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${CI_PROJECT_NAME}-deployment
+  namespace: mpc
+spec:
+  replicas: ${REPLICA}
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: ${CI_PROJECT_NAME}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: ${CI_PROJECT_NAME}
+        version: "${VERSION}"
+        cluster: ${K8S_CLUSTER}
+    spec:
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 120
+      imagePullSecrets:
+        - name: ${GITLAB_REGISTRY_SECRET_NAME}
+      containers:
+        - name: ${CI_PROJECT_NAME}
+          image: ${DOCKER_IMAGE}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: SERVER_PORT
+              value: "8080"
+            - name: SPRING_PROFILES_ACTIVE
+              value: ${SPRING_PROFILES_ACTIVE}
+            - name: VERSION
+              value: "${VERSION}"
+            - name: NEW_RELIC_AGENT_ENABLED
+              value: "${NEW_RELIC_AGENT_ENABLED}"
+            - name: NEW_RELIC_APP_NAME
+              value: ${TY_DC}-${TY_GROUP}-${TY_TEAM_SELLER_FINANCE}-${TY_PROJECT}
+            - name: JAVA_TOOL_OPTIONS
+              value: "-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle -Xtune:virtualized -Xquickstart"
+          envFrom:
+            - configMapRef:
+                name: ${CI_PROJECT_NAME}-config
+            - secretRef:
+                name: ${CI_PROJECT_NAME}-secret
+            - configMapRef:
+                name: ${CI_PROJECT_NAME}-toggle
+          livenessProbe:
+            httpGet:
+              path: /_monitoring/live
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 90
+            timeoutSeconds: 60
+            periodSeconds: 20
+            successThreshold: 1
+            failureThreshold: 15
+          readinessProbe:
+            httpGet:
+              path: /_monitoring/ready
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 90
+            timeoutSeconds: 60
+            periodSeconds: 20
+            successThreshold: 1
+            failureThreshold: 15
+          resources:
+            requests:
+              memory: ${REQUEST_MEMORY}
+              cpu: ${REQUEST_CPU}
+            limits:
+              memory: ${LIMIT_MEMORY}
+              cpu: ${LIMIT_CPU}
