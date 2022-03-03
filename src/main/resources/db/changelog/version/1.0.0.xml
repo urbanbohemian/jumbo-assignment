@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2022-02-28 11:24" author="mert.okan">
+        <sql>
+            create sequence seq_commission_invoices start 1 increment 50;
+
+            create table commission_invoices
+            (
+            id int8 not null,
+            created_date timestamp not null,
+            last_modified_date timestamp not null,
+            serial_number varchar not null,
+            seller_vat_id varchar not null,
+            seller_full_name varchar not null,
+            seller_address varchar not null,
+            delivery_date timestamp not null,
+            amount numeric(19, 2) not null,
+            net_amount numeric(19, 2) not null,
+            vat_amount numeric(19, 2) not null,
+            vat_rate numeric(19, 2) not null,
+            vat_status_type varchar not null,
+            charged_vat_description varchar not null,
+            payment_date timestamp not null,
+            store_front_id varchar not null,
+            country varchar not null,
+            currency varchar not null,
+            primary key (id)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="2022-02-28 13:50" author="mert.okan">
+        <sql>
+            create sequence seq_settlement_items start 1 increment 50;
+
+            create table settlement_items
+            (
+            id int8 not null,
+            created_date timestamp not null,
+            last_modified_date timestamp not null,
+            seller_id int8 not null,
+            price numeric(19, 2) not null,
+            commission numeric(19, 2) not null,
+            delivery_date timestamp,
+            payment_date timestamp,
+            primary key (id)
+            );
+
+            create table commission_invoice_settlement_items
+            (
+            commission_invoice_id bigint not null
+            constraint fk_commission_invoice_settlement_items_commission_invoice
+            references commission_invoices,
+            settlement_item_id bigint not null
+            constraint commission_invoice_settlement_items_settlement_item_id_key
+            unique
+            constraint fk_commission_invoice_settlement_items_settlement_item
+            references settlement_items
+            );
+
+            create unique index idx_commission_invoice_settlement_items_settlement_item
+            on commission_invoice_settlement_items (settlement_item_id desc);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

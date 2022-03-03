@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/int_seller_commission_invoice
+    username: int_seller_commission_invoice_appuser
+    password: 1234567890
+  jpa:
+    properties:
+      jdbc.batch_size: 50
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.show_sql: true
+#    hibernate:
+#      ddl-auto: update
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+#  datasource:
+#    type: com.zaxxer.hikari.HikariDataSource
+#    url: "jdbc:postgresql://localhost:5432/int_seller_commission_invoice"
+#    username: int_seller_commission_invoice_appuser
+#    password: 1234567890
+#    hikari:
+#      pool-name: international-commission-invoice-pool
+#      data-source-properties:
+#        cachePrepStmts: true
+#        prepStmtCacheSize: 250
+#        prepStmtCacheSqlLimit: 2048
+#        useServerPrepStmts: true
+#      connection-timeout: 3000
+#      maximum-pool-size: 9
+#  jpa:
+#    database: postgresql
+#    properties:
+#      hibernate:
+#        jdbc:
+#          fetch_size: 2000

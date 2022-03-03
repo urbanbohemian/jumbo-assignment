@@ -1,57 +1,81 @@
 package com.trendyol.international.commission.invoice.api.model;
 
-import com.trendyol.international.commission.invoice.api.types.VATStatusType;
+import com.trendyol.international.commission.invoice.api.model.base.AuditingEntity;
+import com.trendyol.international.commission.invoice.api.types.VatStatusType;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
+@Data
+@NoArgsConstructor
+@SuperBuilder
 @Entity
 @Table(name = "commission_invoices")
-public class CommissionInvoice {
+@SequenceGenerator(name = "seq_commission_invoices", sequenceName = "seq_commission_invoices")
+public class CommissionInvoice extends AuditingEntity {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_commission_invoices")
     private Long id;
 
-    @Column(name = "created_date")
-    private Date createdDate;                                       //article 'a'
-
-    @Column(name = "serial_number")
+    @Column(name = "serial_number", nullable = false)
     private String serialNumber;                                    //article 'b'
 
-    @Column(name = "seller_vat_id")
-    private String sellerVAT;                                       //article 'c'
+    @Column(name = "seller_vat_id", nullable = false)
+    private String sellerVatId;                                     //article 'c'
 
-    @Column(name = "seller_full_name")
+    @Column(name = "seller_full_name", nullable = false)
     private String sellerFullName;                                  //article 'd'
 
-    @Column(name = "seller_address")
+    @Column(name = "seller_address", nullable = false)
     private String sellerAddress;                                   //article 'd'
 
-    @Column(name = "delivery_date")
+    @Column(name = "delivery_date", nullable = false)
     private Date deliveryDate;                                      //article 'e'
 
-    @Column(name = "amount")
+    @Column(name = "amount", nullable = false)
     private BigDecimal amount;                                      //article 'f'
 
-    @Column(name = "net_amount")
+    @Column(name = "net_amount", nullable = false)
     private BigDecimal netAmount;                                   //article 'g'
 
-    @Column(name = "vat_amount")
+    @Column(name = "vat_amount", nullable = false)
     private BigDecimal vatAmount;                                   //article 'h'
 
-    @Column(name = "vat_rate")
+    @Column(name = "vat_rate", nullable = false)
     private BigDecimal vatRate;                                     //article 'h'
 
-    @Column(name = "vat_status_type")
-    private VATStatusType vatStatusType;                            //article 'n'
+    @Column(name = "vat_status_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private VatStatusType vatStatusType;                            //article 'n'
 
-    @Column(name = "charged_vat_description")
-    private String chargedVATDescription;                           //article 'n'
+    @Column(name = "charged_vat_description", nullable = false)
+    private String chargedVatDescription;                           //article 'n'
 
+    @Column(name = "payment_date", nullable = false)
+    private Date paymentDate;
 
+    @Column(name = "store_front_id", nullable = false)
+    private String storeFrontId;
+
+    @Column(name = "country", nullable = false)
+    private String country;
+
+    @Column(name = "currency", nullable = false)
+    private String currency;
+
+    @OneToMany
+    @JoinTable(
+            name = "commission_invoice_settlement_items",
+            joinColumns = {@JoinColumn(name = "commission_invoice_id")},
+            inverseJoinColumns = {@JoinColumn(name = "settlement_item_id")},
+            uniqueConstraints = @UniqueConstraint(columnNames = {"settlement_item_id"})
+
+    )
+    private Set<SettlementItem> settlementItems;
 }
