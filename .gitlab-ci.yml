@@ -44,10 +44,10 @@ stages:
   - Deploy PREPROD 🔫
 
 Test:
-  extends: .test-mvn-jdk-11
+  extends: .test-mvn-jdk-17
 
 SonarQube:
-  extends: .analyze-mvn-jdk-11
+  extends: .analyze-mvn-jdk-17
 
 Image:
   extends: .build
