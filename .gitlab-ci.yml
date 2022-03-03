@@ -1,0 +1,74 @@
+include:
+  - project: 'seller/finance/pipeline'
+    ref: master
+    file: 'template.sox.gitlab-ci.yml'
+
+.only: &only
+  only:
+    - master
+    - /^hotfix.*$/
+
+.only_except_skip_ci: &only_except_skip_ci
+  <<: *only
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-ci/i
+
+.only_except_skip_ci_allow_failure: &only_except_skip_ci_allow_failure
+  <<: *only
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-ci/i
+  allow_failure: true
+
+.only_except_skip_ci_test: &only_except_skip_ci_test
+  <<: *only
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-ci/i
+      - $CI_COMMIT_MESSAGE =~ /skip-test/i
+
+.only_except_skip_ci_manual: &only_except_skip_ci_manual
+  <<: *only_except_skip_ci
+  when: manual
+  allow_failure: false
+
+variables:
+  VERSION: $CI_COMMIT_SHORT_SHA
+  DOCKER_IMAGE: $GITLAB_REGISTRY_HOST/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
+  DOCKER_IMAGE_RELEASE: $GITLAB_REGISTRY_HOST/$CI_PROJECT_PATH:release-$CI_COMMIT_SHORT_SHA
+
+stages:
+  - QA 🕵🏻‍♀️
+  - Build 📦
+  - Deploy PREPROD 🔫
+
+Test:
+  extends: .test-mvn-jdk-11
+
+SonarQube:
+  extends: .analyze-mvn-jdk-11
+
+Image:
+  extends: .build
+
+Deploy QA:
+  extends: .deploy_qa
+  variables:
+    REPLICA: 1
+    LIMIT_CPU: 1
+    LIMIT_MEMORY: 500Mi
+    REQUEST_CPU: 75m
+    REQUEST_MEMORY: 75Mi
+    PROMETHEUS_ENABLED: 'false'
+
+Deploy SELLER Stage:
+  extends: .deploy_stage_1seller_idc
+  variables:
+    REPLICA: 1
+    LIMIT_CPU: 1
+    LIMIT_MEMORY: 500Mi
+    REQUEST_CPU: 75m
+    REQUEST_MEMORY: 75Mi
+    PROMETHEUS_ENABLED: 'false'
+

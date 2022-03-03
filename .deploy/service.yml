@@ -8,9 +8,9 @@ metadata:
     release: ${CI_PROJECT_NAME}-service
 
   annotations:
-    "consul.hashicorp.com/service-name": seller-sellerfinance-sellerinvoice-service
+    "consul.hashicorp.com/service-name": seller-sellerfinance-internationalcommissioninvoice-service
     "consul.hashicorp.com/service-sync": "true"
-    "consul.hashicorp.com/service-tags": "app=sellerinvoice-service,team=seller-sellerfinance,internal-lb,backend=http"
+    "consul.hashicorp.com/service-tags": "app=internationalcommissioninvoice-service,team=seller-sellerfinance,internal-lb,backend=http"
 spec:
   selector:
     app: ${CI_PROJECT_NAME}${PROFILE_SUFFIX}
@@ -19,4 +19,4 @@ spec:
     - name: http
       port: 80
       targetPort: 8080
-      nodePort: 30181
+      nodePort: 30262
