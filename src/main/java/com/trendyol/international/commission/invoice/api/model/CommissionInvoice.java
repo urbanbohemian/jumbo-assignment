@@ -26,18 +26,6 @@ public class CommissionInvoice extends AuditingEntity {
     @Column(name = "serial_number", nullable = false)
     private String serialNumber;                                    //article 'b'
 
-    @Column(name = "seller_vat_id", nullable = false)
-    private String sellerVatId;                                     //article 'c'
-
-    @Column(name = "seller_full_name", nullable = false)
-    private String sellerFullName;                                  //article 'd'
-
-    @Column(name = "seller_address", nullable = false)
-    private String sellerAddress;                                   //article 'd'
-
-    @Column(name = "delivery_date", nullable = false)
-    private Date deliveryDate;                                      //article 'e'
-
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;                                      //article 'f'
 
@@ -57,8 +45,8 @@ public class CommissionInvoice extends AuditingEntity {
     @Column(name = "charged_vat_description", nullable = false)
     private String chargedVatDescription;                           //article 'n'
 
-    @Column(name = "payment_date", nullable = false)
-    private Date paymentDate;
+    @Column(name = "invoice_date", nullable = false)
+    private Date invoiceDate;
 
     @Column(name = "store_front_id", nullable = false)
     private String storeFrontId;

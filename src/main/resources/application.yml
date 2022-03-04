@@ -5,4 +5,4 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
   profiles:
-    include: pdf, postgresql
+    include: pdf, postgresql, kafka

@@ -36,4 +36,7 @@ public class SettlementItem extends AuditingEntity {
 
     @Column(name = "payment_date")
     private Date paymentDate;
+
+    @Column(name = "item_creation_date")
+    private Date itemCreationDate;
 }

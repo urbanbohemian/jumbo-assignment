@@ -1,0 +1,38 @@
+KAFKA_BOOTSTRAP_SERVERS: localhost:29092
+kafka-config:
+  producers:
+    "[default]":
+      props:
+        "[bootstrap.servers]": ${KAFKA_BOOTSTRAP_SERVERS}
+        "[batch.size]": 16384
+        "[linger.ms]": 5
+        "[buffer.memory]": 33554432
+        "[key.serializer]": org.apache.kafka.common.serialization.StringSerializer
+        "[value.serializer]": org.springframework.kafka.support.serializer.JsonSerializer
+        "[acks]": "1"
+        "[request.timeout.ms]": 30000
+  consumers:
+    "[settlement-items-debezium-consumer]":
+      topic: ${SETTLEMENT_ITEMS_DEBEZIUM_CONSUMER_TOPIC:earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0}
+      error-topic: ${SETTLEMENT_ITEMS_DEBEZIUM_CONSUMER_ERROR_TOPIC:earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0.error}
+      factory-bean-name: settlementItemsDebeziumKafkaListenerContainerFactory
+      concurrency: 1
+      retry-count: 1
+      sync-commit: true
+      sync-commit-timeout-second: 5
+      backoffIntervalMillis: 5000 #wait time for retry
+      missingTopicAlertEnable: false
+      props:
+        "[bootstrap.servers]": ${KAFKA_BOOTSTRAP_SERVERS}
+        "[spring.json.trusted.packages]": com.trendyol
+        "[group.id]": ${SETTLEMENT_ITEMS_DEBEZIUM_CONSUMER_GROUP:earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0.group}
+        "[max.poll.records]": 500 #for batch listener
+        "[max.poll.interval.ms]": 300000 #poll time
+        "[session.timeout.ms]": 10000
+        "[heartbeat.interval.ms]": 3000
+        "[enable.auto.commit]": true
+        "[auto.offset.reset]": earliest
+        "[fetch.max.bytes]": 52428800
+        "[fetch.max.wait.ms]": 500
+  integration-topics:
+    settlement-items-debezium-topic: earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0
