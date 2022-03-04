@@ -1,20 +1,27 @@
 package com.trendyol.international.commission.invoice.api.domain.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SettlementItemMessage {
-    private Long oli_id;
-    private String t_type;
+    private Long oliId;
+    private String type;
     private BigDecimal price;
-    private BigDecimal c_rate;
-    private Date d_date;
-    private Date p_date;
-    private BigDecimal discount_price;
-    private BigDecimal coupon_price;
-    private BigDecimal total_price;
-    private BigDecimal total_commision;
-    private BigDecimal total_seller_revenue;
-    private Long store_front_id;
+    private BigDecimal commissionRate;
+    private Date deliveryDate;
+    private Date paymentDate;
+    private BigDecimal couponPrice;
+    private BigDecimal totalPrice;
+    private BigDecimal totalCommision;
+    private BigDecimal totalSellerRevenue;
+    private Long storeFrontId;
     private String currency;
 }

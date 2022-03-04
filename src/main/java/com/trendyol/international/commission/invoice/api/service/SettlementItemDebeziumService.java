@@ -7,5 +7,6 @@ import org.springframework.stereotype.Service;
 public class SettlementItemDebeziumService {
     public void process(SettlementItemMessage settlementItemMessage) {
 
+
     }
 }
