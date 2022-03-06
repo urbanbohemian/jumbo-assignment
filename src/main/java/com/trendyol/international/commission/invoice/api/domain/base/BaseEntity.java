@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.model.base;
+package com.trendyol.international.commission.invoice.api.domain.base;
 
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

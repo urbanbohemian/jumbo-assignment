@@ -1,6 +1,6 @@
-package com.trendyol.international.commission.invoice.api.model;
+package com.trendyol.international.commission.invoice.api.domain;
 
-import com.trendyol.international.commission.invoice.api.model.base.AuditingEntity;
+import com.trendyol.international.commission.invoice.api.domain.base.AuditingEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
