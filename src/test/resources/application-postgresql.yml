@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/int_seller_commission_invoice
+    username: int_seller_commission_invoice_appuser
+    password: 1234567890
+  jpa:
+    properties:
+      jdbc.batch_size: 50
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.show_sql: true
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL10Dialect
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml

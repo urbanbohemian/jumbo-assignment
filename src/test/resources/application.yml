@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: '@project.name@'
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  profiles:
+    active: test
+    include: pdf, postgresql, kafka
