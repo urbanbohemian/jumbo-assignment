@@ -14,17 +14,13 @@
             created_date timestamp not null,
             last_modified_date timestamp not null,
             serial_number varchar not null,
-            seller_vat_id varchar not null,
-            seller_full_name varchar not null,
-            seller_address varchar not null,
-            delivery_date timestamp not null,
             amount numeric(19, 2) not null,
             net_amount numeric(19, 2) not null,
             vat_amount numeric(19, 2) not null,
             vat_rate numeric(19, 2) not null,
             vat_status_type varchar not null,
             charged_vat_description varchar not null,
-            payment_date timestamp not null,
+            invoice_date timestamp not null,
             store_front_id varchar not null,
             country varchar not null,
             currency varchar not null,
@@ -47,6 +43,7 @@
             commission numeric(19, 2) not null,
             delivery_date timestamp,
             payment_date timestamp,
+            item_creation_date timestamp,
             primary key (id)
             );
 
