@@ -8,9 +8,9 @@ metadata:
     release: ${CI_PROJECT_NAME}-service
 
   annotations:
-    "consul.hashicorp.com/service-name": seller-sellerfinance-internationalcommissioninvoice-service
+    "consul.hashicorp.com/service-name": seller-sellerfinance-intcommissioninvoice-service
     "consul.hashicorp.com/service-sync": "true"
-    "consul.hashicorp.com/service-tags": "app=internationalcommissioninvoice-service,team=seller-sellerfinance,internal-lb,backend=http"
+    "consul.hashicorp.com/service-tags": "app=intcommissioninvoice-service,team=seller-sellerfinance,internal-lb,backend=http"
 spec:
   selector:
     app: ${CI_PROJECT_NAME}${PROFILE_SUFFIX}
