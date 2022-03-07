@@ -43,7 +43,7 @@
             commission numeric(19, 2) not null,
             delivery_date timestamp,
             payment_date timestamp,
-            item_creation_date timestamp,
+            item_creation_date timestamp not null,
             primary key (id)
             );
 
