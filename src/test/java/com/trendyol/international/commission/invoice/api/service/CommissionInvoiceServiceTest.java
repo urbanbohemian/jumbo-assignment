@@ -11,16 +11,13 @@ import com.trendyol.international.commission.invoice.api.repository.SettlementIt
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -76,15 +73,15 @@ public class CommissionInvoiceServiceTest {
 
         Date startDate = Date.from(LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(2L, startDate, endDate)).thenReturn(List.of(settlementItem1, settlementItem2));
 
         // when
         BigDecimal commission = commissionInvoiceService.calculateCommissionForSeller(
                 CommissionInvoiceDto
-                .builder()
-                .sellerId(2L)
-                .startDate(startDate)
-                .endDate(endDate).build());
+                        .builder()
+                        .sellerId(2L)
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .settlementItems(List.of(settlementItem1, settlementItem2)).build());
 
         // then
         assertThat(commission.compareTo(BigDecimal.valueOf(-10L))).isEqualTo(0);
@@ -109,7 +106,6 @@ public class CommissionInvoiceServiceTest {
 
         Date startDate = Date.from(LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(2L, startDate, endDate)).thenReturn(List.of(settlementItem1, settlementItem2));
 
         // when
         BigDecimal commission = commissionInvoiceService.calculateCommissionForSeller(
@@ -117,7 +113,8 @@ public class CommissionInvoiceServiceTest {
                         .builder()
                         .sellerId(2L)
                         .startDate(startDate)
-                        .endDate(endDate).build());
+                        .endDate(endDate)
+                        .settlementItems(List.of(settlementItem1, settlementItem2)).build());
 
         // then
         assertThat(commission.compareTo(BigDecimal.valueOf(190L))).isEqualTo(0);
@@ -137,17 +134,17 @@ public class CommissionInvoiceServiceTest {
         //when
         Date startDate = commissionInvoiceService.getStartDateForSeller(1L);
         //then
-        assertThat(startDate.getTime()-date.getTime()).isEqualTo(1);
+        assertThat(startDate.getTime() - date.getTime()).isEqualTo(1);
     }
 
     @Test
     public void it_should_get_end_date_for_commission_invoice() {
         //given
-        Date date = new Date();
+        Date date = new Date(1646693999998L);
         //when
         Date endDate = commissionInvoiceService.getEndDate(date);
         //then
-        assertThat(endDate.getTime()-date.getTime()).isEqualTo(1);
+        assertThat(endDate.getTime() - date.getTime()).isEqualTo(1);
     }
 
     @Test

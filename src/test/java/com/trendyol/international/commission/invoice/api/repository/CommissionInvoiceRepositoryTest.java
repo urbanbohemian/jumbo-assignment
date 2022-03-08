@@ -1,6 +1,7 @@
 package com.trendyol.international.commission.invoice.api.repository;
 
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
+import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.types.VatStatusType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,10 @@ public class CommissionInvoiceRepositoryTest {
                 .storeFrontId("store-front-id")
                 .country("country")
                 .currency("currency")
+                .sellerId(1L)
+                .startDate(new Date())
+                .endDate(new Date(1L))
+                .invoiceStatus(InvoiceStatus.CREATED)
                 .build();
 
         //when
@@ -60,7 +65,9 @@ public class CommissionInvoiceRepositoryTest {
                 .sellerId(1L)
                 .startDate(new Date())
                 .endDate(new Date(1L))
+                .invoiceStatus(InvoiceStatus.CREATED)
                 .build();
+
         CommissionInvoice commissionInvoice2 = CommissionInvoice.builder()
                 .serialNumber("2")
                 .amount(BigDecimal.ONE)
@@ -76,7 +83,9 @@ public class CommissionInvoiceRepositoryTest {
                 .sellerId(2L)
                 .startDate(new Date())
                 .endDate(new Date(3L))
+                .invoiceStatus(InvoiceStatus.CREATED)
                 .build();
+
         CommissionInvoice commissionInvoice3 = CommissionInvoice.builder()
                 .serialNumber("3")
                 .amount(BigDecimal.ONE)
@@ -92,6 +101,7 @@ public class CommissionInvoiceRepositoryTest {
                 .sellerId(1L)
                 .startDate(new Date())
                 .endDate(new Date(2L))
+                .invoiceStatus(InvoiceStatus.CREATED)
                 .build();
 
         commissionInvoiceRepository.saveAll(List.of(commissionInvoice1, commissionInvoice2, commissionInvoice3));
