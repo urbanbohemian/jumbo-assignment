@@ -30,4 +30,9 @@ public class CommissionInvoiceServiceTest {
         //then
         verify(commissionInvoiceRepository).save(commissionInvoice);
     }
+
+    @Test
+    public void it_should_() {
+
+    }
 }
