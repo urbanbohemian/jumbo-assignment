@@ -1,6 +1,7 @@
 package com.trendyol.international.commission.invoice.api.domain;
 
 import com.trendyol.international.commission.invoice.api.domain.base.AuditingEntity;
+import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.types.VatStatusType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,9 @@ public class CommissionInvoice extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_commission_invoices")
     private Long id;
+
+    @Column(name = "seller_id", nullable = false)
+    private Long sellerId;
 
     @Column(name = "serial_number", nullable = false)
     private String serialNumber;                                    //article 'b'
@@ -56,6 +60,15 @@ public class CommissionInvoice extends AuditingEntity {
 
     @Column(name = "currency", nullable = false)
     private String currency;
+
+    @Column(name = "start_date", nullable = false)
+    private Date startDate;
+
+    @Column(name = "end_date", nullable = false)
+    private Date endDate;
+
+    @Column(name = "status", nullable = false)
+    private InvoiceStatus invoiceStatus;
 
     @OneToMany
     @JoinTable(

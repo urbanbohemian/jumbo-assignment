@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,5 +40,65 @@ public class CommissionInvoiceRepositoryTest {
 
         //then
         assertThat(savedCommissionInvoice).isEqualTo(commissionInvoice);
+    }
+
+    @Test
+    public void it_should_find_top_commission_invoice_by_seller_id_end_date_desc() {
+        //given
+        CommissionInvoice commissionInvoice1 = CommissionInvoice.builder()
+                .serialNumber("1")
+                .amount(BigDecimal.ONE)
+                .netAmount(BigDecimal.ONE)
+                .vatAmount(BigDecimal.ONE)
+                .vatRate(BigDecimal.ONE)
+                .vatStatusType(VatStatusType.DOMESTIC)
+                .chargedVatDescription("charged-vat-description")
+                .invoiceDate(new Date())
+                .storeFrontId("store-front-id")
+                .country("country")
+                .currency("currency")
+                .sellerId(1L)
+                .startDate(new Date())
+                .endDate(new Date(1L))
+                .build();
+        CommissionInvoice commissionInvoice2 = CommissionInvoice.builder()
+                .serialNumber("2")
+                .amount(BigDecimal.ONE)
+                .netAmount(BigDecimal.ONE)
+                .vatAmount(BigDecimal.ONE)
+                .vatRate(BigDecimal.ONE)
+                .vatStatusType(VatStatusType.DOMESTIC)
+                .chargedVatDescription("charged-vat-description")
+                .invoiceDate(new Date(3L))
+                .storeFrontId("store-front-id")
+                .country("country")
+                .currency("currency")
+                .sellerId(2L)
+                .startDate(new Date())
+                .endDate(new Date(3L))
+                .build();
+        CommissionInvoice commissionInvoice3 = CommissionInvoice.builder()
+                .serialNumber("3")
+                .amount(BigDecimal.ONE)
+                .netAmount(BigDecimal.ONE)
+                .vatAmount(BigDecimal.ONE)
+                .vatRate(BigDecimal.ONE)
+                .vatStatusType(VatStatusType.DOMESTIC)
+                .chargedVatDescription("charged-vat-description")
+                .invoiceDate(new Date(2L))
+                .storeFrontId("store-front-id")
+                .country("country")
+                .currency("currency")
+                .sellerId(1L)
+                .startDate(new Date())
+                .endDate(new Date(2L))
+                .build();
+
+        commissionInvoiceRepository.saveAll(List.of(commissionInvoice1, commissionInvoice2, commissionInvoice3));
+        //when
+        CommissionInvoice commissionInvoice = commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L);
+        //then
+        assertThat(commissionInvoice).isNotNull();
+        assertThat(commissionInvoice.getSerialNumber()).isEqualTo("3");
     }
 }

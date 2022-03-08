@@ -21,8 +21,7 @@ public class SettlementItemRepositoryTest {
         //given
         SettlementItem settlementItem = SettlementItem.builder()
                 .sellerId(1L)
-                .price(BigDecimal.ONE)
-                .commission(BigDecimal.ONE)
+                .commissionAmount(BigDecimal.ONE)
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
                 .itemCreationDate(new Date())

@@ -11,6 +11,7 @@
             create table commission_invoices
             (
             id int8 not null,
+            seller_id int8 not null,
             created_date timestamp not null,
             last_modified_date timestamp not null,
             serial_number varchar not null,
@@ -24,6 +25,9 @@
             store_front_id varchar not null,
             country varchar not null,
             currency varchar not null,
+            start_date timestamp not null,
+            end_date timestamp not null,
+            status smallint not null,
             primary key (id)
             );
         </sql>
@@ -38,12 +42,12 @@
             id int8 not null,
             created_date timestamp not null,
             last_modified_date timestamp not null,
+            item_creation_date timestamp not null,
             seller_id int8 not null,
-            price numeric(19, 2) not null,
-            commission numeric(19, 2) not null,
+            transaction_type_id int4 not null,
+            commission_amount numeric(19, 2) not null,
             delivery_date timestamp,
             payment_date timestamp,
-            item_creation_date timestamp not null,
             primary key (id)
             );
 
@@ -63,4 +67,5 @@
             on commission_invoice_settlement_items (settlement_item_id desc);
         </sql>
     </changeSet>
+
 </databaseChangeLog>

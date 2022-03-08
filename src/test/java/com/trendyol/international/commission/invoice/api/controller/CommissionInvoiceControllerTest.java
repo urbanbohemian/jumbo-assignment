@@ -1,5 +1,6 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
+import com.trendyol.international.commission.invoice.api.model.request.CommissionInvoiceCreateRequest;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +23,8 @@ public class CommissionInvoiceControllerTest {
     @Test
     public void it_should_call_create() {
         //when
-        commissionInvoiceController.processCreated();
+        commissionInvoiceController.create(new CommissionInvoiceCreateRequest());
         //then
-        verify(commissionInvoiceService).create();
+        verify(commissionInvoiceService).create(any(), any(), any(), any());
     }
 }

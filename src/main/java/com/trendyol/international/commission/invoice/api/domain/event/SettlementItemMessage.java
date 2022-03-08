@@ -21,7 +21,7 @@ public class SettlementItemMessage {
     private Date paymentDate;
     private BigDecimal couponPrice;
     private BigDecimal totalPrice;
-    private BigDecimal totalCommision;
+    private BigDecimal totalCommission;
     private BigDecimal totalSellerRevenue;
     private Long storeFrontId;
     private String currency;

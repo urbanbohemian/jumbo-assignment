@@ -22,7 +22,6 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
     public boolean applyFilter(SettlementItemDto model) {
         return Optional.ofNullable(model)
                 .filter(m -> Objects.nonNull(m.getSellerId()))
-                .filter(m -> Objects.nonNull(m.getPrice()))
                 .filter(m -> Objects.nonNull(m.getCommission()))
                 .filter(m -> Objects.nonNull(m.getCreatedDate()))
                 .isPresent();
@@ -33,8 +32,8 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
         SettlementItem settlementItem = SettlementItem
                 .builder()
                 .sellerId(settlementItemDto.getSellerId())
-                .price(settlementItemDto.getPrice())
-                .commission(settlementItemDto.getCommission())
+                .transactionType(settlementItemDto.getTransactionType())
+                .commissionAmount(settlementItemDto.getCommission())
                 .deliveryDate(settlementItemDto.getDeliveryDate())
                 .paymentDate(settlementItemDto.getPaymentDate())
                 .itemCreationDate(settlementItemDto.getCreatedDate())
