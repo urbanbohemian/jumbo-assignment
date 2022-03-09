@@ -9,6 +9,7 @@ import com.trendyol.international.commission.invoice.api.repository.CommissionIn
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import com.trendyol.international.commission.invoice.api.types.VatStatusType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class CommissionInvoiceService {
 
     private final CommissionInvoiceRepository commissionInvoiceRepository;
@@ -36,8 +38,17 @@ public class CommissionInvoiceService {
         Date endDate = getEndDate(jobExecutionDate);
 
         List<SettlementItem> settlementItems = settlementItemRepository.findBySellerIdAndItemCreationDateBetween(sellerId, startDate, endDate);
+        if (settlementItems.isEmpty()) {
+            log.warn("There is no eligible settlement record for creating commission invoice. sellerId: {}", sellerId);
+            return;
+        }
         CommissionInvoiceDto commissionInvoiceDto = CommissionInvoiceDto.builder().sellerId(sellerId).startDate(startDate).endDate(endDate).settlementItems(settlementItems).build();
         BigDecimal commissionAmount = calculateCommissionForSeller(commissionInvoiceDto);
+
+        if (BigDecimal.ZERO.compareTo(commissionAmount) >= 0) {
+            log.warn("Non-positive total commission amount. sellerId: {}", sellerId);
+            return;
+        }
 
         VatModel vatModel = vatCalculatorService.calculateVatModel(commissionAmount, "NL".equals(country) ? BigDecimal.valueOf(21) : BigDecimal.ZERO);
 

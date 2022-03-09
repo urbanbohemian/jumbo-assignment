@@ -8,6 +8,7 @@ import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStat
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,8 +25,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CommissionInvoiceServiceTest {
@@ -193,7 +193,109 @@ public class CommissionInvoiceServiceTest {
         assertThat(actualCommissionInvoice.getCountry()).isEqualTo("NL");
         assertThat(actualCommissionInvoice.getCurrency()).isEqualTo("EUR");
         assertThat(actualCommissionInvoice.getInvoiceStatus()).isEqualTo(InvoiceStatus.CREATED);
+    }
 
+    @Test
+    public void it_should_not_create_commission_invoice_when_there_is_no_settlement() {
+        //given
+        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of());
+        //when
+        commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
+        //then
+        verify(commissionInvoiceRepository, never()).save(any());
+    }
 
+    @Test
+    public void it_should_not_create_commission_invoice_when_total_amount_is_negative() {
+        //given
+        SettlementItem settlement1 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(121))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .itemCreationDate(new Date())
+                .transactionType(TransactionType.Sale)
+                .build();
+
+        SettlementItem settlement2 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(122))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .transactionType(TransactionType.Return)
+                .itemCreationDate(new Date())
+                .build();
+        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+
+        //when
+        commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
+        //then
+        verify(commissionInvoiceRepository, never()).save(any());
+        verifyNoInteractions(vatCalculatorService);
+    }
+
+    @Test
+    public void it_should_not_create_commission_invoice_when_total_amount_is_zero() {
+        //given
+        SettlementItem settlement1 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(122))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .itemCreationDate(new Date())
+                .transactionType(TransactionType.Sale)
+                .build();
+
+        SettlementItem settlement2 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(122))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .transactionType(TransactionType.Return)
+                .itemCreationDate(new Date())
+                .build();
+        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+
+        //when
+        commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
+        //then
+        verify(commissionInvoiceRepository, never()).save(any());
+        verifyNoInteractions(vatCalculatorService);
+    }
+
+    @Test
+    @DisplayName("Create commission invoice with a start date of 1ms after the end date of the previous invoice")
+    public void it_should_create_commission_invoice_1ms_after_the_previous_invoice() {
+        //given
+        SettlementItem settlement1 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(122))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .itemCreationDate(new Date())
+                .transactionType(TransactionType.Sale)
+                .build();
+
+        SettlementItem settlement2 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(122))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .transactionType(TransactionType.Sale)
+                .itemCreationDate(new Date())
+                .build();
+        CommissionInvoice commissionInvoice = CommissionInvoice.builder().endDate(new Date(2L)).build();
+        when(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L)).thenReturn(commissionInvoice);
+        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+        VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
+        when(vatCalculatorService.calculateVatModel(any(), any())).thenReturn(vatModel);
+
+        //when
+        commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
+        //then
+        ArgumentCaptor<CommissionInvoice> commissionInvoiceCaptor = ArgumentCaptor.forClass(CommissionInvoice.class);
+        verify(commissionInvoiceRepository).save(commissionInvoiceCaptor.capture());
+        CommissionInvoice actualCommissionInvoice = commissionInvoiceCaptor.getValue();
+        assertThat(actualCommissionInvoice.getStartDate().getTime()).isEqualTo(3L);
     }
 }
