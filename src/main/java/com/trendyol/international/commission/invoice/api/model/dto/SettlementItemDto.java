@@ -11,6 +11,7 @@ import java.util.Date;
 @Data
 @Builder
 public class SettlementItemDto {
+    private Long settlementItemId;
     private Long sellerId;
     private BigDecimal price;
     private BigDecimal commission;
@@ -22,6 +23,7 @@ public class SettlementItemDto {
     public static SettlementItemDto fromDebeziumMessage(SettlementItemMessage settlementItemMessage) {
         return SettlementItemDto
                 .builder()
+                .settlementItemId(settlementItemMessage.getSettlementItemId())
                 .sellerId(settlementItemMessage.getSellerId())
                 .transactionType(TransactionType.from(settlementItemMessage.getType()))
                 .price(settlementItemMessage.getPrice())

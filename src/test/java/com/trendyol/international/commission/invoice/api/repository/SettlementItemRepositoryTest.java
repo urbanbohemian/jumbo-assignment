@@ -20,6 +20,7 @@ public class SettlementItemRepositoryTest {
     public void it_should_save_settlement_item() {
         //given
         SettlementItem settlementItem = SettlementItem.builder()
+                .id(1L)
                 .sellerId(1L)
                 .commissionAmount(BigDecimal.ONE)
                 .deliveryDate(new Date())

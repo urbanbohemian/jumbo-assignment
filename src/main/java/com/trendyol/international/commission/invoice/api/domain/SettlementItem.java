@@ -16,12 +16,10 @@ import java.util.Objects;
 @SuperBuilder
 @Entity
 @Table(name = "settlement_items")
-@SequenceGenerator(name = "seq_settlement_items", sequenceName = "seq_settlement_items")
 public class SettlementItem extends AuditingEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_settlement_items")
     private Long id;
 
     @Column(name = "item_creation_date", nullable = false)

@@ -29,6 +29,7 @@ public class SettlementItemServiceTest {
         //given
         SettlementItemDto settlementItemDto = SettlementItemDto
                 .builder()
+                .settlementItemId(1L)
                 .sellerId(1L)
                 .commission(BigDecimal.TEN)
                 .createdDate(Date.valueOf("2022-03-07"))
@@ -46,6 +47,16 @@ public class SettlementItemServiceTest {
     public void it_should_not_save_settlement_item_when_seller_id_is_null() {
         //given
         SettlementItemDto settlementItemDto = SettlementItemDto.builder().sellerId(null).build();
+        //when
+        settlementItemService.process(settlementItemDto);
+        //then
+        verifyNoInteractions(settlementItemRepository);
+    }
+
+    @Test
+    public void it_should_not_save_settlement_item_when_settlement_item_id_is_null() {
+        //given
+        SettlementItemDto settlementItemDto = SettlementItemDto.builder().settlementItemId(null).build();
         //when
         settlementItemService.process(settlementItemDto);
         //then
