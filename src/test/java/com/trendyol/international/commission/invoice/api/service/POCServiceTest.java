@@ -62,7 +62,7 @@ class POCServiceTest {
         pdfDocument.setContent(new byte[]{1, 2, 3});
 
 
-        when(pocService.getHtmlSource("classpath:invoice_old.html")).thenReturn("content");
+        when(pocService.getHtmlSource("invoice.html")).thenReturn("content");
         when(pocService.convertToPDFDocument("content")).thenReturn(pdfDocument);
 
         //then
@@ -80,7 +80,8 @@ class POCServiceTest {
         File htmlFile = null;
         String htmlContent = "";
         try {
-            htmlFile = ResourceUtils.getFile("classpath:invoice_old.html");
+
+            htmlFile = ResourceUtils.getFile("invoice.html");
             htmlContent = new String(Files.readAllBytes(htmlFile.toPath()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -89,7 +90,7 @@ class POCServiceTest {
         }
 
         //when
-        String actualHtmlSource = pocService.getHtmlSource("classpath:invoice_old.html");
+        String actualHtmlSource = pocService.getHtmlSource("invoice.html");
 
         assertThat(actualHtmlSource).isNotBlank();
         assertThat(actualHtmlSource).isEqualTo(htmlContent);
@@ -127,7 +128,7 @@ class POCServiceTest {
         File htmlFile = null;
         String htmlContent = "";
         try {
-            htmlFile = ResourceUtils.getFile("classpath:invoice_old.html");
+            htmlFile = ResourceUtils.getFile("invoice_old.html");
             htmlContent = new String(Files.readAllBytes(htmlFile.toPath()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();

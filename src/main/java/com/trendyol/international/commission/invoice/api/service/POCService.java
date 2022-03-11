@@ -10,6 +10,7 @@ import com.trendyol.international.commission.invoice.api.model.dto.CommissionInv
 import com.trendyol.international.commission.invoice.api.model.dto.InvoiceLineItem;
 import com.trendyol.international.commission.invoice.api.util.DateUtils;
 import org.springframework.cglib.core.Converter;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -21,10 +22,10 @@ import java.util.Objects;
 @Service
 public class POCService {
 
-    public static final String FONT = "./src/main/resources/fonts/rubik-regular.ttf";
+    public static final String FONT = "fonts/rubik-regular.ttf";
 
     public PDFDocument createPDF(CommissionInvoice commissionInvoice) {
-        String htmlContent = getHtmlSource("classpath:invoice.html");
+        String htmlContent = getHtmlSource("invoice.html");
         htmlContent = pdfFiller(commissionInvoice, htmlContent);
         PDFDocument document = convertToPDFDocument(htmlContent);
         document.setName("International Commission Invoice");
@@ -62,7 +63,7 @@ public class POCService {
 
     public String cargoInvoiceProcessor(List<InvoiceLineItem> invoiceLineItems) {
         return invoiceLineItems.stream()
-                .map(invoiceLineItem -> cargoInvoiceFiller(invoiceLineItem, getHtmlSource("classpath:invoice-line.html")))
+                .map(invoiceLineItem -> cargoInvoiceFiller(invoiceLineItem, getHtmlSource("invoice-line.html")))
                 .reduce(String::concat)
                 .orElse("");
     }
@@ -77,7 +78,7 @@ public class POCService {
     public String getHtmlSource(String resourceLocation) {
         String htmlContent = "";
         try {
-            File htmlFile = ResourceUtils.getFile(resourceLocation);
+            File htmlFile = new ClassPathResource(resourceLocation).getFile();
             htmlContent = new String(Files.readAllBytes(htmlFile.toPath()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
