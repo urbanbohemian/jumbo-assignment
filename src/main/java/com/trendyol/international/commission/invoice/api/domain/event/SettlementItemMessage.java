@@ -13,17 +13,11 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SettlementItemMessage {
     private Long settlementItemId;
-    private Long orderLineItemId;
     private Long sellerId;
     private String type;
-    private BigDecimal price;
-    private BigDecimal commissionRate;
     private Date deliveryDate;
     private Date paymentDate;
-    private BigDecimal couponPrice;
-    private BigDecimal totalPrice;
     private BigDecimal totalCommission;
-    private BigDecimal totalSellerRevenue;
     private Long storeFrontId;
     private String currency;
     private Date createdDate;

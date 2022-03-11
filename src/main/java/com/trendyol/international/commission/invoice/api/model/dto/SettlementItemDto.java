@@ -13,12 +13,12 @@ import java.util.Date;
 public class SettlementItemDto {
     private Long settlementItemId;
     private Long sellerId;
-    private BigDecimal price;
     private BigDecimal commission;
     private Date deliveryDate;
     private Date paymentDate;
     private Date createdDate;
     private TransactionType transactionType;
+    private Long storeFrontId;
 
     public static SettlementItemDto fromDebeziumMessage(SettlementItemMessage settlementItemMessage) {
         return SettlementItemDto
@@ -26,11 +26,11 @@ public class SettlementItemDto {
                 .settlementItemId(settlementItemMessage.getSettlementItemId())
                 .sellerId(settlementItemMessage.getSellerId())
                 .transactionType(TransactionType.from(settlementItemMessage.getType()))
-                .price(settlementItemMessage.getPrice())
                 .commission(settlementItemMessage.getTotalCommission())
                 .deliveryDate(settlementItemMessage.getDeliveryDate())
                 .paymentDate(settlementItemMessage.getPaymentDate())
                 .createdDate(settlementItemMessage.getCreatedDate())
+                .storeFrontId(settlementItemMessage.getStoreFrontId())
                 .build();
     }
 }
