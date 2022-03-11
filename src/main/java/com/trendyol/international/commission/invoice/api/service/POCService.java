@@ -3,21 +3,15 @@ package com.trendyol.international.commission.invoice.api.service;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
-import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.layout.font.FontProvider;
 import com.trendyol.international.commission.invoice.api.model.document.PDFDocument;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.model.dto.InvoiceLineItem;
-import com.trendyol.international.commission.invoice.api.util.DateUtils;
-import org.springframework.cglib.core.Converter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class POCService {
@@ -78,8 +72,8 @@ public class POCService {
     public String getHtmlSource(String resourceLocation) {
         String htmlContent = "";
         try {
-            File htmlFile = new ClassPathResource(resourceLocation).getFile();
-            htmlContent = new String(Files.readAllBytes(htmlFile.toPath()));
+            InputStream inputStream = new ClassPathResource(resourceLocation).getInputStream();
+            htmlContent = new String(inputStream.readAllBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
