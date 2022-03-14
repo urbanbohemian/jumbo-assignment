@@ -43,6 +43,9 @@ public class CommissionInvoiceServiceTest {
     @Mock
     private VatCalculatorService vatCalculatorService;
 
+    @Mock
+    private CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
+
     @Test
     public void it_should_save_commission_invoice() {
         //given
@@ -183,6 +186,7 @@ public class CommissionInvoiceServiceTest {
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
         VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
         when(vatCalculatorService.calculateVatModel(BigDecimal.valueOf(242), BigDecimal.valueOf(21))).thenReturn(vatModel);
+        when(commissionInvoiceSerialNumberGenerateService.generate(anyInt())).thenReturn("TBV2022000000001");
         //when
         commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
         //then
@@ -195,6 +199,7 @@ public class CommissionInvoiceServiceTest {
         assertThat(actualCommissionInvoice.getCountry()).isEqualTo("NL");
         assertThat(actualCommissionInvoice.getCurrency()).isEqualTo("EUR");
         assertThat(actualCommissionInvoice.getInvoiceStatus()).isEqualTo(InvoiceStatus.CREATED);
+        assertThat(actualCommissionInvoice.getSerialNumber()).isEqualTo("TBV2022000000001");
     }
 
     @Test
@@ -205,6 +210,8 @@ public class CommissionInvoiceServiceTest {
         commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
         //then
         verify(commissionInvoiceRepository, never()).save(any());
+        verifyNoInteractions(vatCalculatorService);
+        verifyNoInteractions(commissionInvoiceSerialNumberGenerateService);
     }
 
     @Test
@@ -234,6 +241,7 @@ public class CommissionInvoiceServiceTest {
         //then
         verify(commissionInvoiceRepository, never()).save(any());
         verifyNoInteractions(vatCalculatorService);
+        verifyNoInteractions(commissionInvoiceSerialNumberGenerateService);
     }
 
     @Test
@@ -263,6 +271,7 @@ public class CommissionInvoiceServiceTest {
         //then
         verify(commissionInvoiceRepository, never()).save(any());
         verifyNoInteractions(vatCalculatorService);
+        verifyNoInteractions(commissionInvoiceSerialNumberGenerateService);
     }
 
     @Test
@@ -291,6 +300,7 @@ public class CommissionInvoiceServiceTest {
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
         VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
         when(vatCalculatorService.calculateVatModel(any(), any())).thenReturn(vatModel);
+        when(commissionInvoiceSerialNumberGenerateService.generate(anyInt())).thenReturn("TBV2022000000001");
 
         //when
         commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
@@ -299,5 +309,6 @@ public class CommissionInvoiceServiceTest {
         verify(commissionInvoiceRepository).save(commissionInvoiceCaptor.capture());
         CommissionInvoice actualCommissionInvoice = commissionInvoiceCaptor.getValue();
         assertThat(actualCommissionInvoice.getStartDate().getTime()).isEqualTo(3L);
+        assertThat(actualCommissionInvoice.getSerialNumber()).isEqualTo("TBV2022000000001");
     }
 }

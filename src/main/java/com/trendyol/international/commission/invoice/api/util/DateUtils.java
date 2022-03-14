@@ -4,10 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 public final class DateUtils {
 
@@ -132,4 +129,10 @@ public final class DateUtils {
         return new SimpleDateFormat(DATE_AND_TIME_FORMAT_DOTS).format(date);
     }
 
+    public static Integer getYear(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+
+        return calendar.get(Calendar.YEAR);
+    }
 }

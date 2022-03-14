@@ -8,6 +8,7 @@ import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStat
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import com.trendyol.international.commission.invoice.api.types.VatStatusType;
+import com.trendyol.international.commission.invoice.api.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class CommissionInvoiceService {
     private final SettlementItemRepository settlementItemRepository;
 
     private final VatCalculatorService vatCalculatorService;
+
+    private final CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
 
     public CommissionInvoice saveCommissionInvoice(CommissionInvoice commissionInvoice) {
         return commissionInvoiceRepository.save(commissionInvoice);
@@ -51,6 +54,7 @@ public class CommissionInvoiceService {
         }
 
         VatModel vatModel = vatCalculatorService.calculateVatModel(commissionAmount, "NL".equals(country) ? BigDecimal.valueOf(21) : BigDecimal.ZERO);
+        String serialNumber = commissionInvoiceSerialNumberGenerateService.generate(DateUtils.getYear(endDate));
 
         CommissionInvoice commissionInvoice = CommissionInvoice
                 .builder()
@@ -67,7 +71,7 @@ public class CommissionInvoiceService {
                 .chargedVatDescription("commission invoice")
                 .endDate(endDate)
                 .startDate(startDate)
-                .serialNumber(UUID.randomUUID().toString())
+                .serialNumber(serialNumber)
                 .storeFrontId("1")
                 .vatStatusType("NL".equals(country) ? VatStatusType.DOMESTIC : VatStatusType.INTRA_COMMUNITY)
                 .build();

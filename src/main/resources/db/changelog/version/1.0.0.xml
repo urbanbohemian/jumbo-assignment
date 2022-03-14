@@ -67,5 +67,22 @@
             on commission_invoice_settlement_items (settlement_item_id desc);
         </sql>
     </changeSet>
+    <changeSet id="2022-03-11 15:15" author="mert.okan">
+        <sql>
+            create sequence seq_commission_invoice_number_sequences start 1 increment 50;
+
+            create table commission_invoice_number_sequences
+            (
+            id int8 not null,
+            created_date timestamp not null,
+            last_modified_date timestamp not null,
+            serial_key varchar(3) not null,
+            invoice_year int4 not null,
+            latest_sequence int8 not null,
+            unique (serial_key, invoice_year),
+            primary key (id)
+            );
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
