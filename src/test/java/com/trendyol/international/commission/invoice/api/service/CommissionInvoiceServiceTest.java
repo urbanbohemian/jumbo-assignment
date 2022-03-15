@@ -47,18 +47,6 @@ public class CommissionInvoiceServiceTest {
     private CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
 
     @Test
-    public void it_should_save_commission_invoice() {
-        //given
-        CommissionInvoice commissionInvoice = new CommissionInvoice();
-
-        //when
-        commissionInvoiceService.saveCommissionInvoice(commissionInvoice);
-
-        //then
-        verify(commissionInvoiceRepository).save(commissionInvoice);
-    }
-
-    @Test
     public void it_should_calculate_commission_for_seller_with_sale_and_return() {
         // given
         SettlementItem settlementItem1 = SettlementItem

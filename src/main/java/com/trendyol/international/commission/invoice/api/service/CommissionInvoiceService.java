@@ -23,17 +23,10 @@ import java.util.*;
 @Slf4j
 public class CommissionInvoiceService {
 
-    private final CommissionInvoiceRepository commissionInvoiceRepository;
-
-    private final SettlementItemRepository settlementItemRepository;
-
-    private final VatCalculatorService vatCalculatorService;
-
     private final CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
-
-    public CommissionInvoice saveCommissionInvoice(CommissionInvoice commissionInvoice) {
-        return commissionInvoiceRepository.save(commissionInvoice);
-    }
+    private final VatCalculatorService vatCalculatorService;
+    private final CommissionInvoiceRepository commissionInvoiceRepository;
+    private final SettlementItemRepository settlementItemRepository;
 
     // Collect all settlement items and processSettlementItems
     public void create(Long sellerId, Date jobExecutionDate, String country, String currency) {
