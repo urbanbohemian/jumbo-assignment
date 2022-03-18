@@ -17,14 +17,11 @@ public class CommissionInvoiceSerialNumberGenerateService {
 
     public String generate(Integer invoiceYear) {
         CommissionInvoiceNumberSequence commissionInvoiceNumberSequence = getLatestCommissionInvoiceNumberSequence(invoiceYear);
-
-        String serialNumber = SERIAL_NUMBER_PREFIX
-                .concat(invoiceYear.toString())
-                .concat(String.format(SEQUENCE_FORMAT, commissionInvoiceNumberSequence.getLatestSequence()));
-
         increaseLatestCommissionInvoiceNumberSequence(commissionInvoiceNumberSequence);
 
-        return serialNumber;
+        return SERIAL_NUMBER_PREFIX
+                .concat(invoiceYear.toString())
+                .concat(String.format(SEQUENCE_FORMAT, commissionInvoiceNumberSequence.getLatestSequence()));
     }
 
     private CommissionInvoiceNumberSequence getLatestCommissionInvoiceNumberSequence(Integer invoiceYear) {

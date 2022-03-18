@@ -23,7 +23,7 @@ public class CommissionInvoiceSerialNumberGenerateServiceTest {
     @Mock
     private CommissionInvoiceNumberSequenceRepository commissionInvoiceNumberSequenceRepository;
 
-    // NULL -> 1 - CREATE - TBV-2022-000000000
+    // NULL -> 1 - CREATE - TBV-2022-000000001
     @Test
     public void it_should_return_serial_number_with_ending_zero_when_latest_sequence_not_exist() {
         //given
@@ -41,10 +41,10 @@ public class CommissionInvoiceSerialNumberGenerateServiceTest {
 
         //then
         verify(commissionInvoiceNumberSequenceRepository, times(2)).save(any());
-        assertThat(serialNumber).isEqualTo("TBV2022000000000");
+        assertThat(serialNumber).isEqualTo("TBV2022000000001");
     }
 
-    // 1 -> 2    - CREATE - TBV-2022-000000001
+    // 1 -> 2    - CREATE - TBV-2022-000000002
     @Test
     public void it_should_return_serial_number_when_latest_sequence_exist() {
         //given
@@ -61,6 +61,6 @@ public class CommissionInvoiceSerialNumberGenerateServiceTest {
 
         //then
         verify(commissionInvoiceNumberSequenceRepository).save(any());
-        assertThat(serialNumber).isEqualTo("TBV2022000000001");
+        assertThat(serialNumber).isEqualTo("TBV2022000000002");
     }
 }
