@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.types;
+package com.trendyol.international.commission.invoice.api.model.enums;
 
 public enum VatStatusType {
     DOMESTIC,
