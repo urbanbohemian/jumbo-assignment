@@ -1,6 +1,5 @@
 package com.trendyol.international.commission.invoice.api.util;
 
-
 import java.util.Optional;
 
 public interface FilterExtension<T> {
@@ -10,10 +9,7 @@ public interface FilterExtension<T> {
     }
 
     default void process(T model) {
-        Optional.ofNullable(model)
-                .filter(this::applyFilter)
-                .ifPresentOrElse(this::execute,
-                        () -> handleError(model));
+        Optional.ofNullable(model).filter(this::applyFilter).ifPresentOrElse(this::execute, () -> handleError(model));
     }
 
     void execute(T model);

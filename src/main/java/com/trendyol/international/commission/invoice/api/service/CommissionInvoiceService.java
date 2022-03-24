@@ -3,11 +3,11 @@ package com.trendyol.international.commission.invoice.api.service;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
-import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceDto;
+import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
+import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
-import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
 import com.trendyol.international.commission.invoice.api.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,46 +16,46 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class CommissionInvoiceService {
-
     private final CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
     private final VatCalculatorService vatCalculatorService;
     private final CommissionInvoiceRepository commissionInvoiceRepository;
     private final SettlementItemRepository settlementItemRepository;
 
-    // Collect all settlement items and processSettlementItems
-    public void create(Long sellerId, Date jobExecutionDate, String country, String currency) {
-        Date startDate = getStartDateForSeller(sellerId);
-        Date endDate = getEndDate(jobExecutionDate);
+    // collects all settlement items and process
+    public void create(CommissionInvoiceCreateDto commissionInvoiceCreateDto) {
+        Date startDate = getStartDateForSeller(commissionInvoiceCreateDto.getSellerId());
+        Date endDate = getEndDate(commissionInvoiceCreateDto.getJobExecutionDate());
 
-        List<SettlementItem> settlementItems = settlementItemRepository.findBySellerIdAndItemCreationDateBetween(sellerId, startDate, endDate);
+        List<SettlementItem> settlementItems = settlementItemRepository.findBySellerIdAndItemCreationDateBetween(commissionInvoiceCreateDto.getSellerId(), startDate, endDate);
         if (settlementItems.isEmpty()) {
-            log.warn("There is no eligible settlement record for creating commission invoice. sellerId: {}", sellerId);
+            log.warn("There is no eligible settlement record for creating commission invoice. sellerId: {}", commissionInvoiceCreateDto.getSellerId());
             return;
         }
-        CommissionInvoiceDto commissionInvoiceDto = CommissionInvoiceDto.builder().sellerId(sellerId).startDate(startDate).endDate(endDate).settlementItems(settlementItems).build();
-        BigDecimal commissionAmount = calculateCommissionForSeller(commissionInvoiceDto);
 
+        BigDecimal commissionAmount = calculateCommissionForSeller(settlementItems);
         if (BigDecimal.ZERO.compareTo(commissionAmount) >= 0) {
-            log.warn("Non-positive total commission amount. sellerId: {}", sellerId);
+            log.warn("Non-positive total commission amount. sellerId: {}", commissionInvoiceCreateDto.getSellerId());
             return;
         }
 
-        VatModel vatModel = vatCalculatorService.calculateVatModel(commissionAmount, "NL".equals(country) ? BigDecimal.valueOf(21) : BigDecimal.ZERO);
-        String serialNumber = commissionInvoiceSerialNumberGenerateService.generate(DateUtils.getYear(endDate));
+        VatModel vatModel = vatCalculatorService.calculateVatModel(commissionAmount, "NL".equals(commissionInvoiceCreateDto.getCountry()) ? BigDecimal.valueOf(21) : BigDecimal.ZERO);
 
         CommissionInvoice commissionInvoice = CommissionInvoice
                 .builder()
-                .sellerId(sellerId)
+                .sellerId(commissionInvoiceCreateDto.getSellerId())
                 .amount(commissionAmount)
                 .settlementItems(Set.copyOf(settlementItems))
-                .country(country)
-                .currency(currency)
+                .country(commissionInvoiceCreateDto.getCountry())
+                .currency(commissionInvoiceCreateDto.getCurrency())
                 .netAmount(vatModel.getNetAmount())
                 .vatAmount(vatModel.getVatAmount())
                 .vatRate(vatModel.getVatRate())
@@ -64,35 +64,20 @@ public class CommissionInvoiceService {
                 .chargedVatDescription("commission invoice")
                 .endDate(endDate)
                 .startDate(startDate)
-                .serialNumber(serialNumber)
                 .storeFrontId("1")
-                .vatStatusType("NL".equals(country) ? VatStatusType.DOMESTIC : VatStatusType.INTRA_COMMUNITY)
+                .vatStatusType("NL".equals(commissionInvoiceCreateDto.getCountry()) ? VatStatusType.DOMESTIC : VatStatusType.INTRA_COMMUNITY)
                 .build();
         commissionInvoiceRepository.save(commissionInvoice);
     }
 
-
-    public BigDecimal calculateCommissionForSeller(CommissionInvoiceDto commissionInvoiceDto) {
-        return commissionInvoiceDto.getSettlementItems()
-                .stream()
-                .map(SettlementItem::getCommissionAmountSignedValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public Date getStartDateForSeller(Long sellerId) {
+    private Date getStartDateForSeller(Long sellerId) {
         return Optional.ofNullable(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(sellerId))
-                .map(c -> new Date(c.getEndDate().getTime()+1))
+                .map(commissionInvoice -> new Date(commissionInvoice.getEndDate().getTime() + 1))
                 .orElse(new Date());
-
-    }
-    public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
-        return dateToConvert.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
     }
 
-    public Date getEndDate(Date date) {
-        LocalDateTime localDateTime = convertToLocalDateTimeViaInstant(date).minusDays(1);
+    private Date getEndDate(Date date) {
+        LocalDateTime localDateTime = DateUtils.convertToLocalDateTime(date).minusDays(1);
         return Date.from(LocalDateTime.of(
                 localDateTime.getYear(),
                 localDateTime.getMonth(),
@@ -101,5 +86,12 @@ public class CommissionInvoiceService {
                 59,
                 59,
                 999_000_000).atZone(ZoneId.of("Europe/Amsterdam")).toInstant());
+    }
+
+    private BigDecimal calculateCommissionForSeller(List<SettlementItem> settlementItems) {
+        return settlementItems
+                .stream()
+                .map(SettlementItem::getCommissionAmountSignedValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

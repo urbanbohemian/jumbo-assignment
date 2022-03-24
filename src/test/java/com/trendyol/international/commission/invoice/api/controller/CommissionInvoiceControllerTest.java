@@ -25,6 +25,6 @@ public class CommissionInvoiceControllerTest {
         //when
         commissionInvoiceController.create(new CommissionInvoiceCreateRequest());
         //then
-        verify(commissionInvoiceService).create(any(), any(), any(), any());
+        verify(commissionInvoiceService).create(any());
     }
 }

@@ -108,6 +108,11 @@ public final class DateUtils {
                 .toLocalDate();
     }
 
+    public static LocalDateTime convertToLocalDateTime(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
 
     public static String convertToTurkishFormat(String dateInString) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", LOCALE_EN);

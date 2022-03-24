@@ -3,12 +3,11 @@ package com.trendyol.international.commission.invoice.api.service;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
-import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceDto;
+import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -47,110 +44,6 @@ public class CommissionInvoiceServiceTest {
     private CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
 
     @Test
-    public void it_should_calculate_commission_for_seller_with_sale_and_return() {
-        // given
-        SettlementItem settlementItem1 = SettlementItem
-                .builder()
-                .transactionType(TransactionType.Return)
-                .commissionAmount(BigDecimal.valueOf(100L))
-                .itemCreationDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .build();
-
-        SettlementItem settlementItem2 = SettlementItem
-                .builder()
-                .transactionType(TransactionType.Sale)
-                .commissionAmount(BigDecimal.valueOf(90L))
-                .itemCreationDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .build();
-
-        Date startDate = Date.from(LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-
-        // when
-        BigDecimal commission = commissionInvoiceService.calculateCommissionForSeller(
-                CommissionInvoiceDto
-                        .builder()
-                        .sellerId(2L)
-                        .startDate(startDate)
-                        .endDate(endDate)
-                        .settlementItems(List.of(settlementItem1, settlementItem2)).build());
-
-        // then
-        assertThat(commission.compareTo(BigDecimal.valueOf(-10L))).isEqualTo(0);
-    }
-
-    @Test
-    public void it_should_calculate_commission_for_seller_with_sale() {
-        // given
-        SettlementItem settlementItem1 = SettlementItem
-                .builder()
-                .transactionType(TransactionType.Sale)
-                .commissionAmount(BigDecimal.valueOf(100L))
-                .itemCreationDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .build();
-
-        SettlementItem settlementItem2 = SettlementItem
-                .builder()
-                .transactionType(TransactionType.Sale)
-                .commissionAmount(BigDecimal.valueOf(90L))
-                .itemCreationDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .build();
-
-        Date startDate = Date.from(LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-
-        // when
-        BigDecimal commission = commissionInvoiceService.calculateCommissionForSeller(
-                CommissionInvoiceDto
-                        .builder()
-                        .sellerId(2L)
-                        .startDate(startDate)
-                        .endDate(endDate)
-                        .settlementItems(List.of(settlementItem1, settlementItem2)).build());
-
-        // then
-        assertThat(commission.compareTo(BigDecimal.valueOf(190L))).isEqualTo(0);
-    }
-
-    @Test
-    public void it_should_get_start_date_for_commission_invoice() {
-        //given
-        Date date = new Date(1646728032672L);
-        CommissionInvoice commissionInvoice = CommissionInvoice
-                .builder()
-                .endDate(date)
-                .sellerId(1L)
-                .build();
-
-        when(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L)).thenReturn(commissionInvoice);
-        //when
-        Date startDate = commissionInvoiceService.getStartDateForSeller(1L);
-        //then
-        assertThat(startDate.getTime() - date.getTime()).isEqualTo(1);
-    }
-
-    @Test
-    @Disabled
-    public void it_should_get_end_date_for_commission_invoice() {
-        //given
-        Date date = new Date(1646693999998L);
-        //when
-        Date endDate = commissionInvoiceService.getEndDate(date);
-        //then
-        assertThat(endDate.getTime() - date.getTime()).isEqualTo(1);
-    }
-
-    @Test
-    public void it_should_get_end_date_for_commission_invoice_of_1_march() {
-        //given
-        Date date = new Date(1646096399000L);
-        //when
-        Date endDate = commissionInvoiceService.getEndDate(date);
-        //then
-        assertThat(endDate.getTime()).isEqualTo(1646089199999L);
-    }
-
-    @Test
     public void it_should_create_commission_invoice() {
         //given
         SettlementItem settlement1 = SettlementItem.builder()
@@ -176,7 +69,7 @@ public class CommissionInvoiceServiceTest {
         when(vatCalculatorService.calculateVatModel(BigDecimal.valueOf(242), BigDecimal.valueOf(21))).thenReturn(vatModel);
         when(commissionInvoiceSerialNumberGenerateService.generate(anyInt())).thenReturn("TBV2022000000001");
         //when
-        commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
+        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
         //then
         ArgumentCaptor<CommissionInvoice> commissionInvoiceCaptor = ArgumentCaptor.forClass(CommissionInvoice.class);
         verify(commissionInvoiceRepository).save(commissionInvoiceCaptor.capture());
@@ -195,7 +88,7 @@ public class CommissionInvoiceServiceTest {
         //given
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of());
         //when
-        commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
+        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
         //then
         verify(commissionInvoiceRepository, never()).save(any());
         verifyNoInteractions(vatCalculatorService);
@@ -225,7 +118,7 @@ public class CommissionInvoiceServiceTest {
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
 
         //when
-        commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
+        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
         //then
         verify(commissionInvoiceRepository, never()).save(any());
         verifyNoInteractions(vatCalculatorService);
@@ -255,7 +148,7 @@ public class CommissionInvoiceServiceTest {
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
 
         //when
-        commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
+        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
         //then
         verify(commissionInvoiceRepository, never()).save(any());
         verifyNoInteractions(vatCalculatorService);
@@ -291,7 +184,7 @@ public class CommissionInvoiceServiceTest {
         when(commissionInvoiceSerialNumberGenerateService.generate(anyInt())).thenReturn("TBV2022000000001");
 
         //when
-        commissionInvoiceService.create(1L, new Date(), "NL", "EUR");
+        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
         //then
         ArgumentCaptor<CommissionInvoice> commissionInvoiceCaptor = ArgumentCaptor.forClass(CommissionInvoice.class);
         verify(commissionInvoiceRepository).save(commissionInvoiceCaptor.capture());
