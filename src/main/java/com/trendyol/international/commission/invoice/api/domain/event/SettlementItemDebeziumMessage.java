@@ -7,5 +7,4 @@ public class SettlementItemDebeziumMessage {
     private SettlementItemMessage before;
     private SettlementItemMessage after;
     private String op;
-
 }

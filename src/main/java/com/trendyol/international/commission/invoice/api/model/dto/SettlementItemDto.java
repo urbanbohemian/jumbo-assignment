@@ -1,6 +1,5 @@
 package com.trendyol.international.commission.invoice.api.model.dto;
 
-import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemMessage;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import lombok.Builder;
 import lombok.Data;
@@ -19,18 +18,5 @@ public class SettlementItemDto {
     private Date createdDate;
     private TransactionType transactionType;
     private Long storeFrontId;
-
-    public static SettlementItemDto fromDebeziumMessage(SettlementItemMessage settlementItemMessage) {
-        return SettlementItemDto
-                .builder()
-                .settlementItemId(settlementItemMessage.getSettlementItemId())
-                .sellerId(settlementItemMessage.getSellerId())
-                .transactionType(TransactionType.from(settlementItemMessage.getType()))
-                .commission(settlementItemMessage.getTotalCommission())
-                .deliveryDate(settlementItemMessage.getDeliveryDate())
-                .paymentDate(settlementItemMessage.getPaymentDate())
-                .createdDate(settlementItemMessage.getCreatedDate())
-                .storeFrontId(settlementItemMessage.getStoreFrontId())
-                .build();
-    }
+    private String currency;
 }

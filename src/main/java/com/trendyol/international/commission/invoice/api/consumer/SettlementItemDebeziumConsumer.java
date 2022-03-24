@@ -2,7 +2,7 @@ package com.trendyol.international.commission.invoice.api.consumer;
 
 import com.newrelic.api.agent.Trace;
 import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumMessage;
-import com.trendyol.international.commission.invoice.api.model.dto.SettlementItemDto;
+import com.trendyol.international.commission.invoice.api.mapper.SettlementItemMapper;
 import com.trendyol.international.commission.invoice.api.service.SettlementItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +24,6 @@ public class SettlementItemDebeziumConsumer {
     )
     public void consume(@Payload SettlementItemDebeziumMessage settlementItemDebeziumMessage) {
         log.info("SettlementItemDebeziumConsumer incoming message: {}", settlementItemDebeziumMessage);
-        settlementItemService.process(SettlementItemDto.fromDebeziumMessage(settlementItemDebeziumMessage.getAfter()));
+        settlementItemService.process(SettlementItemMapper.INSTANCE.settlementItemDto(settlementItemDebeziumMessage.getAfter()));
     }
 }

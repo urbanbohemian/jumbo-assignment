@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
-import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
+import com.trendyol.international.commission.invoice.api.mapper.CommissionInvoiceCreateMapper;
 import com.trendyol.international.commission.invoice.api.model.request.CommissionInvoiceCreateRequest;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,6 @@ public class CommissionInvoiceController {
 
     @PostMapping
     public void create(@RequestBody CommissionInvoiceCreateRequest commissionInvoiceCreateRequest) {
-        commissionInvoiceService.create(CommissionInvoiceCreateDto.fromCommissionInvoiceCreateRequest(commissionInvoiceCreateRequest));
+        commissionInvoiceService.create(CommissionInvoiceCreateMapper.INSTANCE.commissionInvoiceCreateDto(commissionInvoiceCreateRequest));
     }
 }
