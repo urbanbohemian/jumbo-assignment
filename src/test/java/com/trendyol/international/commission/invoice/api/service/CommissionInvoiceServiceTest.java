@@ -4,8 +4,10 @@ import com.trendyol.international.commission.invoice.api.domain.CommissionInvoic
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
+import com.trendyol.international.commission.invoice.api.model.dto.SerialNumberGenerateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
+import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -67,7 +69,6 @@ public class CommissionInvoiceServiceTest {
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
         VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
         when(vatCalculatorService.calculateVatModel(BigDecimal.valueOf(242), BigDecimal.valueOf(21))).thenReturn(vatModel);
-        when(commissionInvoiceSerialNumberGenerateService.generate(anyInt())).thenReturn("TBV2022000000001");
         //when
         commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
         //then
@@ -80,7 +81,6 @@ public class CommissionInvoiceServiceTest {
         assertThat(actualCommissionInvoice.getCountry()).isEqualTo("NL");
         assertThat(actualCommissionInvoice.getCurrency()).isEqualTo("EUR");
         assertThat(actualCommissionInvoice.getInvoiceStatus()).isEqualTo(InvoiceStatus.CREATED);
-        assertThat(actualCommissionInvoice.getSerialNumber()).isEqualTo("TBV2022000000001");
     }
 
     @Test
@@ -92,7 +92,6 @@ public class CommissionInvoiceServiceTest {
         //then
         verify(commissionInvoiceRepository, never()).save(any());
         verifyNoInteractions(vatCalculatorService);
-        verifyNoInteractions(commissionInvoiceSerialNumberGenerateService);
     }
 
     @Test
@@ -122,7 +121,6 @@ public class CommissionInvoiceServiceTest {
         //then
         verify(commissionInvoiceRepository, never()).save(any());
         verifyNoInteractions(vatCalculatorService);
-        verifyNoInteractions(commissionInvoiceSerialNumberGenerateService);
     }
 
     @Test
@@ -152,7 +150,6 @@ public class CommissionInvoiceServiceTest {
         //then
         verify(commissionInvoiceRepository, never()).save(any());
         verifyNoInteractions(vatCalculatorService);
-        verifyNoInteractions(commissionInvoiceSerialNumberGenerateService);
     }
 
     @Test
@@ -181,7 +178,6 @@ public class CommissionInvoiceServiceTest {
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
         VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
         when(vatCalculatorService.calculateVatModel(any(), any())).thenReturn(vatModel);
-        when(commissionInvoiceSerialNumberGenerateService.generate(anyInt())).thenReturn("TBV2022000000001");
 
         //when
         commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
@@ -190,6 +186,54 @@ public class CommissionInvoiceServiceTest {
         verify(commissionInvoiceRepository).save(commissionInvoiceCaptor.capture());
         CommissionInvoice actualCommissionInvoice = commissionInvoiceCaptor.getValue();
         assertThat(actualCommissionInvoice.getStartDate().getTime()).isEqualTo(3L);
-        assertThat(actualCommissionInvoice.getSerialNumber()).isEqualTo("TBV2022000000001");
+    }
+
+    @Test
+    public void it_should_generate_serial_number_for_commission_invoices() {
+        //given
+        CommissionInvoice commissionInvoice1 = CommissionInvoice.builder()
+                .sellerId(1L)
+                .amount(BigDecimal.valueOf(121L))
+                .netAmount(BigDecimal.valueOf(100L))
+                .vatAmount(BigDecimal.valueOf(21L))
+                .vatRate(BigDecimal.valueOf(21L))
+                .vatStatusType(VatStatusType.DOMESTIC)
+                .invoiceDate(new Date())
+                .storeFrontId("1")
+                .country("Netherlands")
+                .currency("EU")
+                .startDate(new Date())
+                .endDate(new Date())
+                .invoiceStatus(InvoiceStatus.CREATED)
+                .build();
+        CommissionInvoice commissionInvoice2 = CommissionInvoice.builder()
+                .sellerId(1L)
+                .amount(BigDecimal.valueOf(242L))
+                .netAmount(BigDecimal.valueOf(200L))
+                .vatAmount(BigDecimal.valueOf(42L))
+                .vatRate(BigDecimal.valueOf(21L))
+                .vatStatusType(VatStatusType.DOMESTIC)
+                .invoiceDate(new Date())
+                .storeFrontId("1")
+                .country("Netherlands")
+                .currency("EU")
+                .startDate(new Date())
+                .endDate(new Date())
+                .invoiceStatus(InvoiceStatus.CREATED)
+                .build();
+
+        when(commissionInvoiceRepository.findBySellerIdAndInvoiceStatus(1L, InvoiceStatus.CREATED)).thenReturn(List.of(commissionInvoice1, commissionInvoice2));
+        when(commissionInvoiceSerialNumberGenerateService.generate(anyInt())).thenReturn("TBV2022000000001", "TBV2022000000002");
+
+        //when
+        commissionInvoiceService.generateSerialNumber(SerialNumberGenerateDto.builder().sellerId(1L).jobExecutionDate(new Date()).build());
+
+        //
+        ArgumentCaptor<CommissionInvoice> commissionInvoiceArgumentCaptor = ArgumentCaptor.forClass(CommissionInvoice.class);
+        verify(commissionInvoiceRepository, times(2)).save(commissionInvoiceArgumentCaptor.capture());
+
+        List<CommissionInvoice> commissionInvoices = commissionInvoiceArgumentCaptor.getAllValues();
+        assertThat(commissionInvoices.stream().map(CommissionInvoice::getSerialNumber)).containsExactly("TBV2022000000001", "TBV2022000000002");
+        assertThat(commissionInvoices.stream().allMatch(f -> InvoiceStatus.NUMBER_GENERATED.equals(f.getInvoiceStatus()))).isTrue();
     }
 }

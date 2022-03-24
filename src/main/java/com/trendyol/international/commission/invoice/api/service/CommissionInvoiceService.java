@@ -4,6 +4,7 @@ import com.trendyol.international.commission.invoice.api.domain.CommissionInvoic
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
+import com.trendyol.international.commission.invoice.api.model.dto.SerialNumberGenerateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -31,6 +33,7 @@ public class CommissionInvoiceService {
     private final SettlementItemRepository settlementItemRepository;
 
     // collects all settlement items and process
+    @Transactional
     public void create(CommissionInvoiceCreateDto commissionInvoiceCreateDto) {
         Date startDate = getStartDateForSeller(commissionInvoiceCreateDto.getSellerId());
         Date endDate = getEndDate(commissionInvoiceCreateDto.getJobExecutionDate());
@@ -70,6 +73,13 @@ public class CommissionInvoiceService {
         commissionInvoiceRepository.save(commissionInvoice);
     }
 
+    @Transactional
+    public void generateSerialNumber(SerialNumberGenerateDto serialNumberGenerateDto) {
+        commissionInvoiceRepository
+                .findBySellerIdAndInvoiceStatus(serialNumberGenerateDto.getSellerId(), InvoiceStatus.CREATED)
+                .forEach(this::generateSerialNumberForCommissionInvoice);
+    }
+
     private Date getStartDateForSeller(Long sellerId) {
         return Optional.ofNullable(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(sellerId))
                 .map(commissionInvoice -> new Date(commissionInvoice.getEndDate().getTime() + 1))
@@ -93,5 +103,12 @@ public class CommissionInvoiceService {
                 .stream()
                 .map(SettlementItem::getCommissionAmountSignedValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private void generateSerialNumberForCommissionInvoice(CommissionInvoice commissionInvoice) {
+        Integer invoiceYear = DateUtils.getYear(commissionInvoice.getEndDate());
+        commissionInvoice.setSerialNumber(commissionInvoiceSerialNumberGenerateService.generate(invoiceYear));
+        commissionInvoice.setInvoiceStatus(InvoiceStatus.NUMBER_GENERATED);
+        commissionInvoiceRepository.save(commissionInvoice);
     }
 }
