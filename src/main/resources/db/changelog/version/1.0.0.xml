@@ -87,8 +87,8 @@
 
     <changeSet id="2022-03-25 16:45" author="mert.okan">
         <sql>
-            alter table settlement_items add store_front_id int8 not null,
-            alter table settlement_items add currency varchar not null,
+            alter table settlement_items add store_front_id int8 not null;
+            alter table settlement_items add currency varchar not null;
         </sql>
     </changeSet>
 
