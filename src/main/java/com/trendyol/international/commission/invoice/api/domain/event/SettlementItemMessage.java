@@ -12,7 +12,8 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SettlementItemMessage {
-    private Long settlementItemId;
+    private Long id;
+    private Date createdDate;
     private Long sellerId;
     private String type;
     private Date deliveryDate;
@@ -20,5 +21,4 @@ public class SettlementItemMessage {
     private BigDecimal totalCommission;
     private Long storeFrontId;
     private String currency;
-    private Date createdDate;
 }

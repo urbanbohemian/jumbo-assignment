@@ -19,7 +19,7 @@ import java.util.Objects;
 public class SettlementItem extends AuditingEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "item_creation_date", nullable = false)
@@ -28,7 +28,7 @@ public class SettlementItem extends AuditingEntity {
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
-    @Column(name = "transaction_type_id")
+    @Column(name = "transaction_type_id", nullable = false)
     private TransactionType transactionType;
 
     @Column(name = "commission_amount", nullable = false)
@@ -39,6 +39,12 @@ public class SettlementItem extends AuditingEntity {
 
     @Column(name = "payment_date")
     private Date paymentDate;
+
+    @Column(name = "store_front_id", nullable = false)
+    private Long storeFrontId;
+
+    @Column(name = "currency", nullable = false)
+    private String currency;
 
     public BigDecimal getCommissionAmountSignedValue() {
         return Objects.isNull(this.commissionAmount) ? BigDecimal.ZERO : this.commissionAmount.multiply(getTransactionType().getMultiplier());

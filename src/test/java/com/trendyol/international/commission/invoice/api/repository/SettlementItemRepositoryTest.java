@@ -1,6 +1,7 @@
 package com.trendyol.international.commission.invoice.api.repository;
 
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
+import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,11 +22,12 @@ public class SettlementItemRepositoryTest {
         //given
         SettlementItem settlementItem = SettlementItem.builder()
                 .id(1L)
-                .sellerId(1L)
-                .commissionAmount(BigDecimal.ONE)
-                .deliveryDate(new Date())
-                .paymentDate(new Date())
                 .itemCreationDate(new Date())
+                .sellerId(1L)
+                .transactionType(TransactionType.Sale)
+                .commissionAmount(BigDecimal.ONE)
+                .storeFrontId(1L)
+                .currency("EU")
                 .build();
 
         //when

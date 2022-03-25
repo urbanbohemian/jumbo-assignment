@@ -10,13 +10,13 @@ import java.util.Date;
 @Data
 @Builder
 public class SettlementItemDto {
-    private Long settlementItemId;
+    private Long id;
+    private Date createdDate;
     private Long sellerId;
-    private BigDecimal commission;
+    private TransactionType transactionType;
     private Date deliveryDate;
     private Date paymentDate;
-    private Date createdDate;
-    private TransactionType transactionType;
+    private BigDecimal commission;
     private Long storeFrontId;
     private String currency;
 }

@@ -21,24 +21,28 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
     @Override
     public boolean applyFilter(SettlementItemDto model) {
         return Optional.ofNullable(model)
-                .filter(m -> Objects.nonNull(m.getSettlementItemId()))
-                .filter(m -> Objects.nonNull(m.getSellerId()))
-                .filter(m -> Objects.nonNull(m.getCommission()))
+                .filter(m -> Objects.nonNull(m.getId()))
                 .filter(m -> Objects.nonNull(m.getCreatedDate()))
+                .filter(m -> Objects.nonNull(m.getSellerId()))
+                .filter(m -> Objects.nonNull(m.getTransactionType()))
+                .filter(m -> Objects.nonNull(m.getCommission()))
+                .filter(m -> Objects.nonNull(m.getStoreFrontId()))
+                .filter(m -> Objects.nonNull(m.getCurrency()))
                 .isPresent();
     }
 
     @Override
     public void execute(SettlementItemDto settlementItemDto) {
-        SettlementItem settlementItem = SettlementItem
-                .builder()
-                .id(settlementItemDto.getSettlementItemId())
+        SettlementItem settlementItem = SettlementItem.builder()
+                .id(settlementItemDto.getId())
+                .itemCreationDate(settlementItemDto.getCreatedDate())
                 .sellerId(settlementItemDto.getSellerId())
                 .transactionType(settlementItemDto.getTransactionType())
                 .commissionAmount(settlementItemDto.getCommission())
                 .deliveryDate(settlementItemDto.getDeliveryDate())
                 .paymentDate(settlementItemDto.getPaymentDate())
-                .itemCreationDate(settlementItemDto.getCreatedDate())
+                .storeFrontId(settlementItemDto.getStoreFrontId())
+                .currency(settlementItemDto.getCurrency())
                 .build();
         settlementItemRepository.save(settlementItem);
     }

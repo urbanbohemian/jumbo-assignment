@@ -20,7 +20,7 @@ public class CommissionInvoiceRepositoryTest {
     private CommissionInvoiceRepository commissionInvoiceRepository;
 
     @Test
-    public void it_should_save_settlement_item() {
+    public void it_should_save_commission_invoice() {
         //given
         CommissionInvoice commissionInvoice = CommissionInvoice.builder()
                 .serialNumber("serial-number")

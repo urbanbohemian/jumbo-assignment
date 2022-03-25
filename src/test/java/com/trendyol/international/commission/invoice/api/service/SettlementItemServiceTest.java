@@ -1,6 +1,7 @@
 package com.trendyol.international.commission.invoice.api.service;
 
 import com.trendyol.international.commission.invoice.api.model.dto.SettlementItemDto;
+import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,13 +28,16 @@ public class SettlementItemServiceTest {
     @Test
     public void it_should_save_settlement_item() {
         //given
-        SettlementItemDto settlementItemDto = SettlementItemDto
-                .builder()
-                .settlementItemId(1L)
+        SettlementItemDto settlementItemDto = SettlementItemDto.builder()
+                .id(1L)
+                .createdDate(Date.valueOf("2022-03-25"))
                 .sellerId(1L)
+                .transactionType(TransactionType.Sale)
+                .deliveryDate(Date.valueOf("2022-03-25"))
+                .paymentDate(Date.valueOf("2022-03-25"))
                 .commission(BigDecimal.TEN)
-                .createdDate(Date.valueOf("2022-03-07"))
                 .storeFrontId(1L)
+                .currency("EU")
                 .build();
 
         //when
@@ -44,43 +48,12 @@ public class SettlementItemServiceTest {
     }
 
     @Test
-    public void it_should_not_save_settlement_item_when_seller_id_is_null() {
+    public void it_should_not_save_settlement_item_when_dto_is_not_valid() {
         //given
-        SettlementItemDto settlementItemDto = SettlementItemDto.builder().sellerId(null).build();
+        SettlementItemDto settlementItemDto = SettlementItemDto.builder().build();
         //when
         settlementItemService.process(settlementItemDto);
         //then
         verifyNoInteractions(settlementItemRepository);
     }
-
-    @Test
-    public void it_should_not_save_settlement_item_when_settlement_item_id_is_null() {
-        //given
-        SettlementItemDto settlementItemDto = SettlementItemDto.builder().settlementItemId(null).build();
-        //when
-        settlementItemService.process(settlementItemDto);
-        //then
-        verifyNoInteractions(settlementItemRepository);
-    }
-
-    @Test
-    public void it_should_not_save_settlement_item_when_commission_is_null() {
-        //given
-        SettlementItemDto settlementItemDto = SettlementItemDto.builder().commission(null).build();
-        //when
-        settlementItemService.process(settlementItemDto);
-        //then
-        verifyNoInteractions(settlementItemRepository);
-    }
-
-    @Test
-    public void it_should_not_save_settlement_item_when_created_date_is_null() {
-        //given
-        SettlementItemDto settlementItemDto = SettlementItemDto.builder().createdDate(null).build();
-        //when
-        settlementItemService.process(settlementItemDto);
-        //then
-        verifyNoInteractions(settlementItemRepository);
-    }
-
 }
