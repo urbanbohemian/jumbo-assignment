@@ -1,6 +1,8 @@
 spring:
   application:
     name: '@project.name@'
+    description: '@project.description@'
+    termsOfService: https://www.trendyol.com/kullanim_kosullari.html
   profiles:
     active: local
     include: kafka, postgresql
