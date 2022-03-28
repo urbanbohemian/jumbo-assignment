@@ -92,4 +92,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="2022-03-28 13:45" author="mert.okan">
+        <sql>
+            alter table commission_invoices add constraint commission_invoices_serial_number_key unique (serial_number);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
