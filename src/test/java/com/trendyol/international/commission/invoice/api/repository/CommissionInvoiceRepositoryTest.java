@@ -113,7 +113,7 @@ public class CommissionInvoiceRepositoryTest {
     }
 
     @Test
-    public void it_should_find_by_seller_id_and_invoice_status() {
+    public void it_should_find_by_invoice_status() {
         //given
         CommissionInvoice commissionInvoice1 = CommissionInvoice.builder()
                 .serialNumber("1")
@@ -189,9 +189,9 @@ public class CommissionInvoiceRepositoryTest {
 
         commissionInvoiceRepository.saveAll(List.of(commissionInvoice1, commissionInvoice2, commissionInvoice3, commissionInvoice4));
         //when
-        List<CommissionInvoice> commissionInvoices = commissionInvoiceRepository.findBySellerIdAndInvoiceStatus(1L, InvoiceStatus.CREATED);
+        List<CommissionInvoice> commissionInvoices = commissionInvoiceRepository.findByInvoiceStatus(InvoiceStatus.CREATED);
         //then
-        assertThat(commissionInvoices.size()).isEqualTo(2);
-        assertThat(commissionInvoices.stream().map(CommissionInvoice::getSerialNumber).toList()).contains("1", "2");
+        assertThat(commissionInvoices.size()).isEqualTo(3);
+        assertThat(commissionInvoices.stream().map(CommissionInvoice::getSerialNumber).toList()).contains("1", "2", "3");
     }
 }

@@ -1,7 +1,6 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
 import com.trendyol.international.commission.invoice.api.model.request.CommissionInvoiceCreateRequest;
-import com.trendyol.international.commission.invoice.api.model.request.SerialNumberGenerateRequest;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,8 +31,8 @@ public class CommissionInvoiceControllerTest {
     @Test
     public void it_should_call_generate_serial_number() {
         //when
-        commissionInvoiceController.generateSerialNumber(new SerialNumberGenerateRequest());
+        commissionInvoiceController.generateSerialNumber();
         //then
-        verify(commissionInvoiceService).generateSerialNumber(any());
+        verify(commissionInvoiceService).generateSerialNumber();
     }
 }

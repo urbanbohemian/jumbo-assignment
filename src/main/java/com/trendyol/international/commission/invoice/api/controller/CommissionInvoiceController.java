@@ -1,9 +1,7 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
 import com.trendyol.international.commission.invoice.api.mapper.CommissionInvoiceCreateMapper;
-import com.trendyol.international.commission.invoice.api.mapper.SerialNumberGenerateMapper;
 import com.trendyol.international.commission.invoice.api.model.request.CommissionInvoiceCreateRequest;
-import com.trendyol.international.commission.invoice.api.model.request.SerialNumberGenerateRequest;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +21,7 @@ public class CommissionInvoiceController {
     }
 
     @PostMapping("/generate-serial-number")
-    public void generateSerialNumber(@RequestBody SerialNumberGenerateRequest serialNumberGenerateRequest) {
-        commissionInvoiceService.generateSerialNumber(SerialNumberGenerateMapper.INSTANCE.serialNumberGenerateDto(serialNumberGenerateRequest));
+    public void generateSerialNumber() {
+        commissionInvoiceService.generateSerialNumber();
     }
 }

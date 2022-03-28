@@ -12,5 +12,5 @@ public interface CommissionInvoiceRepository extends JpaRepository<CommissionInv
 
     CommissionInvoice findTopBySellerIdOrderByEndDateDesc(Long sellerId);
 
-    List<CommissionInvoice> findBySellerIdAndInvoiceStatus(Long sellerId, InvoiceStatus invoiceStatus);
+    List<CommissionInvoice> findByInvoiceStatus(InvoiceStatus invoiceStatus);
 }

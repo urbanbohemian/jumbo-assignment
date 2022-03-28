@@ -4,7 +4,6 @@ import com.trendyol.international.commission.invoice.api.domain.CommissionInvoic
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
-import com.trendyol.international.commission.invoice.api.model.dto.SerialNumberGenerateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
@@ -74,9 +73,9 @@ public class CommissionInvoiceService {
     }
 
     @Transactional
-    public void generateSerialNumber(SerialNumberGenerateDto serialNumberGenerateDto) {
+    public void generateSerialNumber() {
         commissionInvoiceRepository
-                .findBySellerIdAndInvoiceStatus(serialNumberGenerateDto.getSellerId(), InvoiceStatus.CREATED)
+                .findByInvoiceStatus(InvoiceStatus.CREATED)
                 .forEach(this::generateSerialNumberForCommissionInvoice);
     }
 

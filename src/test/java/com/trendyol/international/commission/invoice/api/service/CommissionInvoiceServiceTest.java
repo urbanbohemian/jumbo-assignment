@@ -4,7 +4,6 @@ import com.trendyol.international.commission.invoice.api.domain.CommissionInvoic
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
-import com.trendyol.international.commission.invoice.api.model.dto.SerialNumberGenerateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
@@ -222,11 +221,11 @@ public class CommissionInvoiceServiceTest {
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .build();
 
-        when(commissionInvoiceRepository.findBySellerIdAndInvoiceStatus(1L, InvoiceStatus.CREATED)).thenReturn(List.of(commissionInvoice1, commissionInvoice2));
+        when(commissionInvoiceRepository.findByInvoiceStatus(InvoiceStatus.CREATED)).thenReturn(List.of(commissionInvoice1, commissionInvoice2));
         when(commissionInvoiceSerialNumberGenerateService.generate(anyInt())).thenReturn("TBV2022000000001", "TBV2022000000002");
 
         //when
-        commissionInvoiceService.generateSerialNumber(SerialNumberGenerateDto.builder().sellerId(1L).jobExecutionDate(new Date()).build());
+        commissionInvoiceService.generateSerialNumber();
 
         //
         ArgumentCaptor<CommissionInvoice> commissionInvoiceArgumentCaptor = ArgumentCaptor.forClass(CommissionInvoice.class);
