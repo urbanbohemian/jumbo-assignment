@@ -269,6 +269,7 @@ public class CommissionInvoiceServiceTest {
                 .startDate(currentDate)
                 .endDate(currentDate)
                 .invoiceStatus(InvoiceStatus.NUMBER_GENERATED)
+                .referenceId("1234567890")
                 .build();
         CommissionInvoice commissionInvoice2 = CommissionInvoice.builder()
                 .sellerId(2L)
@@ -285,6 +286,7 @@ public class CommissionInvoiceServiceTest {
                 .startDate(currentDate)
                 .endDate(currentDate)
                 .invoiceStatus(InvoiceStatus.NUMBER_GENERATED)
+                .referenceId("1234567891")
                 .build();
 
         SellerResponse sellerResponse1 = SellerResponse.builder()
@@ -338,10 +340,12 @@ public class CommissionInvoiceServiceTest {
         assertThat(documentCreateMessage1.get().getAddressLine()).isEqualTo("Lumina Hause, 89 New Bond Street W1S 1DA Amsterdam/Netherland");
         assertThat(documentCreateMessage1.get().getEmail()).isEqualTo("mert.unsal@trendyol.com");
         assertThat(documentCreateMessage1.get().getPhone()).isEqualTo("+905555555555");
+        assertThat(documentCreateMessage1.get().getReferenceId()).isEqualTo("1234567890");
         assertThat(documentCreateMessage1.get().getInvoiceDate()).isEqualTo(currentDate);
         assertThat(documentCreateMessage1.get().getTaxIdentificationNumber()).isEqualTo("1234567890");
         assertThat(documentCreateMessage1.get().getVatRegistrationNumber()).isEqualTo("NL1234567890");
-        assertThat(documentCreateMessage1.get().getInvoiceLines()).isEqualTo(List.of(InvoiceLine.builder()
+        assertThat(documentCreateMessage1.get().getVatStatusType()).isEqualTo(VatStatusType.DOMESTIC.name());
+        assertThat(documentCreateMessage1.get().getInvoiceLineList()).isEqualTo(List.of(InvoiceLine.builder()
                 .description("Commission Fee")
                 .quantity(1)
                 .unit("Item")
@@ -357,10 +361,12 @@ public class CommissionInvoiceServiceTest {
         assertThat(documentCreateMessage2.get().getAddressLine()).isEqualTo("Lumina Hause, 90 New Bond Street W1S 1DA Amsterdam/Netherland");
         assertThat(documentCreateMessage2.get().getEmail()).isEqualTo("okan.uslu@trendyol.com");
         assertThat(documentCreateMessage2.get().getPhone()).isEqualTo("+905555555556");
+        assertThat(documentCreateMessage2.get().getReferenceId()).isEqualTo("1234567891");
         assertThat(documentCreateMessage2.get().getInvoiceDate()).isEqualTo(currentDate);
         assertThat(documentCreateMessage2.get().getTaxIdentificationNumber()).isEqualTo("1234567891");
         assertThat(documentCreateMessage2.get().getVatRegistrationNumber()).isEqualTo("NL1234567891");
-        assertThat(documentCreateMessage2.get().getInvoiceLines()).isEqualTo(List.of(InvoiceLine.builder()
+        assertThat(documentCreateMessage2.get().getVatStatusType()).isEqualTo(VatStatusType.DOMESTIC.name());
+        assertThat(documentCreateMessage2.get().getInvoiceLineList()).isEqualTo(List.of(InvoiceLine.builder()
                 .description("Commission Fee")
                 .quantity(1)
                 .unit("Item")

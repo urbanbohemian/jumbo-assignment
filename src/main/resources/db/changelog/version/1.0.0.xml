@@ -98,4 +98,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="2022-03-29 17:00" author="mert.okan">
+        <sql>
+            alter table commission_invoices add reference_id varchar not null;
+            alter table commission_invoices add constraint commission_invoices_reference_id_key unique (reference_id);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -38,6 +38,7 @@ public class CommissionInvoiceRepositoryTest {
                 .startDate(new Date())
                 .endDate(new Date(1L))
                 .invoiceStatus(InvoiceStatus.CREATED)
+                .referenceId("reference-id")
                 .build();
 
         //when
@@ -51,7 +52,7 @@ public class CommissionInvoiceRepositoryTest {
     public void it_should_find_top_commission_invoice_by_seller_id_end_date_desc() {
         //given
         CommissionInvoice commissionInvoice1 = CommissionInvoice.builder()
-                .serialNumber("1")
+                .serialNumber("serial-number-1")
                 .amount(BigDecimal.ONE)
                 .netAmount(BigDecimal.ONE)
                 .vatAmount(BigDecimal.ONE)
@@ -66,10 +67,11 @@ public class CommissionInvoiceRepositoryTest {
                 .startDate(new Date())
                 .endDate(new Date(1L))
                 .invoiceStatus(InvoiceStatus.CREATED)
+                .referenceId("reference-id-1")
                 .build();
 
         CommissionInvoice commissionInvoice2 = CommissionInvoice.builder()
-                .serialNumber("2")
+                .serialNumber("serial-number-2")
                 .amount(BigDecimal.ONE)
                 .netAmount(BigDecimal.ONE)
                 .vatAmount(BigDecimal.ONE)
@@ -84,10 +86,11 @@ public class CommissionInvoiceRepositoryTest {
                 .startDate(new Date())
                 .endDate(new Date(3L))
                 .invoiceStatus(InvoiceStatus.CREATED)
+                .referenceId("reference-id-2")
                 .build();
 
         CommissionInvoice commissionInvoice3 = CommissionInvoice.builder()
-                .serialNumber("3")
+                .serialNumber("serial-number-3")
                 .amount(BigDecimal.ONE)
                 .netAmount(BigDecimal.ONE)
                 .vatAmount(BigDecimal.ONE)
@@ -102,6 +105,7 @@ public class CommissionInvoiceRepositoryTest {
                 .startDate(new Date())
                 .endDate(new Date(2L))
                 .invoiceStatus(InvoiceStatus.CREATED)
+                .referenceId("reference-id-3")
                 .build();
 
         commissionInvoiceRepository.saveAll(List.of(commissionInvoice1, commissionInvoice2, commissionInvoice3));
@@ -109,14 +113,14 @@ public class CommissionInvoiceRepositoryTest {
         CommissionInvoice commissionInvoice = commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L);
         //then
         assertThat(commissionInvoice).isNotNull();
-        assertThat(commissionInvoice.getSerialNumber()).isEqualTo("3");
+        assertThat(commissionInvoice.getSerialNumber()).isEqualTo("serial-number-3");
     }
 
     @Test
     public void it_should_find_by_invoice_status() {
         //given
         CommissionInvoice commissionInvoice1 = CommissionInvoice.builder()
-                .serialNumber("1")
+                .serialNumber("serial-number-1")
                 .amount(BigDecimal.ONE)
                 .netAmount(BigDecimal.ONE)
                 .vatAmount(BigDecimal.ONE)
@@ -131,10 +135,11 @@ public class CommissionInvoiceRepositoryTest {
                 .startDate(new Date())
                 .endDate(new Date(1L))
                 .invoiceStatus(InvoiceStatus.CREATED)
+                .referenceId("reference-id-1")
                 .build();
 
         CommissionInvoice commissionInvoice2 = CommissionInvoice.builder()
-                .serialNumber("2")
+                .serialNumber("serial-number-2")
                 .amount(BigDecimal.ONE)
                 .netAmount(BigDecimal.ONE)
                 .vatAmount(BigDecimal.ONE)
@@ -149,10 +154,11 @@ public class CommissionInvoiceRepositoryTest {
                 .startDate(new Date())
                 .endDate(new Date(3L))
                 .invoiceStatus(InvoiceStatus.CREATED)
+                .referenceId("reference-id-2")
                 .build();
 
         CommissionInvoice commissionInvoice3 = CommissionInvoice.builder()
-                .serialNumber("3")
+                .serialNumber("serial-number-3")
                 .amount(BigDecimal.ONE)
                 .netAmount(BigDecimal.ONE)
                 .vatAmount(BigDecimal.ONE)
@@ -167,10 +173,11 @@ public class CommissionInvoiceRepositoryTest {
                 .startDate(new Date())
                 .endDate(new Date(2L))
                 .invoiceStatus(InvoiceStatus.CREATED)
+                .referenceId("reference-id-3")
                 .build();
 
         CommissionInvoice commissionInvoice4 = CommissionInvoice.builder()
-                .serialNumber("4")
+                .serialNumber("serial-number-4")
                 .amount(BigDecimal.ONE)
                 .netAmount(BigDecimal.ONE)
                 .vatAmount(BigDecimal.ONE)
@@ -185,6 +192,7 @@ public class CommissionInvoiceRepositoryTest {
                 .startDate(new Date())
                 .endDate(new Date(2L))
                 .invoiceStatus(InvoiceStatus.NUMBER_GENERATED)
+                .referenceId("reference-id-4")
                 .build();
 
         commissionInvoiceRepository.saveAll(List.of(commissionInvoice1, commissionInvoice2, commissionInvoice3, commissionInvoice4));
@@ -192,6 +200,6 @@ public class CommissionInvoiceRepositoryTest {
         List<CommissionInvoice> commissionInvoices = commissionInvoiceRepository.findByInvoiceStatus(InvoiceStatus.CREATED);
         //then
         assertThat(commissionInvoices.size()).isEqualTo(3);
-        assertThat(commissionInvoices.stream().map(CommissionInvoice::getSerialNumber).toList()).contains("1", "2", "3");
+        assertThat(commissionInvoices.stream().map(CommissionInvoice::getSerialNumber).toList()).contains("serial-number-1", "serial-number-2", "serial-number-3");
     }
 }

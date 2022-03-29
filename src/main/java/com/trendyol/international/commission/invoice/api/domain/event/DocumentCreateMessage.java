@@ -16,8 +16,10 @@ public class DocumentCreateMessage {
     private String email;
     private String phone;
     private String invoiceNumber;
+    private String referenceId;
     private Date invoiceDate;
     private String taxIdentificationNumber;
     private String vatRegistrationNumber;
-    private List<InvoiceLine> invoiceLines;
+    private String vatStatusType;
+    private List<InvoiceLine> invoiceLineList;
 }

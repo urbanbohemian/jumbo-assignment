@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
+
 @Builder
 @Data
 public class Address {
@@ -15,6 +17,8 @@ public class Address {
     private String district;
 
     public String getFormattedAddress() {
-        return addressLine.concat(StringUtils.SPACE).concat(district).concat(SLASH).concat(country);
+        return Objects.nonNull(addressLine) && Objects.nonNull(district) && Objects.nonNull(country)
+                ? addressLine.concat(StringUtils.SPACE).concat(district).concat(SLASH).concat(country)
+                : StringUtils.EMPTY;
     }
 }

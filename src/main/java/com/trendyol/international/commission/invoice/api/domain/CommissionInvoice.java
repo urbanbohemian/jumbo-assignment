@@ -16,7 +16,6 @@ import java.util.Set;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-@Table(name = "commission_invoices", uniqueConstraints = @UniqueConstraint(columnNames = {"serial_number"}))
 @SequenceGenerator(name = "seq_commission_invoices", sequenceName = "seq_commission_invoices")
 public class CommissionInvoice extends AuditingEntity {
 
@@ -27,7 +26,7 @@ public class CommissionInvoice extends AuditingEntity {
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
-    @Column(name = "serial_number", nullable = false)
+    @Column(name = "serial_number", nullable = false, unique = true)
     private String serialNumber;                                    //article 'b'
 
     @Column(name = "amount", nullable = false)
@@ -69,6 +68,9 @@ public class CommissionInvoice extends AuditingEntity {
 
     @Column(name = "status", nullable = false)
     private InvoiceStatus invoiceStatus;
+
+    @Column(name = "reference_id", nullable = false, unique = true)
+    private String referenceId;
 
     @OneToMany
     @JoinTable(

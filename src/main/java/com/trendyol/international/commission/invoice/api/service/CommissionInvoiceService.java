@@ -24,10 +24,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -103,6 +100,7 @@ public class CommissionInvoiceService {
                 .startDate(startDate)
                 .storeFrontId("1")
                 .vatStatusType("NL".equals(commissionInvoiceCreateDto.getCountry()) ? VatStatusType.DOMESTIC : VatStatusType.INTRA_COMMUNITY)
+                .referenceId(UUID.randomUUID().toString())
                 .build();
         commissionInvoiceRepository.save(commissionInvoice);
     }
@@ -129,10 +127,12 @@ public class CommissionInvoiceService {
                 .email(sellerResponse.getMasterUser().getContact().getEmail())
                 .phone(sellerResponse.getMasterUser().getContact().getPhone().getFullPhoneNumber())
                 .invoiceNumber(commissionInvoices.get(0).getSerialNumber())
+                .referenceId(commissionInvoices.get(0).getReferenceId())
                 .invoiceDate(commissionInvoices.get(0).getInvoiceDate())
                 .taxIdentificationNumber(sellerResponse.getTaxNumber())
                 .vatRegistrationNumber(sellerResponse.getCountryBasedIn().concat(sellerResponse.getTaxNumber()))
-                .invoiceLines(commissionInvoices.stream().map(commissionInvoice -> InvoiceLine.builder()
+                .vatStatusType(commissionInvoices.get(0).getVatStatusType().toString())
+                .invoiceLineList(commissionInvoices.stream().map(commissionInvoice -> InvoiceLine.builder()
                         .description("Commission Fee")
                         .quantity(1)
                         .unit("Item")

@@ -19,9 +19,6 @@ public class SellerResponse {
     private String countryBasedIn;
 
     public Optional<Address> getInvoiceAddress() {
-        return addresses
-                .stream()
-                .filter(f -> AddressType.INVOICE_ADDRESS.equals(f.getAddressType()))
-                .findFirst();
+        return addresses.stream().filter(f -> AddressType.INVOICE_ADDRESS.equals(f.getAddressType())).findFirst();
     }
 }
