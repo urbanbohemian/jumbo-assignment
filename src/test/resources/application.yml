@@ -1,9 +1,19 @@
 spring:
   application:
     name: '@project.name@'
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
+    description: '@project.description@'
+    termsOfService: https://www.trendyol.com/kullanim_kosullari.html
   profiles:
     active: test
     include: kafka, postgresql
+
+springdoc:
+  api-docs:
+    path: /api-docs
+
+server:
+  port: 8080
+
+application:
+  urls:
+    seller-api: http://localhost:8081

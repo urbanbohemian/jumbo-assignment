@@ -28,6 +28,7 @@
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
         <sonar-maven-plugin.version>3.9.0.2155</sonar-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <spring-cloud.version>3.0.2</spring-cloud.version>
     </properties>
 
     <dependencies>
@@ -95,6 +96,11 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>1.4.2.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>${spring-cloud.version}</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
@@ -104,7 +110,7 @@
         </repository>
         <repository>
             <id>gitlab-maven</id>
-            <url>https://gitlab.trendyol.com/api/v4/projects/${seller-base-package-registry.project-id}/packages/maven
+            <url>https://gitlab.trendyol.com/api/v4/projects/${sellerResponse-base-package-registry.project-id}/packages/maven
             </url>
         </repository>
     </repositories>

@@ -24,4 +24,9 @@ public class CommissionInvoiceController {
     public void generateSerialNumber() {
         commissionInvoiceService.generateSerialNumber();
     }
+
+    @PostMapping("/generate-pdf")
+    public void generatePdf() {
+        commissionInvoiceService.generatePdf();
+    }
 }

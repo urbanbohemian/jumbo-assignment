@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.config.kafka.swagger;
+package com.trendyol.international.commission.invoice.api.config.swagger;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;

@@ -1,17 +1,23 @@
 package com.trendyol.international.commission.invoice.api.service;
 
+import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
+import com.trendyol.international.commission.invoice.api.domain.InvoiceLine;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
+import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateMessage;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
+import com.trendyol.international.commission.invoice.api.model.response.SellerResponse;
+import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import com.trendyol.international.commission.invoice.api.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -21,13 +27,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Service
 @Slf4j
+@Service
 public class CommissionInvoiceService {
     private final CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
     private final VatCalculatorService vatCalculatorService;
+    private final SellerApiClient sellerApiClient;
+    private final DocumentCreateProducer documentCreateProducer;
     private final CommissionInvoiceRepository commissionInvoiceRepository;
     private final SettlementItemRepository settlementItemRepository;
 
@@ -79,6 +88,15 @@ public class CommissionInvoiceService {
                 .forEach(this::generateSerialNumberForCommissionInvoice);
     }
 
+    @Transactional
+    public void generatePdf() {
+        commissionInvoiceRepository
+                .findByInvoiceStatus(InvoiceStatus.NUMBER_GENERATED)
+                .stream()
+                .collect(Collectors.groupingBy(CommissionInvoice::getSellerId))
+                .forEach(this::generatePdfForSeller);
+    }
+
     private Date getStartDateForSeller(Long sellerId) {
         return Optional.ofNullable(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(sellerId))
                 .map(commissionInvoice -> new Date(commissionInvoice.getEndDate().getTime() + 1))
@@ -109,5 +127,35 @@ public class CommissionInvoiceService {
         commissionInvoice.setSerialNumber(commissionInvoiceSerialNumberGenerateService.generate(invoiceYear));
         commissionInvoice.setInvoiceStatus(InvoiceStatus.NUMBER_GENERATED);
         commissionInvoiceRepository.save(commissionInvoice);
+    }
+
+    private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
+        Optional.ofNullable(commissionInvoices)
+                .filter(ObjectUtils::isEmpty)
+                .ifPresent(invoices -> documentCreateProducer
+                        .produceDocumentCreateMessage(getDocumentCreateMessage(sellerApiClient.getSellerById(sellerId), invoices)));
+    }
+
+    private DocumentCreateMessage getDocumentCreateMessage(SellerResponse sellerResponse, List<CommissionInvoice> commissionInvoices) {
+        return DocumentCreateMessage.builder()
+                .sellerId(commissionInvoices.get(0).getSellerId())
+                .sellerName(sellerResponse.getCompanyName())
+                .addressLine1(sellerResponse.getInvoiceAddress().getAddressLine1())
+                .addressLine2(sellerResponse.getInvoiceAddress().getAddressLine2())
+                .email(sellerResponse.getMasterUser().getContact().getEmail())
+                .phone(sellerResponse.getMasterUser().getContact().getPhone())
+                .invoiceNumber(commissionInvoices.get(0).getSerialNumber())
+                .invoiceDate(commissionInvoices.get(0).getInvoiceDate())
+                .taxIdentificationNumber(sellerResponse.getTaxNumber())
+                .vatRegistrationNumber(sellerResponse.getCountryBasedIn().concat(sellerResponse.getTaxNumber()))
+                .invoiceLines(commissionInvoices.stream().map(commissionInvoice -> InvoiceLine.builder()
+                        .description("Commission Fee")
+                        .quantity(1)
+                        .unit("Item")
+                        .unitPrice(commissionInvoice.getNetAmount())
+                        .vatRate(commissionInvoice.getVatRate())
+                        .amount(commissionInvoice.getAmount())
+                        .build()).toList())
+                .build();
     }
 }

@@ -35,4 +35,12 @@ public class CommissionInvoiceControllerTest {
         //then
         verify(commissionInvoiceService).generateSerialNumber();
     }
+
+    @Test
+    public void it_should_call_generate_pdf() {
+        //when
+        commissionInvoiceController.generatePdf();
+        //then
+        verify(commissionInvoiceService).generatePdf();
+    }
 }

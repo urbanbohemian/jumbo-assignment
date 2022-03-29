@@ -1,5 +1,6 @@
 package com.trendyol.international.commission.invoice.api.service;
 
+import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
@@ -7,6 +8,7 @@ import com.trendyol.international.commission.invoice.api.model.dto.CommissionInv
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
+import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +45,12 @@ public class CommissionInvoiceServiceTest {
 
     @Mock
     private CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
+
+    @Mock
+    private SellerApiClient sellerApiClient;
+
+    @Mock
+    private DocumentCreateProducer documentCreateProducer;
 
     @Test
     public void it_should_create_commission_invoice() {
