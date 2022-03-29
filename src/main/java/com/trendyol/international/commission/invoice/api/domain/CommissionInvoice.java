@@ -16,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
+@Table(name = "commission_invoices")
 @SequenceGenerator(name = "seq_commission_invoices", sequenceName = "seq_commission_invoices")
 public class CommissionInvoice extends AuditingEntity {
 
