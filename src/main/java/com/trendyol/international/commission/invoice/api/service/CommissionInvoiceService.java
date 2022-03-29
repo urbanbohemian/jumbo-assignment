@@ -40,6 +40,31 @@ public class CommissionInvoiceService {
     private final CommissionInvoiceRepository commissionInvoiceRepository;
     private final SettlementItemRepository settlementItemRepository;
 
+    private Date getStartDateForSeller(Long sellerId) {
+        return Optional.ofNullable(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(sellerId))
+                .map(commissionInvoice -> new Date(commissionInvoice.getEndDate().getTime() + 1))
+                .orElse(new Date());
+    }
+
+    private Date getEndDate(Date date) {
+        LocalDateTime localDateTime = DateUtils.convertToLocalDateTime(date).minusDays(1);
+        return Date.from(LocalDateTime.of(
+                localDateTime.getYear(),
+                localDateTime.getMonth(),
+                localDateTime.getDayOfMonth(),
+                23,
+                59,
+                59,
+                999_000_000).atZone(ZoneId.of("Europe/Amsterdam")).toInstant());
+    }
+
+    private BigDecimal calculateCommissionForSeller(List<SettlementItem> settlementItems) {
+        return settlementItems
+                .stream()
+                .map(SettlementItem::getCommissionAmountSignedValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     // collects all settlement items and process
     @Transactional
     public void create(CommissionInvoiceCreateDto commissionInvoiceCreateDto) {
@@ -81,47 +106,6 @@ public class CommissionInvoiceService {
         commissionInvoiceRepository.save(commissionInvoice);
     }
 
-    @Transactional
-    public void generateSerialNumber() {
-        commissionInvoiceRepository
-                .findByInvoiceStatus(InvoiceStatus.CREATED)
-                .forEach(this::generateSerialNumberForCommissionInvoice);
-    }
-
-    @Transactional
-    public void generatePdf() {
-        commissionInvoiceRepository
-                .findByInvoiceStatus(InvoiceStatus.NUMBER_GENERATED)
-                .stream()
-                .collect(Collectors.groupingBy(CommissionInvoice::getSellerId))
-                .forEach(this::generatePdfForSeller);
-    }
-
-    private Date getStartDateForSeller(Long sellerId) {
-        return Optional.ofNullable(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(sellerId))
-                .map(commissionInvoice -> new Date(commissionInvoice.getEndDate().getTime() + 1))
-                .orElse(new Date());
-    }
-
-    private Date getEndDate(Date date) {
-        LocalDateTime localDateTime = DateUtils.convertToLocalDateTime(date).minusDays(1);
-        return Date.from(LocalDateTime.of(
-                localDateTime.getYear(),
-                localDateTime.getMonth(),
-                localDateTime.getDayOfMonth(),
-                23,
-                59,
-                59,
-                999_000_000).atZone(ZoneId.of("Europe/Amsterdam")).toInstant());
-    }
-
-    private BigDecimal calculateCommissionForSeller(List<SettlementItem> settlementItems) {
-        return settlementItems
-                .stream()
-                .map(SettlementItem::getCommissionAmountSignedValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
     private void generateSerialNumberForCommissionInvoice(CommissionInvoice commissionInvoice) {
         Integer invoiceYear = DateUtils.getYear(commissionInvoice.getEndDate());
         commissionInvoice.setSerialNumber(commissionInvoiceSerialNumberGenerateService.generate(invoiceYear));
@@ -129,11 +113,11 @@ public class CommissionInvoiceService {
         commissionInvoiceRepository.save(commissionInvoice);
     }
 
-    private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
-        Optional.ofNullable(commissionInvoices)
-                .filter(ObjectUtils::isEmpty)
-                .ifPresent(invoices -> documentCreateProducer
-                        .produceDocumentCreateMessage(getDocumentCreateMessage(sellerApiClient.getSellerById(sellerId), invoices)));
+    @Transactional
+    public void generateSerialNumber() {
+        commissionInvoiceRepository
+                .findByInvoiceStatus(InvoiceStatus.CREATED)
+                .forEach(this::generateSerialNumberForCommissionInvoice);
     }
 
     private DocumentCreateMessage getDocumentCreateMessage(SellerResponse sellerResponse, List<CommissionInvoice> commissionInvoices) {
@@ -157,5 +141,21 @@ public class CommissionInvoiceService {
                         .amount(commissionInvoice.getAmount())
                         .build()).toList())
                 .build();
+    }
+
+    private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
+        Optional.ofNullable(commissionInvoices)
+                .filter(ObjectUtils::isEmpty)
+                .ifPresent(invoices -> documentCreateProducer
+                        .produceDocumentCreateMessage(getDocumentCreateMessage(sellerApiClient.getSellerById(sellerId), invoices)));
+    }
+
+    @Transactional
+    public void generatePdf() {
+        commissionInvoiceRepository
+                .findByInvoiceStatus(InvoiceStatus.NUMBER_GENERATED)
+                .stream()
+                .collect(Collectors.groupingBy(CommissionInvoice::getSellerId))
+                .forEach(this::generatePdfForSeller);
     }
 }
