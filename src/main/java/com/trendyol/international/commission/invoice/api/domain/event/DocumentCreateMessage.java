@@ -12,8 +12,7 @@ import java.util.List;
 public class DocumentCreateMessage {
     private Long sellerId;
     private String sellerName;
-    private String addressLine1;
-    private String addressLine2;
+    private String addressLine;
     private String email;
     private String phone;
     private String invoiceNumber;

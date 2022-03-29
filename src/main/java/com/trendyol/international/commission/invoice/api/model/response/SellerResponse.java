@@ -3,10 +3,13 @@ package com.trendyol.international.commission.invoice.api.model.response;
 import com.trendyol.international.commission.invoice.api.model.response.Seller.Address;
 import com.trendyol.international.commission.invoice.api.model.response.Seller.AddressType;
 import com.trendyol.international.commission.invoice.api.model.response.Seller.MasterUser;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Optional;
 
+@Builder
 @Data
 public class SellerResponse {
     private String companyName;
@@ -15,7 +18,10 @@ public class SellerResponse {
     private String taxNumber;
     private String countryBasedIn;
 
-    public Address getInvoiceAddress() {
-        return addresses.stream().filter(f -> AddressType.INVOICE_ADDRESS.equals(f.getAddressType())).findFirst().orElse(null);
+    public Optional<Address> getInvoiceAddress() {
+        return addresses
+                .stream()
+                .filter(f -> AddressType.INVOICE_ADDRESS.equals(f.getAddressType()))
+                .findFirst();
     }
 }

@@ -2,12 +2,16 @@ package com.trendyol.international.commission.invoice.api.service;
 
 import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
+import com.trendyol.international.commission.invoice.api.domain.InvoiceLine;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
+import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateMessage;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
+import com.trendyol.international.commission.invoice.api.model.response.Seller.*;
+import com.trendyol.international.commission.invoice.api.model.response.SellerResponse;
 import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
@@ -22,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -242,5 +247,126 @@ public class CommissionInvoiceServiceTest {
         List<CommissionInvoice> commissionInvoices = commissionInvoiceArgumentCaptor.getAllValues();
         assertThat(commissionInvoices.stream().map(CommissionInvoice::getSerialNumber)).containsExactly("TBV2022000000001", "TBV2022000000002");
         assertThat(commissionInvoices.stream().allMatch(f -> InvoiceStatus.NUMBER_GENERATED.equals(f.getInvoiceStatus()))).isTrue();
+    }
+
+    @Test
+    public void it_should_generate_pdf() {
+        //given
+        Date currentDate = new Date();
+
+        CommissionInvoice commissionInvoice1 = CommissionInvoice.builder()
+                .sellerId(1L)
+                .serialNumber("TBV2022000000001")
+                .amount(BigDecimal.valueOf(121L))
+                .netAmount(BigDecimal.valueOf(100L))
+                .vatAmount(BigDecimal.valueOf(21L))
+                .vatRate(BigDecimal.valueOf(21L))
+                .vatStatusType(VatStatusType.DOMESTIC)
+                .invoiceDate(currentDate)
+                .storeFrontId("1")
+                .country("Netherlands")
+                .currency("EU")
+                .startDate(currentDate)
+                .endDate(currentDate)
+                .invoiceStatus(InvoiceStatus.NUMBER_GENERATED)
+                .build();
+        CommissionInvoice commissionInvoice2 = CommissionInvoice.builder()
+                .sellerId(2L)
+                .serialNumber("TBV2022000000002")
+                .amount(BigDecimal.valueOf(242L))
+                .netAmount(BigDecimal.valueOf(200L))
+                .vatAmount(BigDecimal.valueOf(42L))
+                .vatRate(BigDecimal.valueOf(21L))
+                .vatStatusType(VatStatusType.DOMESTIC)
+                .invoiceDate(currentDate)
+                .storeFrontId("1")
+                .country("Netherlands")
+                .currency("EU")
+                .startDate(currentDate)
+                .endDate(currentDate)
+                .invoiceStatus(InvoiceStatus.NUMBER_GENERATED)
+                .build();
+
+        SellerResponse sellerResponse1 = SellerResponse.builder()
+                .companyName("Mert Unsal")
+                .addresses(List.of(Address.builder()
+                        .addressLine("Lumina Hause, 89 New Bond Street W1S 1DA")
+                        .addressType(AddressType.INVOICE_ADDRESS)
+                        .country("Netherland")
+                        .district("Amsterdam")
+                        .build()))
+                .masterUser(MasterUser.builder().contact(Contact.builder()
+                        .email("mert.unsal@trendyol.com")
+                        .phone(Phone.builder().countryCode("+90").phone("5555555555").build())
+                        .build()).build())
+                .taxNumber("1234567890")
+                .countryBasedIn("NL")
+                .build();
+        SellerResponse sellerResponse2 = SellerResponse.builder()
+                .companyName("Okan Uslu")
+                .addresses(List.of(Address.builder()
+                        .addressLine("Lumina Hause, 90 New Bond Street W1S 1DA")
+                        .addressType(AddressType.INVOICE_ADDRESS)
+                        .country("Netherland")
+                        .district("Amsterdam")
+                        .build()))
+                .masterUser(MasterUser.builder().contact(Contact.builder()
+                        .email("okan.uslu@trendyol.com")
+                        .phone(Phone.builder().countryCode("+90").phone("5555555556").build())
+                        .build()).build())
+                .taxNumber("1234567891")
+                .countryBasedIn("NL")
+                .build();
+
+        when(commissionInvoiceRepository.findByInvoiceStatus(InvoiceStatus.NUMBER_GENERATED)).thenReturn(List.of(commissionInvoice1, commissionInvoice2));
+        when(sellerApiClient.getSellerById(1L)).thenReturn(sellerResponse1);
+        when(sellerApiClient.getSellerById(2L)).thenReturn(sellerResponse2);
+
+        //then
+        commissionInvoiceService.generatePdf();
+
+        //then
+        ArgumentCaptor<DocumentCreateMessage> documentCreateMessageArgumentCaptor = ArgumentCaptor.forClass(DocumentCreateMessage.class);
+        verify(documentCreateProducer, times(2)).produceDocumentCreateMessage(documentCreateMessageArgumentCaptor.capture());
+
+        List<DocumentCreateMessage> documentCreateMessages = documentCreateMessageArgumentCaptor.getAllValues();
+
+        Optional<DocumentCreateMessage> documentCreateMessage1 = documentCreateMessages.stream().filter(f -> f.getInvoiceNumber().equals("TBV2022000000001")).findFirst();
+        assertThat(documentCreateMessage1).isPresent();
+        assertThat(documentCreateMessage1.get().getSellerId()).isEqualTo(1L);
+        assertThat(documentCreateMessage1.get().getSellerName()).isEqualTo("Mert Unsal");
+        assertThat(documentCreateMessage1.get().getAddressLine()).isEqualTo("Lumina Hause, 89 New Bond Street W1S 1DA Amsterdam/Netherland");
+        assertThat(documentCreateMessage1.get().getEmail()).isEqualTo("mert.unsal@trendyol.com");
+        assertThat(documentCreateMessage1.get().getPhone()).isEqualTo("+905555555555");
+        assertThat(documentCreateMessage1.get().getInvoiceDate()).isEqualTo(currentDate);
+        assertThat(documentCreateMessage1.get().getTaxIdentificationNumber()).isEqualTo("1234567890");
+        assertThat(documentCreateMessage1.get().getVatRegistrationNumber()).isEqualTo("NL1234567890");
+        assertThat(documentCreateMessage1.get().getInvoiceLines()).isEqualTo(List.of(InvoiceLine.builder()
+                .description("Commission Fee")
+                .quantity(1)
+                .unit("Item")
+                .unitPrice(BigDecimal.valueOf(100L))
+                .vatRate(BigDecimal.valueOf(21L))
+                .amount(BigDecimal.valueOf(121L))
+                .build()));
+
+        Optional<DocumentCreateMessage> documentCreateMessage2 = documentCreateMessages.stream().filter(f -> f.getInvoiceNumber().equals("TBV2022000000002")).findFirst();
+        assertThat(documentCreateMessage2).isPresent();
+        assertThat(documentCreateMessage2.get().getSellerId()).isEqualTo(2L);
+        assertThat(documentCreateMessage2.get().getSellerName()).isEqualTo("Okan Uslu");
+        assertThat(documentCreateMessage2.get().getAddressLine()).isEqualTo("Lumina Hause, 90 New Bond Street W1S 1DA Amsterdam/Netherland");
+        assertThat(documentCreateMessage2.get().getEmail()).isEqualTo("okan.uslu@trendyol.com");
+        assertThat(documentCreateMessage2.get().getPhone()).isEqualTo("+905555555556");
+        assertThat(documentCreateMessage2.get().getInvoiceDate()).isEqualTo(currentDate);
+        assertThat(documentCreateMessage2.get().getTaxIdentificationNumber()).isEqualTo("1234567891");
+        assertThat(documentCreateMessage2.get().getVatRegistrationNumber()).isEqualTo("NL1234567891");
+        assertThat(documentCreateMessage2.get().getInvoiceLines()).isEqualTo(List.of(InvoiceLine.builder()
+                .description("Commission Fee")
+                .quantity(1)
+                .unit("Item")
+                .unitPrice(BigDecimal.valueOf(200L))
+                .vatRate(BigDecimal.valueOf(21L))
+                .amount(BigDecimal.valueOf(242L))
+                .build()));
     }
 }

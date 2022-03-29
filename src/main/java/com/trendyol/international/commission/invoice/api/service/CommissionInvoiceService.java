@@ -9,6 +9,7 @@ import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
+import com.trendyol.international.commission.invoice.api.model.response.Seller.Address;
 import com.trendyol.international.commission.invoice.api.model.response.SellerResponse;
 import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
@@ -16,8 +17,8 @@ import com.trendyol.international.commission.invoice.api.repository.SettlementIt
 import com.trendyol.international.commission.invoice.api.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -131,19 +132,21 @@ public class CommissionInvoiceService {
 
     private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
         Optional.ofNullable(commissionInvoices)
-                .filter(ObjectUtils::isEmpty)
-                .ifPresent(invoices -> documentCreateProducer
-                        .produceDocumentCreateMessage(getDocumentCreateMessage(sellerApiClient.getSellerById(sellerId), invoices)));
+                .filter(f -> !f.isEmpty())
+                .ifPresent(invoices -> {
+                    SellerResponse sellerResponse = sellerApiClient.getSellerById(sellerId);
+                    DocumentCreateMessage documentCreateMessage = getDocumentCreateMessage(sellerResponse, invoices);
+                    documentCreateProducer.produceDocumentCreateMessage(documentCreateMessage);
+                });
     }
 
     private DocumentCreateMessage getDocumentCreateMessage(SellerResponse sellerResponse, List<CommissionInvoice> commissionInvoices) {
         return DocumentCreateMessage.builder()
                 .sellerId(commissionInvoices.get(0).getSellerId())
                 .sellerName(sellerResponse.getCompanyName())
-                .addressLine1(sellerResponse.getInvoiceAddress().getAddressLine1())
-                .addressLine2(sellerResponse.getInvoiceAddress().getAddressLine2())
+                .addressLine(sellerResponse.getInvoiceAddress().map(Address::getFormattedAddress).orElse(StringUtils.EMPTY))
                 .email(sellerResponse.getMasterUser().getContact().getEmail())
-                .phone(sellerResponse.getMasterUser().getContact().getPhone())
+                .phone(sellerResponse.getMasterUser().getContact().getPhone().getFullPhoneNumber())
                 .invoiceNumber(commissionInvoices.get(0).getSerialNumber())
                 .invoiceDate(commissionInvoices.get(0).getInvoiceDate())
                 .taxIdentificationNumber(sellerResponse.getTaxNumber())
