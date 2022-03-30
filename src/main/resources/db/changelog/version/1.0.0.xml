@@ -105,4 +105,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="2022-03-30 15:30" author="mert.okan">
+        <sql>
+            alter table commission_invoices alter column serial_number drop not null;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

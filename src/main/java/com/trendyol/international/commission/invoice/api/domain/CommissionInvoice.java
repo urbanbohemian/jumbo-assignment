@@ -29,7 +29,7 @@ public class CommissionInvoice extends AuditingEntity {
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
-    @Column(name = "serial_number", nullable = false, unique = true)
+    @Column(name = "serial_number", unique = true)
     private String serialNumber;                                    //article 'b'
 
     @Column(name = "amount", nullable = false)
