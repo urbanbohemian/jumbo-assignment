@@ -42,8 +42,8 @@ public class CommissionInvoice extends AuditingEntity {
     @Column(name = "vat_rate", nullable = false)
     private BigDecimal vatRate;                                     //article 'h'
 
-    @Column(name = "vat_status_type", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(name = "vat_status_type", nullable = false)
     private VatStatusType vatStatusType;                            //article 'n'
 
     @Column(name = "charged_vat_description", nullable = false)
@@ -67,6 +67,7 @@ public class CommissionInvoice extends AuditingEntity {
     @Column(name = "end_date", nullable = false)
     private Date endDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private InvoiceStatus invoiceStatus;
 

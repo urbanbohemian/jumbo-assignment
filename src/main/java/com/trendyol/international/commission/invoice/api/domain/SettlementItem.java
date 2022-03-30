@@ -28,6 +28,7 @@ public class SettlementItem extends AuditingEntity {
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type_id", nullable = false)
     private TransactionType transactionType;
 
