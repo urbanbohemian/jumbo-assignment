@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Builder
@@ -24,5 +26,11 @@ public class SellerResponse {
 
     public Optional<Address> getInvoiceAddress() {
         return addresses.stream().filter(f -> AddressType.INVOICE_ADDRESS.equals(f.getAddressType())).findFirst();
+    }
+
+    public String getVatRegistrationNumber() {
+        return Objects.nonNull(countryBasedIn) && Objects.nonNull(taxNumber)
+                ? countryBasedIn.concat(taxNumber)
+                : StringUtils.EMPTY;
     }
 }

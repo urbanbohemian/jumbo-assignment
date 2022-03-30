@@ -130,7 +130,7 @@ public class CommissionInvoiceService {
                 .referenceId(commissionInvoices.get(0).getReferenceId())
                 .invoiceDate(commissionInvoices.get(0).getInvoiceDate())
                 .taxIdentificationNumber(sellerResponse.getTaxNumber())
-                .vatRegistrationNumber(sellerResponse.getCountryBasedIn().concat(sellerResponse.getTaxNumber()))
+                .vatRegistrationNumber(sellerResponse.getVatRegistrationNumber())
                 .vatStatusType(commissionInvoices.get(0).getVatStatusType().toString())
                 .invoiceLineList(commissionInvoices.stream().map(commissionInvoice -> InvoiceLine.builder()
                         .description("Commission Fee")
