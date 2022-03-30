@@ -1,5 +1,6 @@
 package com.trendyol.international.commission.invoice.api.domain;
 
+import com.trendyol.international.commission.invoice.api.converter.TransactionTypeConverter;
 import com.trendyol.international.commission.invoice.api.domain.base.AuditingEntity;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class SettlementItem extends AuditingEntity {
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = TransactionTypeConverter.class)
     @Column(name = "transaction_type_id", nullable = false)
     private TransactionType transactionType;
 
