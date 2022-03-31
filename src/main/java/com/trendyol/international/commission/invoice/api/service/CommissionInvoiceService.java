@@ -119,9 +119,9 @@ public class CommissionInvoiceService {
                 .forEach(this::generateSerialNumberForCommissionInvoice);
     }
 
-    private DocumentCreateMessage getDocumentCreateMessage(SellerResponse sellerResponse, List<CommissionInvoice> commissionInvoices) {
+    private DocumentCreateMessage getDocumentCreateMessage(Long sellerId, SellerResponse sellerResponse, List<CommissionInvoice> commissionInvoices) {
         return DocumentCreateMessage.builder()
-                .sellerId(commissionInvoices.get(0).getSellerId())
+                .sellerId(sellerId)
                 .sellerName(sellerResponse.getCompanyName())
                 .addressLine(sellerResponse.getInvoiceAddress().map(Address::getFormattedAddress).orElse(StringUtils.EMPTY))
                 .email(sellerResponse.getMasterUser().getContact().getEmail())
@@ -145,7 +145,7 @@ public class CommissionInvoiceService {
 
     private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
         SellerResponse sellerResponse = sellerApiClient.getSellerById(sellerId);
-        DocumentCreateMessage documentCreateMessage = getDocumentCreateMessage(sellerResponse, commissionInvoices);
+        DocumentCreateMessage documentCreateMessage = getDocumentCreateMessage(sellerId, sellerResponse, commissionInvoices);
         documentCreateProducer.produceDocumentCreateMessage(documentCreateMessage);
     }
 
