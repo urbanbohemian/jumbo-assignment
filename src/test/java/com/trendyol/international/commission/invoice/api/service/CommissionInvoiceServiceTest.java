@@ -333,18 +333,15 @@ public class CommissionInvoiceServiceTest {
 
         List<DocumentCreateMessage> documentCreateMessages = documentCreateMessageArgumentCaptor.getAllValues();
 
-        Optional<DocumentCreateMessage> documentCreateMessage1 = documentCreateMessages.stream().filter(f -> f.getInvoiceNumber().equals("TBV2022000000001")).findFirst();
+        Optional<DocumentCreateMessage> documentCreateMessage1 = documentCreateMessages.stream().filter(f -> f.getSellerId().equals(1L)).findFirst();
         assertThat(documentCreateMessage1).isPresent();
         assertThat(documentCreateMessage1.get().getSellerId()).isEqualTo(1L);
         assertThat(documentCreateMessage1.get().getSellerName()).isEqualTo("Mert Unsal");
         assertThat(documentCreateMessage1.get().getAddressLine()).isEqualTo("Lumina Hause, 89 New Bond Street W1S 1DA Amsterdam/Netherland");
         assertThat(documentCreateMessage1.get().getEmail()).isEqualTo("mert.unsal@trendyol.com");
         assertThat(documentCreateMessage1.get().getPhone()).isEqualTo("+905555555555");
-        assertThat(documentCreateMessage1.get().getReferenceId()).isEqualTo("1234567890");
-        assertThat(documentCreateMessage1.get().getInvoiceDate()).isEqualTo(currentDate);
         assertThat(documentCreateMessage1.get().getTaxIdentificationNumber()).isEqualTo("1234567890");
         assertThat(documentCreateMessage1.get().getVatRegistrationNumber()).isEqualTo("NL1234567890");
-        assertThat(documentCreateMessage1.get().getVatStatusType()).isEqualTo(VatStatusType.DOMESTIC.name());
         assertThat(documentCreateMessage1.get().getInvoiceLineList()).isEqualTo(List.of(InvoiceLine.builder()
                 .description("Commission Fee")
                 .quantity(1)
@@ -352,20 +349,21 @@ public class CommissionInvoiceServiceTest {
                 .unitPrice(BigDecimal.valueOf(100L))
                 .vatRate(BigDecimal.valueOf(21L))
                 .amount(BigDecimal.valueOf(121L))
+                .referenceId("1234567890")
+                .invoiceNumber("TBV2022000000001")
+                .invoiceDate(currentDate)
+                .vatStatusType(VatStatusType.DOMESTIC.name())
                 .build()));
 
-        Optional<DocumentCreateMessage> documentCreateMessage2 = documentCreateMessages.stream().filter(f -> f.getInvoiceNumber().equals("TBV2022000000002")).findFirst();
+        Optional<DocumentCreateMessage> documentCreateMessage2 = documentCreateMessages.stream().filter(f -> f.getSellerId().equals(2L)).findFirst();
         assertThat(documentCreateMessage2).isPresent();
         assertThat(documentCreateMessage2.get().getSellerId()).isEqualTo(2L);
         assertThat(documentCreateMessage2.get().getSellerName()).isEqualTo("Okan Uslu");
         assertThat(documentCreateMessage2.get().getAddressLine()).isEqualTo("Lumina Hause, 90 New Bond Street W1S 1DA Amsterdam/Netherland");
         assertThat(documentCreateMessage2.get().getEmail()).isEqualTo("okan.uslu@trendyol.com");
         assertThat(documentCreateMessage2.get().getPhone()).isEqualTo("+905555555556");
-        assertThat(documentCreateMessage2.get().getReferenceId()).isEqualTo("1234567891");
-        assertThat(documentCreateMessage2.get().getInvoiceDate()).isEqualTo(currentDate);
         assertThat(documentCreateMessage2.get().getTaxIdentificationNumber()).isEqualTo("1234567891");
         assertThat(documentCreateMessage2.get().getVatRegistrationNumber()).isEqualTo("NL1234567891");
-        assertThat(documentCreateMessage2.get().getVatStatusType()).isEqualTo(VatStatusType.DOMESTIC.name());
         assertThat(documentCreateMessage2.get().getInvoiceLineList()).isEqualTo(List.of(InvoiceLine.builder()
                 .description("Commission Fee")
                 .quantity(1)
@@ -373,6 +371,10 @@ public class CommissionInvoiceServiceTest {
                 .unitPrice(BigDecimal.valueOf(200L))
                 .vatRate(BigDecimal.valueOf(21L))
                 .amount(BigDecimal.valueOf(242L))
+                .referenceId("1234567891")
+                .invoiceNumber("TBV2022000000002")
+                .invoiceDate(currentDate)
+                .vatStatusType(VatStatusType.DOMESTIC.name())
                 .build()));
     }
 }

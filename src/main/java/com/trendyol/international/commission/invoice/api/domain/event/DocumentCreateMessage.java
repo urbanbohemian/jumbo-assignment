@@ -4,7 +4,6 @@ import com.trendyol.international.commission.invoice.api.domain.InvoiceLine;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -15,11 +14,7 @@ public class DocumentCreateMessage {
     private String addressLine;
     private String email;
     private String phone;
-    private String invoiceNumber;
-    private String referenceId;
-    private Date invoiceDate;
     private String taxIdentificationNumber;
     private String vatRegistrationNumber;
-    private String vatStatusType;
     private List<InvoiceLine> invoiceLineList;
 }

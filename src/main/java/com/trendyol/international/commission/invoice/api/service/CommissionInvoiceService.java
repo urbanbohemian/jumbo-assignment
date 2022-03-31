@@ -126,12 +126,8 @@ public class CommissionInvoiceService {
                 .addressLine(sellerResponse.getInvoiceAddress().map(Address::getFormattedAddress).orElse(StringUtils.EMPTY))
                 .email(sellerResponse.getMasterUser().getContact().getEmail())
                 .phone(sellerResponse.getMasterUser().getContact().getPhone().getFullPhoneNumber())
-                .invoiceNumber(commissionInvoices.get(0).getSerialNumber())
-                .referenceId(commissionInvoices.get(0).getReferenceId())
-                .invoiceDate(commissionInvoices.get(0).getInvoiceDate())
                 .taxIdentificationNumber(sellerResponse.getTaxNumber())
                 .vatRegistrationNumber(sellerResponse.getVatRegistrationNumber())
-                .vatStatusType(commissionInvoices.get(0).getVatStatusType().toString())
                 .invoiceLineList(commissionInvoices.stream().map(commissionInvoice -> InvoiceLine.builder()
                         .description("Commission Fee")
                         .quantity(1)
@@ -139,18 +135,18 @@ public class CommissionInvoiceService {
                         .unitPrice(commissionInvoice.getNetAmount())
                         .vatRate(commissionInvoice.getVatRate())
                         .amount(commissionInvoice.getAmount())
+                        .referenceId(commissionInvoice.getReferenceId())
+                        .invoiceNumber(commissionInvoice.getSerialNumber())
+                        .invoiceDate(commissionInvoice.getInvoiceDate())
+                        .vatStatusType(commissionInvoice.getVatStatusType().toString())
                         .build()).toList())
                 .build();
     }
 
     private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
-        Optional.ofNullable(commissionInvoices)
-                .filter(f -> !f.isEmpty())
-                .ifPresent(invoices -> {
-                    SellerResponse sellerResponse = sellerApiClient.getSellerById(sellerId);
-                    DocumentCreateMessage documentCreateMessage = getDocumentCreateMessage(sellerResponse, invoices);
-                    documentCreateProducer.produceDocumentCreateMessage(documentCreateMessage);
-                });
+        SellerResponse sellerResponse = sellerApiClient.getSellerById(sellerId);
+        DocumentCreateMessage documentCreateMessage = getDocumentCreateMessage(sellerResponse, commissionInvoices);
+        documentCreateProducer.produceDocumentCreateMessage(documentCreateMessage);
     }
 
     @Transactional

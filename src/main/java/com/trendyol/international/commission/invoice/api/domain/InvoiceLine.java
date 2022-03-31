@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Builder
 @Data
@@ -14,4 +15,8 @@ public class InvoiceLine {
     private BigDecimal unitPrice;
     private BigDecimal vatRate;
     private BigDecimal amount;
+    private String referenceId;
+    private String invoiceNumber;
+    private Date invoiceDate;
+    private String vatStatusType;
 }
