@@ -11,16 +11,6 @@ import org.mapstruct.factory.Mappers;
 public interface SettlementItemMapper {
     SettlementItemMapper INSTANCE = Mappers.getMapper(SettlementItemMapper.class);
 
-    @Mappings({
-            @Mapping(target = "id", source = "id"),
-            @Mapping(target = "createdDate", source = "createdDate"),
-            @Mapping(target = "sellerId", source = "sellerId"),
-            @Mapping(target = "transactionType", source = "type"),
-            @Mapping(target = "deliveryDate", source = "deliveryDate"),
-            @Mapping(target = "paymentDate", source = "paymentDate"),
-            @Mapping(target = "commission", source = "totalCommission"),
-            @Mapping(target = "storeFrontId", source = "storeFrontId"),
-            @Mapping(target = "currency", source = "currency"),
-    })
+    @Mappings({@Mapping(target = "transactionType", source = "type"), @Mapping(target = "commission", source = "totalCommission")})
     SettlementItemDto settlementItemDto(SettlementItemMessage settlementItemMessage);
 }
