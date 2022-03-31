@@ -2,7 +2,6 @@ package com.trendyol.international.commission.invoice.api.service;
 
 import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
-import com.trendyol.international.commission.invoice.api.domain.event.InvoiceLine;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateMessage;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
@@ -340,20 +339,16 @@ public class CommissionInvoiceServiceTest {
         assertThat(documentCreateMessage1.get().getAddressLine()).isEqualTo("Lumina Hause, 89 New Bond Street W1S 1DA Amsterdam/Netherland");
         assertThat(documentCreateMessage1.get().getEmail()).isEqualTo("mert.unsal@trendyol.com");
         assertThat(documentCreateMessage1.get().getPhone()).isEqualTo("+905555555555");
+        assertThat(documentCreateMessage1.get().getInvoiceNumber()).isEqualTo("TBV2022000000001");
+        assertThat(documentCreateMessage1.get().getInvoiceDate()).isEqualTo(currentDate);
         assertThat(documentCreateMessage1.get().getTaxIdentificationNumber()).isEqualTo("1234567890");
         assertThat(documentCreateMessage1.get().getVatRegistrationNumber()).isEqualTo("NL1234567890");
-        assertThat(documentCreateMessage1.get().getInvoiceLineList()).isEqualTo(List.of(InvoiceLine.builder()
-                .description("Commission Fee")
-                .quantity(1)
-                .unit("Item")
-                .unitPrice(BigDecimal.valueOf(100L))
-                .vatRate(BigDecimal.valueOf(21L))
-                .amount(BigDecimal.valueOf(121L))
-                .referenceId("1234567890")
-                .invoiceNumber("TBV2022000000001")
-                .invoiceDate(currentDate)
-                .vatStatusType(VatStatusType.DOMESTIC.name())
-                .build()));
+        assertThat(documentCreateMessage1.get().getReferenceId()).isEqualTo("1234567890");
+        assertThat(documentCreateMessage1.get().getVatStatusType()).isEqualTo(VatStatusType.DOMESTIC.name());
+        assertThat(documentCreateMessage1.get().getNetAmount()).isEqualTo(BigDecimal.valueOf(100L));
+        assertThat(documentCreateMessage1.get().getVatAmount()).isEqualTo(BigDecimal.valueOf(21L));
+        assertThat(documentCreateMessage1.get().getVatRate()).isEqualTo(BigDecimal.valueOf(21L));
+        assertThat(documentCreateMessage1.get().getAmount()).isEqualTo(BigDecimal.valueOf(121L));
 
         Optional<DocumentCreateMessage> documentCreateMessage2 = documentCreateMessages.stream().filter(f -> f.getSellerId().equals(2L)).findFirst();
         assertThat(documentCreateMessage2).isPresent();
@@ -362,19 +357,15 @@ public class CommissionInvoiceServiceTest {
         assertThat(documentCreateMessage2.get().getAddressLine()).isEqualTo("Lumina Hause, 90 New Bond Street W1S 1DA Amsterdam/Netherland");
         assertThat(documentCreateMessage2.get().getEmail()).isEqualTo("okan.uslu@trendyol.com");
         assertThat(documentCreateMessage2.get().getPhone()).isEqualTo("+905555555556");
+        assertThat(documentCreateMessage2.get().getInvoiceNumber()).isEqualTo("TBV2022000000002");
+        assertThat(documentCreateMessage2.get().getInvoiceDate()).isEqualTo(currentDate);
         assertThat(documentCreateMessage2.get().getTaxIdentificationNumber()).isEqualTo("1234567891");
         assertThat(documentCreateMessage2.get().getVatRegistrationNumber()).isEqualTo("NL1234567891");
-        assertThat(documentCreateMessage2.get().getInvoiceLineList()).isEqualTo(List.of(InvoiceLine.builder()
-                .description("Commission Fee")
-                .quantity(1)
-                .unit("Item")
-                .unitPrice(BigDecimal.valueOf(200L))
-                .vatRate(BigDecimal.valueOf(21L))
-                .amount(BigDecimal.valueOf(242L))
-                .referenceId("1234567891")
-                .invoiceNumber("TBV2022000000002")
-                .invoiceDate(currentDate)
-                .vatStatusType(VatStatusType.DOMESTIC.name())
-                .build()));
+        assertThat(documentCreateMessage2.get().getReferenceId()).isEqualTo("1234567891");
+        assertThat(documentCreateMessage2.get().getVatStatusType()).isEqualTo(VatStatusType.DOMESTIC.name());
+        assertThat(documentCreateMessage2.get().getNetAmount()).isEqualTo(BigDecimal.valueOf(200L));
+        assertThat(documentCreateMessage2.get().getVatAmount()).isEqualTo(BigDecimal.valueOf(42L));
+        assertThat(documentCreateMessage2.get().getVatRate()).isEqualTo(BigDecimal.valueOf(21L));
+        assertThat(documentCreateMessage2.get().getAmount()).isEqualTo(BigDecimal.valueOf(242L));
     }
 }

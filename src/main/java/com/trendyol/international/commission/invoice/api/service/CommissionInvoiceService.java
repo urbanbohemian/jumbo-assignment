@@ -2,7 +2,6 @@ package com.trendyol.international.commission.invoice.api.service;
 
 import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
-import com.trendyol.international.commission.invoice.api.domain.event.InvoiceLine;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateMessage;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
@@ -119,34 +118,32 @@ public class CommissionInvoiceService {
                 .forEach(this::generateSerialNumberForCommissionInvoice);
     }
 
-    private DocumentCreateMessage getDocumentCreateMessage(Long sellerId, SellerResponse sellerResponse, List<CommissionInvoice> commissionInvoices) {
+    private DocumentCreateMessage getDocumentCreateMessage(SellerResponse sellerResponse, CommissionInvoice commissionInvoice) {
         return DocumentCreateMessage.builder()
-                .sellerId(sellerId)
+                .sellerId(commissionInvoice.getSellerId())
                 .sellerName(sellerResponse.getCompanyName())
                 .addressLine(sellerResponse.getInvoiceAddress().map(Address::getFormattedAddress).orElse(StringUtils.EMPTY))
                 .email(sellerResponse.getMasterUser().getContact().getEmail())
                 .phone(sellerResponse.getMasterUser().getContact().getPhone().getFullPhoneNumber())
+                .invoiceNumber(commissionInvoice.getSerialNumber())
+                .invoiceDate(commissionInvoice.getInvoiceDate())
                 .taxIdentificationNumber(sellerResponse.getTaxNumber())
                 .vatRegistrationNumber(sellerResponse.getVatRegistrationNumber())
-                .invoiceLineList(commissionInvoices.stream().map(commissionInvoice -> InvoiceLine.builder()
-                        .description("Commission Fee")
-                        .quantity(1)
-                        .unit("Item")
-                        .unitPrice(commissionInvoice.getNetAmount())
-                        .vatRate(commissionInvoice.getVatRate())
-                        .amount(commissionInvoice.getAmount())
-                        .referenceId(commissionInvoice.getReferenceId())
-                        .invoiceNumber(commissionInvoice.getSerialNumber())
-                        .invoiceDate(commissionInvoice.getInvoiceDate())
-                        .vatStatusType(commissionInvoice.getVatStatusType().toString())
-                        .build()).toList())
+                .referenceId(commissionInvoice.getReferenceId())
+                .vatStatusType(commissionInvoice.getVatStatusType().name())
+                .netAmount(commissionInvoice.getNetAmount())
+                .vatAmount(commissionInvoice.getVatAmount())
+                .vatRate(commissionInvoice.getVatRate())
+                .amount(commissionInvoice.getAmount())
                 .build();
     }
 
     private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
         SellerResponse sellerResponse = sellerApiClient.getSellerById(sellerId);
-        DocumentCreateMessage documentCreateMessage = getDocumentCreateMessage(sellerId, sellerResponse, commissionInvoices);
-        documentCreateProducer.produceDocumentCreateMessage(documentCreateMessage);
+        commissionInvoices.forEach(commissionInvoice -> {
+            DocumentCreateMessage documentCreateMessage = getDocumentCreateMessage(sellerResponse, commissionInvoice);
+            documentCreateProducer.produceDocumentCreateMessage(documentCreateMessage);
+        });
     }
 
     @Transactional
