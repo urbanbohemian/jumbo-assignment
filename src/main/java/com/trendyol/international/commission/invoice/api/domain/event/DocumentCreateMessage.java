@@ -1,6 +1,5 @@
 package com.trendyol.international.commission.invoice.api.domain.event;
 
-import com.trendyol.international.commission.invoice.api.domain.InvoiceLine;
 import lombok.Builder;
 import lombok.Data;
 

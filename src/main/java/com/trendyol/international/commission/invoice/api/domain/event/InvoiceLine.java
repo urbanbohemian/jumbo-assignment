@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.domain;
+package com.trendyol.international.commission.invoice.api.domain.event;
 
 import lombok.Builder;
 import lombok.Data;

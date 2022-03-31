@@ -1,7 +1,6 @@
 package com.trendyol.international.commission.invoice.api.domain;
 
 import com.trendyol.international.commission.invoice.api.converter.InvoiceStatusTypeConverter;
-import com.trendyol.international.commission.invoice.api.converter.TransactionTypeConverter;
 import com.trendyol.international.commission.invoice.api.domain.base.AuditingEntity;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
