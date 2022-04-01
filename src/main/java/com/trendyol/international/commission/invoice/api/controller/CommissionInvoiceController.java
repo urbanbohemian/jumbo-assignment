@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommissionInvoiceController {
     private final CommissionInvoiceService commissionInvoiceService;
 
-    @PostMapping("/create")
+    @PostMapping
     public void create(@RequestBody CommissionInvoiceCreateRequest commissionInvoiceCreateRequest) {
         commissionInvoiceService.create(CommissionInvoiceCreateMapper.INSTANCE.commissionInvoiceCreateDto(commissionInvoiceCreateRequest));
     }
