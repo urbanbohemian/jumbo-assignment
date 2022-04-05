@@ -6,7 +6,7 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
 @Converter
-public class InvoiceStatusTypeConverter implements AttributeConverter<InvoiceStatus, Integer> {
+public class InvoiceStatusConverter implements AttributeConverter<InvoiceStatus, Integer> {
 
     @Override
     public Integer convertToDatabaseColumn(InvoiceStatus invoiceStatus) {
