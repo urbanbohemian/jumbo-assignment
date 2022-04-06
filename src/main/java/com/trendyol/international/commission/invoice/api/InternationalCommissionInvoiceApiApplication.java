@@ -17,5 +17,4 @@ public class InternationalCommissionInvoiceApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(InternationalCommissionInvoiceApiApplication.class, args);
 	}
-
 }
