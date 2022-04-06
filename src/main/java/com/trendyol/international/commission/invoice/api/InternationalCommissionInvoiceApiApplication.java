@@ -7,11 +7,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+@SpringBootApplication
 @EnableFeignClients
 @EnableConfigurationProperties
 @EnableJpaAuditing
 @EnableConsulProcessor({"/configs/config.json", "/configs/toggle.json", "/configs/secret.json"})
-@SpringBootApplication
 public class InternationalCommissionInvoiceApiApplication {
 
 	public static void main(String[] args) {
