@@ -125,7 +125,7 @@
         </repository>
         <repository>
             <id>gitlab-maven</id>
-            <url>https://gitlab.trendyol.com/api/v4/projects/${sellerResponse-base-package-registry.project-id}/packages/maven
+            <url>https://gitlab.trendyol.com/api/v4/projects/${seller-base-package-registry.project-id}/packages/maven
             </url>
         </repository>
     </repositories>
