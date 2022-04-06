@@ -121,7 +121,7 @@
         <repository>
             <id>trendyol-releases</id>
             <name>Trendyol release</name>
-            <url>http://sfrontregistry.trendyol.com:8081/repository/maven-releases/</url>
+            <url>https://sfrontregistry.trendyol.com:8081/repository/maven-releases/</url>
         </repository>
         <repository>
             <id>gitlab-maven</id>
