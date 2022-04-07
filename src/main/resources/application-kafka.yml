@@ -1,9 +1,9 @@
-KAFKA_BOOTSTRAP_SERVERS: localhost:29092
+kafka.bootstrap.servers: localhost:29092
 kafka-config:
   producers:
     "[default]":
       props:
-        "[bootstrap.servers]": ${KAFKA_BOOTSTRAP_SERVERS}
+        "[bootstrap.servers]": ${kafka.bootstrap.servers}
         "[batch.size]": 16384
         "[linger.ms]": 5
         "[buffer.memory]": 33554432
@@ -23,7 +23,7 @@ kafka-config:
       backoffIntervalMillis: 5000 #wait time for retry
       missingTopicAlertEnable: false
       props:
-        "[bootstrap.servers]": ${KAFKA_BOOTSTRAP_SERVERS}
+        "[bootstrap.servers]": ${kafka.bootstrap.servers}
         #"[spring.json.trusted.packages]": com.trendyol
         "[group.id]": earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0.group
         "[max.poll.records]": 500 #for batch listener
