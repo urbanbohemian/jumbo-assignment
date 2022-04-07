@@ -13,8 +13,8 @@ kafka-config:
         "[request.timeout.ms]": 30000
   consumers:
     "[settlement-items-debezium-consumer]":
-      topic: ${SETTLEMENT_ITEMS_DEBEZIUM_CONSUMER_TOPIC:earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0}
-      error-topic: ${SETTLEMENT_ITEMS_DEBEZIUM_CONSUMER_ERROR_TOPIC:earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0.error}
+      topic: earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0
+      error-topic: earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0.error
       factory-bean-name: settlementItemsDebeziumKafkaListenerContainerFactory
       concurrency: 1
       retry-count: 1
@@ -25,7 +25,7 @@ kafka-config:
       props:
         "[bootstrap.servers]": ${KAFKA_BOOTSTRAP_SERVERS}
         #"[spring.json.trusted.packages]": com.trendyol
-        "[group.id]": ${SETTLEMENT_ITEMS_DEBEZIUM_CONSUMER_GROUP:earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0.group}
+        "[group.id]": earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0.group
         "[max.poll.records]": 500 #for batch listener
         "[max.poll.interval.ms]": 300000 #poll time
         "[session.timeout.ms]": 10000
