@@ -47,8 +47,8 @@ public class CommissionInvoice extends AuditingEntity {
     @Column(name = "vat_status_type", nullable = false)
     private VatStatusType vatStatusType;                            //article 'n'
 
-    @Column(name = "charged_vat_description", nullable = false)
-    private String chargedVatDescription;                           //article 'n'
+    @Column(name = "description", nullable = false)
+    private String description;                           //article 'n'
 
     @Column(name = "invoice_date", nullable = false)
     private Date invoiceDate;

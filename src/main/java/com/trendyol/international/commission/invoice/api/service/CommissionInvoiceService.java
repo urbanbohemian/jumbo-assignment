@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -94,7 +95,7 @@ public class CommissionInvoiceService {
                 .vatRate(vatModel.getVatRate())
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .invoiceDate(endDate)
-                .chargedVatDescription("commission invoice")
+                .description(createDescription(startDate, endDate))
                 .endDate(endDate)
                 .startDate(startDate)
                 .storeFrontId("1")
@@ -102,6 +103,11 @@ public class CommissionInvoiceService {
                 .referenceId(UUID.randomUUID().toString())
                 .build();
         commissionInvoiceRepository.save(commissionInvoice);
+    }
+
+    private String createDescription(Date startDate, Date endDate) {
+        return String.format("Trendyol Commission Fee between %s - %s", DateUtils.dateAsStringWithoutYear(startDate),
+                DateUtils.dateAsStringWithoutYear(endDate));
     }
 
     private void generateSerialNumberForCommissionInvoice(CommissionInvoice commissionInvoice) {
