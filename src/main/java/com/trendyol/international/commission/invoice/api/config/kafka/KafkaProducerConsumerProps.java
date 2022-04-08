@@ -10,9 +10,18 @@ import java.util.Map;
 @Component
 @ConfigurationProperties(prefix = "kafka-config")
 public class KafkaProducerConsumerProps {
+    private Map<String, String> stretch;
     private Map<String, Consumer> consumers;
     private Map<String, Producer> producers;
     private Map<String, String> integrationTopics;
+
+    public Map<String, String> getStretch() {
+        return stretch;
+    }
+
+    public void setStretch(Map<String, String> stretch) {
+        this.stretch = stretch;
+    }
 
     public Map<String, Consumer> getConsumers() {
         return consumers;

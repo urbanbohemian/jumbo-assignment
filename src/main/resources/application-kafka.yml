@@ -1,5 +1,18 @@
 kafka.bootstrap.servers: localhost:29092
+stretch-kafka:
+  certificate-location: src/main/resources/globaltrust.jks
+  username: user
+  password: pass
+
 kafka-config:
+  stretch:
+    "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
+    "[sasl.mechanism]": SCRAM-SHA-512
+    "[security.protocol]": SASL_SSL
+    "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
+    "[ssl.truststore.password]": trendyolconfluentkeystorepassword
+    "[default.api.timeout.ms]": 20000
+    "[request.timeout.ms]": 20000
   producers:
     "[default]":
       props:
@@ -13,8 +26,8 @@ kafka-config:
         "[request.timeout.ms]": 30000
   consumers:
     "[settlement-items-debezium-consumer]":
-      topic: earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0
-      error-topic: earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0.error
+      topic: seller.settlement.int-settlement-debezium.settlement-cdc
+      error-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.error
       factory-bean-name: settlementItemsDebeziumKafkaListenerContainerFactory
       concurrency: 1
       retry-count: 1
@@ -25,7 +38,7 @@ kafka-config:
       props:
         "[bootstrap.servers]": ${kafka.bootstrap.servers}
         #"[spring.json.trusted.packages]": com.trendyol
-        "[group.id]": earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.settlementItems.0.group
+        "[group.id]": seller.finance.internationalcommissioninvoiceapi.settlementItems.0.group
         "[max.poll.records]": 500 #for batch listener
         "[max.poll.interval.ms]": 300000 #poll time
         "[session.timeout.ms]": 10000
@@ -35,4 +48,4 @@ kafka-config:
         "[fetch.max.bytes]": 52428800
         "[fetch.max.wait.ms]": 500
   integration-topics:
-    document-create-topic: earth.sellercore.sellerfinance.internationalcommissioninvoiceapi.documentCreate.0
+    document-create-topic: seller.finance.internationalcommissioninvoiceapi.documentCreate.0

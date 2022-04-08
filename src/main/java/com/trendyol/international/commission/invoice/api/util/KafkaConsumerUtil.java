@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trendyol.international.commission.invoice.api.config.kafka.KafkaConsumerInterceptor;
+import com.trendyol.international.commission.invoice.api.config.kafka.KafkaProducerConsumerProps;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -31,6 +32,12 @@ import java.util.Optional;
 
 @Component
 public class KafkaConsumerUtil {
+
+    private final KafkaProducerConsumerProps kafkaProducerConsumerProps;
+
+    public KafkaConsumerUtil(KafkaProducerConsumerProps kafkaProducerConsumerProps) {
+        this.kafkaProducerConsumerProps = kafkaProducerConsumerProps;
+    }
 
     public <T> ConsumerFactory<String, T> createConsumerFactory(Consumer consumer, TypeReference<T> typeReference) {
         DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
@@ -60,6 +67,7 @@ public class KafkaConsumerUtil {
 
         // Add kafka consumer correlationid interceptor
         Map<String, Object> consumerProps = consumer.getProps();
+        consumerProps.putAll(kafkaProducerConsumerProps.getStretch());
         consumerProps.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, KafkaConsumerInterceptor.class.getName());
 
         return new DefaultKafkaConsumerFactory<>(consumerProps, keyDeserializer, valueDeserializer);

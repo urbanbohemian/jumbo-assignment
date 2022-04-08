@@ -24,7 +24,7 @@ public class SettlementItemRepositoryTest {
                 .id(1L)
                 .itemCreationDate(new Date())
                 .sellerId(1L)
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
                 .commissionAmount(BigDecimal.ONE)
                 .storeFrontId(1L)
                 .currency("EU")
@@ -35,5 +35,25 @@ public class SettlementItemRepositoryTest {
 
         //then
         assertThat(savedSettlementItem).isEqualTo(settlementItem);
+    }
+
+    @Test
+    public void it_should_update_delivery_date_and_payment_date() {
+        //given
+        SettlementItem settlementItem = SettlementItem.builder()
+                .id(1L)
+                .itemCreationDate(new Date())
+                .sellerId(1L)
+                .transactionType(TransactionType.SALE)
+                .commissionAmount(BigDecimal.ONE)
+                .storeFrontId(1L)
+                .currency("EU")
+                .build();
+        settlementItemRepository.save(settlementItem);
+
+        //when
+        Integer affected = settlementItemRepository.updateDeliveryDateAndPaymentDate(new Date(), new Date(), 1L);
+        //then
+        assertThat(affected).isGreaterThan(0);
     }
 }

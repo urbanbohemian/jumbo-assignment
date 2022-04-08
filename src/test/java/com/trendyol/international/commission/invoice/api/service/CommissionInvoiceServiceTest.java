@@ -65,7 +65,7 @@ public class CommissionInvoiceServiceTest {
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
                 .itemCreationDate(new Date())
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
                 .build();
 
         SettlementItem settlement2 = SettlementItem.builder()
@@ -73,7 +73,7 @@ public class CommissionInvoiceServiceTest {
                 .commissionAmount(BigDecimal.valueOf(121))
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
                 .itemCreationDate(new Date())
                 .build();
 
@@ -114,7 +114,7 @@ public class CommissionInvoiceServiceTest {
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
                 .itemCreationDate(new Date())
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
                 .build();
 
         SettlementItem settlement2 = SettlementItem.builder()
@@ -122,7 +122,7 @@ public class CommissionInvoiceServiceTest {
                 .commissionAmount(BigDecimal.valueOf(122))
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
-                .transactionType(TransactionType.Return)
+                .transactionType(TransactionType.RETURN)
                 .itemCreationDate(new Date())
                 .build();
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
@@ -143,7 +143,7 @@ public class CommissionInvoiceServiceTest {
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
                 .itemCreationDate(new Date())
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
                 .build();
 
         SettlementItem settlement2 = SettlementItem.builder()
@@ -151,7 +151,7 @@ public class CommissionInvoiceServiceTest {
                 .commissionAmount(BigDecimal.valueOf(122))
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
-                .transactionType(TransactionType.Return)
+                .transactionType(TransactionType.RETURN)
                 .itemCreationDate(new Date())
                 .build();
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
@@ -173,7 +173,7 @@ public class CommissionInvoiceServiceTest {
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
                 .itemCreationDate(new Date())
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
                 .build();
 
         SettlementItem settlement2 = SettlementItem.builder()
@@ -181,7 +181,7 @@ public class CommissionInvoiceServiceTest {
                 .commissionAmount(BigDecimal.valueOf(122))
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
                 .itemCreationDate(new Date())
                 .build();
         CommissionInvoice commissionInvoice = CommissionInvoice.builder().endDate(new Date(2L)).build();

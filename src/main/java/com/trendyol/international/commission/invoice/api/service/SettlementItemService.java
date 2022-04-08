@@ -2,6 +2,7 @@ package com.trendyol.international.commission.invoice.api.service;
 
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.dto.SettlementItemDto;
+import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import com.trendyol.international.commission.invoice.api.util.FilterExtension;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class SettlementItemService implements FilterExtension<SettlementItemDto> {
+public class SettlementItemService implements FilterExtension {
 
     private final SettlementItemRepository settlementItemRepository;
 
@@ -32,12 +33,12 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
     }
 
     @Override
-    public void execute(SettlementItemDto settlementItemDto) {
+    public void create(SettlementItemDto settlementItemDto) {
         SettlementItem settlementItem = SettlementItem.builder()
                 .id(settlementItemDto.getId())
                 .itemCreationDate(settlementItemDto.getCreatedDate())
                 .sellerId(settlementItemDto.getSellerId())
-                .transactionType(settlementItemDto.getTransactionType())
+                .transactionType(TransactionType.from(settlementItemDto.getTransactionType()))
                 .commissionAmount(settlementItemDto.getCommission())
                 .deliveryDate(settlementItemDto.getDeliveryDate())
                 .paymentDate(settlementItemDto.getPaymentDate())
@@ -48,9 +49,16 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
     }
 
     @Override
+    public void update(SettlementItemDto settlementItemDto) {
+        Integer affectedRows = settlementItemRepository.updateDeliveryDateAndPaymentDate(settlementItemDto.getDeliveryDate(), settlementItemDto.getPaymentDate(), settlementItemDto.getId());
+        if (0 == affectedRows) {
+            create(settlementItemDto);
+        }
+    }
+
+    @Override
     public void handleError(SettlementItemDto model) {
         log.error("SettlementItem validation failed: {}", model);
     }
-
 
 }
