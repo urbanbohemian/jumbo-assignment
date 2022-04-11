@@ -9,13 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class SettlementItemService implements FilterExtension {
+public class SettlementItemService implements FilterExtension<SettlementItemDto> {
 
     private final SettlementItemRepository settlementItemRepository;
 
@@ -29,11 +30,13 @@ public class SettlementItemService implements FilterExtension {
                 .filter(m -> Objects.nonNull(m.getCommission()))
                 .filter(m -> Objects.nonNull(m.getStoreFrontId()))
                 .filter(m -> Objects.nonNull(m.getCurrency()))
+                .filter(m -> Objects.nonNull(m.getPaymentDate()))
+                .filter(m -> List.of(TransactionType.SALE.getId(), TransactionType.RETURN.getId()).contains(m.getTransactionType()))
                 .isPresent();
     }
 
     @Override
-    public void create(SettlementItemDto settlementItemDto) {
+    public void execute(SettlementItemDto settlementItemDto) {
         SettlementItem settlementItem = SettlementItem.builder()
                 .id(settlementItemDto.getId())
                 .itemCreationDate(settlementItemDto.getCreatedDate())
@@ -46,14 +49,6 @@ public class SettlementItemService implements FilterExtension {
                 .currency(settlementItemDto.getCurrency())
                 .build();
         settlementItemRepository.save(settlementItem);
-    }
-
-    @Override
-    public void update(SettlementItemDto settlementItemDto) {
-        Integer affectedRows = settlementItemRepository.updateDeliveryDateAndPaymentDate(settlementItemDto.getDeliveryDate(), settlementItemDto.getPaymentDate(), settlementItemDto.getId());
-        if (0 == affectedRows) {
-            create(settlementItemDto);
-        }
     }
 
     @Override

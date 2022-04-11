@@ -42,7 +42,7 @@ public class SettlementItemServiceTest {
                 .build();
 
         //when
-        settlementItemService.create(settlementItemDto);
+        settlementItemService.process(settlementItemDto);
 
         //then
         verify(settlementItemRepository).save(any());
@@ -54,6 +54,52 @@ public class SettlementItemServiceTest {
         SettlementItemDto settlementItemDto = SettlementItemDto.builder().build();
         //when
         boolean filterResult = settlementItemService.applyFilter(settlementItemDto);
+        //then
+        verifyNoInteractions(settlementItemRepository);
+        assertThat(filterResult).isFalse();
+    }
+
+    @Test
+    public void it_should_not_save_settlement_item_when_transaction_type_is_cancel() {
+        //given
+        SettlementItemDto settlementItemDto = SettlementItemDto.builder()
+                .id(1L)
+                .createdDate(Date.valueOf("2022-03-25"))
+                .sellerId(1L)
+                .transactionType(TransactionType.CANCEL.getId())
+                .deliveryDate(Date.valueOf("2022-03-25"))
+                .paymentDate(Date.valueOf("2022-03-25"))
+                .commission(BigDecimal.TEN)
+                .storeFrontId(1L)
+                .currency("EU")
+                .build();
+
+        //when
+        boolean filterResult = settlementItemService.applyFilter(settlementItemDto);
+
+        //then
+        verifyNoInteractions(settlementItemRepository);
+        assertThat(filterResult).isFalse();
+    }
+
+    @Test
+    public void it_should_not_save_settlement_item_when_payment_date_is_null() {
+        //given
+        SettlementItemDto settlementItemDto = SettlementItemDto.builder()
+                .id(1L)
+                .createdDate(Date.valueOf("2022-03-25"))
+                .sellerId(1L)
+                .transactionType(TransactionType.SALE.getId())
+                .deliveryDate(Date.valueOf("2022-03-25"))
+                .paymentDate(null)
+                .commission(BigDecimal.TEN)
+                .storeFrontId(1L)
+                .currency("EU")
+                .build();
+
+        //when
+        boolean filterResult = settlementItemService.applyFilter(settlementItemDto);
+
         //then
         verifyNoInteractions(settlementItemRepository);
         assertThat(filterResult).isFalse();

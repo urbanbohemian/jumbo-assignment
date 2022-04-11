@@ -14,8 +14,4 @@ import java.util.List;
 public interface SettlementItemRepository extends CrudRepository<SettlementItem, Long> {
 
     List<SettlementItem> findBySellerIdAndItemCreationDateBetween(Long sellerId, Date startDate, Date endDate);
-
-    @Modifying
-    @Query(value = "UPDATE settlement_items SET delivery_date = :deliveryDate, payment_date= :paymentDate WHERE id=:id ", nativeQuery = true)
-    Integer updateDeliveryDateAndPaymentDate(Date deliveryDate, Date paymentDate, Long id);
 }
