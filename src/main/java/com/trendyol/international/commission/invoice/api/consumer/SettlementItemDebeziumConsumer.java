@@ -30,6 +30,11 @@ public class SettlementItemDebeziumConsumer {
                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topic
                         ) {
         log.info("SettlementItemDebeziumConsumer consumed with topic: {}, and partition: {}, and offset: {}, {}", topic, partition, offset, settlementItemDebeziumMessage);
-        settlementItemService.process(SettlementItemMapper.INSTANCE.settlementItemDto(settlementItemDebeziumMessage.getAfter()));
+        try {
+            settlementItemService.process(SettlementItemMapper.INSTANCE.settlementItemDto(settlementItemDebeziumMessage.getAfter()));
+        } catch (Exception e) {
+            log.error("SettlementItemDebeziumConsumer error occurred: ", e);
+            throw e;
+        }
     }
 }
