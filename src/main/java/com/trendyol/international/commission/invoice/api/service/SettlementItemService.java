@@ -53,7 +53,7 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
 
     @Override
     public void handleError(SettlementItemDto model) {
-        log.error("SettlementItem validation failed: {}", model);
+        log.warn("SettlementItem validation failed: {}", model);
     }
 
 }
