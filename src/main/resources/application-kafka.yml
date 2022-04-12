@@ -48,8 +48,8 @@ kafka-config:
         "[fetch.max.bytes]": 52428800
         "[fetch.max.wait.ms]": 500
     "[commission-invoice-create-consumer]":
-      topic: seller.finance.internationalcommissioninvoiceapi.documentCreate.0
-      error-topic: seller.finance.internationalcommissioninvoiceapi.documentCreate.0.error
+      topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0
+      error-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.error
       factory-bean-name: commissionInvoiceCreateKafkaListenerContainerFactory
       concurrency: 1
       retry-count: 1
@@ -60,7 +60,7 @@ kafka-config:
       props:
         "[bootstrap.servers]": ${kafka.bootstrap.servers}
         #"[spring.json.trusted.packages]": com.trendyol
-        "[group.id]": seller.finance.internationalcommissioninvoiceapi.documentCreate.0.group
+        "[group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.group
         "[max.poll.records]": 500 #for batch listener
         "[max.poll.interval.ms]": 300000 #poll time
         "[session.timeout.ms]": 10000
@@ -71,3 +71,4 @@ kafka-config:
         "[fetch.max.wait.ms]": 500
   integration-topics:
     document-create-topic: seller.finance.internationalcommissioninvoiceapi.documentCreate.0
+    commission-invoice-create-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0
