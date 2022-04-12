@@ -239,7 +239,6 @@ public class CommissionInvoiceServiceTest {
         assertThat(actualCommissionInvoice.getInvoiceStatus()).isEqualTo(InvoiceStatus.CREATED);
         assertThat(actualCommissionInvoice.getStartDate()).isEqualTo(automaticInvoiceStartDate);
         assertThat(actualCommissionInvoice.getEndDate()).isEqualTo(endDate);
-        assertThat(actualCommissionInvoice.getDescription()).isEqualTo("Trendyol Commission Fee between 01 April - 01 May");
     }
 
     @Test
@@ -292,7 +291,6 @@ public class CommissionInvoiceServiceTest {
         assertThat(actualCommissionInvoice.getInvoiceStatus()).isEqualTo(InvoiceStatus.CREATED);
         assertThat(actualCommissionInvoice.getStartDate()).isEqualTo(new Date(1648771200000L));
         assertThat(actualCommissionInvoice.getEndDate()).isEqualTo(endDate);
-        assertThat(actualCommissionInvoice.getDescription()).isEqualTo("Trendyol Commission Fee between 01 April - 01 May");
     }
 
     @Test
