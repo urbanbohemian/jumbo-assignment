@@ -1,0 +1,6 @@
+{
+  "spring.datasource.url": "jdbc:postgresql://10.85.122.1:5000/int_seller_commission_invoice",
+  "kafka.bootstrap.servers": "moon-kafka-s-broker-01.trendyol.com:9093,moon-kafka-s-broker-02.trendyol.com:9093,moon-kafka-s-broker-03.trendyol.com:9093,venus-kafka-s-broker-01.trendyol.com:9093,venus-kafka-s-broker-02.trendyol.com:9093,venus-kafka-s-broker-03.trendyol.com:9093,mars-kafka-s-broker-01.trendyol.com:9093,mars-kafka-s-broker-02.trendyol.com:9093,mars-kafka-s-broker-03.trendyol.com:9093",
+  "application.urls.seller-api": "http://stage-seller-base-seller-read-service.earth.trendyol.com",
+  "stretch-kafka.certificate-location": "src/main/resources/globaltrust.jks"
+}

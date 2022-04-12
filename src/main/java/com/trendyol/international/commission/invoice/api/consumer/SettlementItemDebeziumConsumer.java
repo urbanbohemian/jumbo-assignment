@@ -18,9 +18,9 @@ public class SettlementItemDebeziumConsumer {
 
     @Trace(dispatcher = true)
     @KafkaListener(
-            topics = "${kafka-config.consumers[settlement-items-debezium-consumer].topic}",
-            groupId = "${kafka-config.consumers[settlement-items-debezium-consumer].props[group.id]}",
-            containerFactory = "${kafka-config.consumers[settlement-items-debezium-consumer].factory-bean-name}"
+            topics = "${kafka-config.consumers[settlement-item-debezium-consumer].topic}",
+            groupId = "${kafka-config.consumers[settlement-item-debezium-consumer].props[group.id]}",
+            containerFactory = "${kafka-config.consumers[settlement-item-debezium-consumer].factory-bean-name}"
     )
     public void consume(@Payload SettlementItemDebeziumMessage settlementItemDebeziumMessage) {
         log.info("SettlementItemDebeziumConsumer incoming message: {}", settlementItemDebeziumMessage);

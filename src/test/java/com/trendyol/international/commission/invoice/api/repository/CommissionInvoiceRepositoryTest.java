@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -110,10 +111,10 @@ public class CommissionInvoiceRepositoryTest {
 
         commissionInvoiceRepository.saveAll(List.of(commissionInvoice1, commissionInvoice2, commissionInvoice3));
         //when
-        CommissionInvoice commissionInvoice = commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L);
+        Optional<CommissionInvoice> commissionInvoiceOptional = commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L);
         //then
-        assertThat(commissionInvoice).isNotNull();
-        assertThat(commissionInvoice.getSerialNumber()).isEqualTo("serial-number-3");
+        assertThat(commissionInvoiceOptional).isPresent();
+        assertThat(commissionInvoiceOptional.get().getSerialNumber()).isEqualTo("serial-number-3");
     }
 
     @Test

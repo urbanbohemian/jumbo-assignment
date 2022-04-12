@@ -10,25 +10,25 @@
 
             create table commission_invoices
             (
-                id                 int8           not null,
-                seller_id          int8           not null,
-                created_date       timestamp      not null,
-                last_modified_date timestamp      not null,
-                serial_number      varchar        not null,
-                amount             numeric(19, 2) not null,
-                net_amount         numeric(19, 2) not null,
-                vat_amount         numeric(19, 2) not null,
-                vat_rate           numeric(19, 2) not null,
-                vat_status_type    varchar        not null,
-                description        varchar        not null,
-                invoice_date       timestamp      not null,
-                store_front_id     varchar        not null,
-                country            varchar        not null,
-                currency           varchar        not null,
-                start_date         timestamp      not null,
-                end_date           timestamp      not null,
-                status             smallint       not null,
-                primary key (id)
+            id int8 not null,
+            seller_id int8 not null,
+            created_date timestamp not null,
+            last_modified_date timestamp not null,
+            serial_number varchar not null,
+            amount numeric(19, 2) not null,
+            net_amount numeric(19, 2) not null,
+            vat_amount numeric(19, 2) not null,
+            vat_rate numeric(19, 2) not null,
+            vat_status_type varchar not null,
+            description varchar not null,
+            invoice_date timestamp not null,
+            store_front_id varchar not null,
+            country varchar not null,
+            currency varchar not null,
+            start_date timestamp not null,
+            end_date timestamp not null,
+            status smallint not null,
+            primary key (id)
             );
         </sql>
     </changeSet>
@@ -108,6 +108,12 @@
     <changeSet id="2022-03-30 15:30" author="mert.okan">
         <sql>
             alter table commission_invoices alter column serial_number drop not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="2022-03-30 15:30" author="ilker.okan">
+        <sql>
+            create index idx_commission_invoice_status on commission_invoices(status);
         </sql>
     </changeSet>
 
