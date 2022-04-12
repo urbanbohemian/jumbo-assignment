@@ -7,6 +7,8 @@ import com.trendyol.international.commission.invoice.api.service.SettlementItemS
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +24,12 @@ public class SettlementItemDebeziumConsumer {
             groupId = "${kafka-config.consumers[settlement-items-debezium-consumer].props[group.id]}",
             containerFactory = "${kafka-config.consumers[settlement-items-debezium-consumer].factory-bean-name}"
     )
-    public void consume(@Payload SettlementItemDebeziumMessage settlementItemDebeziumMessage) {
-        log.info("SettlementItemDebeziumConsumer incoming message: {}", settlementItemDebeziumMessage);
+    public void consume(@Payload SettlementItemDebeziumMessage settlementItemDebeziumMessage,
+                        @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
+                        @Header(KafkaHeaders.OFFSET) Long offset,
+                        @Header(KafkaHeaders.RECEIVED_TOPIC) String topic
+                        ) {
+        log.info("SettlementItemDebeziumConsumer consumed with topic: {}, and partition: {}, and offset: {}, {}", topic, partition, offset, settlementItemDebeziumMessage);
         settlementItemService.process(SettlementItemMapper.INSTANCE.settlementItemDto(settlementItemDebeziumMessage.getAfter()));
     }
 }
