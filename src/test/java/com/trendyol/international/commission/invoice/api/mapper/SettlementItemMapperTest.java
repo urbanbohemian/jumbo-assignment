@@ -20,7 +20,7 @@ public class SettlementItemMapperTest {
         settlementItemMessage.setId(1L);
         settlementItemMessage.setCreatedDate(currentDate);
         settlementItemMessage.setSellerId(1L);
-        settlementItemMessage.setType("Sale");
+        settlementItemMessage.setTransactionTypeId(1);
         settlementItemMessage.setDeliveryDate(currentDate);
         settlementItemMessage.setPaymentDate(currentDate);
         settlementItemMessage.setTotalCommission(BigDecimal.ONE);
@@ -34,7 +34,7 @@ public class SettlementItemMapperTest {
         assertEquals(settlementItemDto.getId(), settlementItemMessage.getId());
         assertEquals(settlementItemDto.getCreatedDate(), settlementItemMessage.getCreatedDate());
         assertEquals(settlementItemDto.getSellerId(), settlementItemMessage.getSellerId());
-        assertEquals(settlementItemDto.getTransactionType().name(), settlementItemMessage.getType());
+        assertEquals(settlementItemDto.getTransactionType(), settlementItemMessage.getTransactionTypeId());
         assertEquals(settlementItemDto.getDeliveryDate(), settlementItemMessage.getDeliveryDate());
         assertEquals(settlementItemDto.getPaymentDate(), settlementItemMessage.getPaymentDate());
         assertEquals(settlementItemDto.getCommission(), settlementItemMessage.getTotalCommission());

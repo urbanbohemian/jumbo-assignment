@@ -84,4 +84,18 @@ public class VatCalculatorServiceTest {
         assertThat(vatModel.getAmount().compareTo(BigDecimal.valueOf(0D))).isEqualTo(0);
         assertThat(vatModel.getNetAmount().compareTo(BigDecimal.valueOf(0D))).isEqualTo(0);
     }
+
+    @Test
+    public void it_should_calculate_net_and_vat_amount_for_rounding_edge_case() {
+        //given
+        BigDecimal amount = BigDecimal.valueOf(37.99);
+
+        //when
+        VatModel vatModel = vatCalculatorService.calculateVatModel(amount, BigDecimal.valueOf(18));
+
+        //then
+        assertThat(vatModel.getVatAmount().compareTo(BigDecimal.valueOf(5.80))).isEqualTo(0);
+        assertThat(vatModel.getAmount().compareTo(BigDecimal.valueOf(37.99))).isEqualTo(0);
+        assertThat(vatModel.getNetAmount().compareTo(BigDecimal.valueOf(32.19))).isEqualTo(0);
+    }
 }

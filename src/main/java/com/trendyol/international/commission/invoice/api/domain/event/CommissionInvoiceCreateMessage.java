@@ -1,13 +1,17 @@
-package com.trendyol.international.commission.invoice.api.model.dto;
+package com.trendyol.international.commission.invoice.api.domain.event;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Data
 @Builder
-public class CommissionInvoiceCreateDto {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CommissionInvoiceCreateMessage {
     private Long sellerId;
     private String country;
     private String currency;

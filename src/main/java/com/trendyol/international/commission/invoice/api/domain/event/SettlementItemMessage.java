@@ -15,7 +15,7 @@ public class SettlementItemMessage {
     private Long id;
     private Date createdDate;
     private Long sellerId;
-    private String type;
+    private Integer transactionTypeId;
     private Date deliveryDate;
     private Date paymentDate;
     private BigDecimal totalCommission;

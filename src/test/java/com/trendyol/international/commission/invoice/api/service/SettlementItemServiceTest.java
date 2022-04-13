@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.sql.Date;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -32,7 +33,7 @@ public class SettlementItemServiceTest {
                 .id(1L)
                 .createdDate(Date.valueOf("2022-03-25"))
                 .sellerId(1L)
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE.getId())
                 .deliveryDate(Date.valueOf("2022-03-25"))
                 .paymentDate(Date.valueOf("2022-03-25"))
                 .commission(BigDecimal.TEN)
@@ -52,8 +53,55 @@ public class SettlementItemServiceTest {
         //given
         SettlementItemDto settlementItemDto = SettlementItemDto.builder().build();
         //when
-        settlementItemService.process(settlementItemDto);
+        boolean filterResult = settlementItemService.applyFilter(settlementItemDto);
         //then
         verifyNoInteractions(settlementItemRepository);
+        assertThat(filterResult).isFalse();
+    }
+
+    @Test
+    public void it_should_not_save_settlement_item_when_transaction_type_is_cancel() {
+        //given
+        SettlementItemDto settlementItemDto = SettlementItemDto.builder()
+                .id(1L)
+                .createdDate(Date.valueOf("2022-03-25"))
+                .sellerId(1L)
+                .transactionType(TransactionType.CANCEL.getId())
+                .deliveryDate(Date.valueOf("2022-03-25"))
+                .paymentDate(Date.valueOf("2022-03-25"))
+                .commission(BigDecimal.TEN)
+                .storeFrontId(1L)
+                .currency("EU")
+                .build();
+
+        //when
+        boolean filterResult = settlementItemService.applyFilter(settlementItemDto);
+
+        //then
+        verifyNoInteractions(settlementItemRepository);
+        assertThat(filterResult).isFalse();
+    }
+
+    @Test
+    public void it_should_not_save_settlement_item_when_payment_date_is_null() {
+        //given
+        SettlementItemDto settlementItemDto = SettlementItemDto.builder()
+                .id(1L)
+                .createdDate(Date.valueOf("2022-03-25"))
+                .sellerId(1L)
+                .transactionType(TransactionType.SALE.getId())
+                .deliveryDate(Date.valueOf("2022-03-25"))
+                .paymentDate(null)
+                .commission(BigDecimal.TEN)
+                .storeFrontId(1L)
+                .currency("EU")
+                .build();
+
+        //when
+        boolean filterResult = settlementItemService.applyFilter(settlementItemDto);
+
+        //then
+        verifyNoInteractions(settlementItemRepository);
+        assertThat(filterResult).isFalse();
     }
 }

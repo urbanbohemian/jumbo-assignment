@@ -24,7 +24,7 @@ public class SettlementItemRepositoryTest {
                 .id(1L)
                 .itemCreationDate(new Date())
                 .sellerId(1L)
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
                 .commissionAmount(BigDecimal.ONE)
                 .storeFrontId(1L)
                 .currency("EU")

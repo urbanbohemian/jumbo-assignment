@@ -3,7 +3,10 @@ package com.trendyol.international.commission.invoice.api.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.*;
 
 public final class DateUtils {
@@ -56,7 +59,6 @@ public final class DateUtils {
         }
         return getDateFormat(DateUtils.DATE_WITHOUT_TIME_FORMAT_BASIC).format(date);
     }
-
 
 
     public static String formatDate(Date date, String format) {
@@ -123,14 +125,14 @@ public final class DateUtils {
         return formattedDateString;
     }
 
-    public static Date addHours (Date date, int hours) {
+    public static Date addHours(Date date, int hours) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.HOUR_OF_DAY, hours);
         return calendar.getTime();
     }
 
-    public static String toTurkishFormatDate (Date date) {
+    public static String toTurkishFormatDate(Date date) {
         return new SimpleDateFormat(DATE_AND_TIME_FORMAT_DOTS).format(date);
     }
 
@@ -139,5 +141,18 @@ public final class DateUtils {
         calendar.setTime(date);
 
         return calendar.get(Calendar.YEAR);
+    }
+
+    public static Date getLastDateOfMonthFromDate(Date date, String zoneId) {
+        LocalDateTime localDateTime = convertToLocalDateTime(date).minusDays(1);
+        return Date.from(LocalDateTime.of(
+                localDateTime.getYear(),
+                localDateTime.getMonth(),
+                localDateTime.getDayOfMonth(),
+                23,
+                59,
+                59,
+                999_000_000
+        ).atZone(ZoneId.of(zoneId)).toInstant());
     }
 }

@@ -2,12 +2,14 @@ package com.trendyol.international.commission.invoice.api.service;
 
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.dto.SettlementItemDto;
+import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import com.trendyol.international.commission.invoice.api.util.FilterExtension;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,6 +30,8 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
                 .filter(m -> Objects.nonNull(m.getCommission()))
                 .filter(m -> Objects.nonNull(m.getStoreFrontId()))
                 .filter(m -> Objects.nonNull(m.getCurrency()))
+                .filter(m -> Objects.nonNull(m.getPaymentDate()))
+                .filter(m -> List.of(TransactionType.SALE.getId(), TransactionType.RETURN.getId()).contains(m.getTransactionType()))
                 .isPresent();
     }
 
@@ -37,7 +41,7 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
                 .id(settlementItemDto.getId())
                 .itemCreationDate(settlementItemDto.getCreatedDate())
                 .sellerId(settlementItemDto.getSellerId())
-                .transactionType(settlementItemDto.getTransactionType())
+                .transactionType(TransactionType.from(settlementItemDto.getTransactionType()))
                 .commissionAmount(settlementItemDto.getCommission())
                 .deliveryDate(settlementItemDto.getDeliveryDate())
                 .paymentDate(settlementItemDto.getPaymentDate())
@@ -49,8 +53,7 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
 
     @Override
     public void handleError(SettlementItemDto model) {
-        log.error("SettlementItem validation failed: {}", model);
+        log.warn("SettlementItem validation failed: {}", model);
     }
-
 
 }

@@ -3,6 +3,7 @@ package com.trendyol.international.commission.invoice.api.service;
 import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
+import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateMessage;
 import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateMessage;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
@@ -10,7 +11,10 @@ import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStat
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
 import com.trendyol.international.commission.invoice.api.model.response.Seller.*;
+import com.trendyol.international.commission.invoice.api.model.response.SellerIdWithAutomaticInvoiceStartDate;
+import com.trendyol.international.commission.invoice.api.model.response.SellerIdsWithAutomaticInvoiceStartDate;
 import com.trendyol.international.commission.invoice.api.model.response.SellerResponse;
+import com.trendyol.international.commission.invoice.api.producer.CommissionInvoiceCreateProducer;
 import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
@@ -26,6 +30,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,33 +44,129 @@ public class CommissionInvoiceServiceTest {
     private CommissionInvoiceService commissionInvoiceService;
 
     @Mock
-    private CommissionInvoiceRepository commissionInvoiceRepository;
-
-    @Mock
-    private SettlementItemRepository settlementItemRepository;
+    private CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
 
     @Mock
     private VatCalculatorService vatCalculatorService;
 
-    @Mock
-    private CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
 
     @Mock
     private SellerApiClient sellerApiClient;
 
     @Mock
+    private CommissionInvoiceCreateProducer commissionInvoiceCreateProducer;
+
+    @Mock
     private DocumentCreateProducer documentCreateProducer;
 
+    @Mock
+    private CommissionInvoiceRepository commissionInvoiceRepository;
+
+    @Mock
+    private SettlementItemRepository settlementItemRepository;
+
     @Test
-    public void it_should_create_commission_invoice() {
+    public void it_should_not_create_commission_invoice() {
         //given
+        Date automaticInvoiceStartDate = new Date(1648771200000L);
+
+        SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate1 = SellerIdWithAutomaticInvoiceStartDate.builder()
+                .sellerId(1L)
+                .automaticInvoiceStartDate(automaticInvoiceStartDate)
+                .build();
+        SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate2 = SellerIdWithAutomaticInvoiceStartDate.builder()
+                .sellerId(2L)
+                .automaticInvoiceStartDate(automaticInvoiceStartDate)
+                .build();
+        SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate3 = SellerIdWithAutomaticInvoiceStartDate.builder()
+                .sellerId(3L)
+                .automaticInvoiceStartDate(automaticInvoiceStartDate)
+                .build();
+        SellerIdsWithAutomaticInvoiceStartDate sellerIdsWithAutomaticInvoiceStartDate = SellerIdsWithAutomaticInvoiceStartDate.builder()
+                .count(3)
+                .sellerIds(List.of(sellerIdWithAutomaticInvoiceStartDate1, sellerIdWithAutomaticInvoiceStartDate2, sellerIdWithAutomaticInvoiceStartDate3))
+                .build();
+        when(sellerApiClient.getWeeklyInvoiceEnabledSellers()).thenReturn(sellerIdsWithAutomaticInvoiceStartDate);
+        //when
+        commissionInvoiceService.create();
+        //then
+        ArgumentCaptor<CommissionInvoiceCreateMessage> commissionInvoiceCreateMessageArgumentCaptor = ArgumentCaptor.forClass(CommissionInvoiceCreateMessage.class);
+        verify(commissionInvoiceCreateProducer, times(3)).produceCommissionInvoiceCreateMessage(commissionInvoiceCreateMessageArgumentCaptor.capture());
+
+        List<CommissionInvoiceCreateMessage> commissionInvoiceCreateMessageList = commissionInvoiceCreateMessageArgumentCaptor.getAllValues();
+
+        assertThat(commissionInvoiceCreateMessageList.stream().map(CommissionInvoiceCreateMessage::getSellerId).collect(Collectors.toList())).containsExactly(1L, 2L, 3L);
+    }
+
+    @Test
+    public void it_should_not_create_commission_invoice_for_seller_when_there_is_no_settlement() {
+        //given
+        Date automaticInvoiceStartDate = new Date(1648771200000L);
+        Date endDate = new Date(1651363199000L);
+
+        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of());
+        //when
+        commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateDto.builder()
+                .sellerId(1L)
+                .country("NL")
+                .currency("EUR")
+                .automaticInvoiceStartDate(automaticInvoiceStartDate)
+                .endDate(endDate)
+                .build());
+        //then
+        verify(commissionInvoiceRepository, never()).save(any());
+    }
+
+    @Test
+    public void it_should_not_create_commission_invoice_for_seller_when_total_amount_is_negative() {
+        //given
+        Date automaticInvoiceStartDate = new Date(1648771200000L);
+        Date endDate = new Date(1651363199000L);
+
         SettlementItem settlement1 = SettlementItem.builder()
                 .sellerId(1L)
                 .commissionAmount(BigDecimal.valueOf(121))
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
                 .itemCreationDate(new Date())
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
+                .build();
+
+        SettlementItem settlement2 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(122))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .transactionType(TransactionType.RETURN)
+                .itemCreationDate(new Date())
+                .build();
+        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+
+        //when
+        commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateDto.builder()
+                .sellerId(1L)
+                .country("NL")
+                .currency("EUR")
+                .automaticInvoiceStartDate(automaticInvoiceStartDate)
+                .endDate(endDate)
+                .build());
+        //then
+        verify(commissionInvoiceRepository, never()).save(any());
+    }
+
+    @Test
+    public void it_should_not_create_commission_invoice_when_total_amount_is_zero() {
+        //given
+        Date automaticInvoiceStartDate = new Date(1648771200000L);
+        Date endDate = new Date(1651363199000L);
+
+        SettlementItem settlement1 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(121))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .itemCreationDate(new Date())
+                .transactionType(TransactionType.SALE)
                 .build();
 
         SettlementItem settlement2 = SettlementItem.builder()
@@ -73,15 +174,59 @@ public class CommissionInvoiceServiceTest {
                 .commissionAmount(BigDecimal.valueOf(121))
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.RETURN)
+                .itemCreationDate(new Date())
+                .build();
+        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+
+        //when
+        commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateDto.builder()
+                .sellerId(1L)
+                .country("NL")
+                .currency("EUR")
+                .automaticInvoiceStartDate(automaticInvoiceStartDate)
+                .endDate(endDate)
+                .build());
+        //then
+        verify(commissionInvoiceRepository, never()).save(any());
+    }
+
+    @Test
+    public void it_should_create_commission_invoice_for_seller_when_seller_has_no_previous_commission_invoice() {
+        //given
+        Date automaticInvoiceStartDate = new Date(1648771200000L);
+        Date endDate = new Date(1651363199000L);
+
+        SettlementItem settlement1 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(121))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .itemCreationDate(new Date())
+                .transactionType(TransactionType.SALE)
+                .build();
+
+        SettlementItem settlement2 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(121))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .transactionType(TransactionType.SALE)
                 .itemCreationDate(new Date())
                 .build();
 
+        when(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L)).thenReturn(Optional.empty());
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
         VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
         when(vatCalculatorService.calculateVatModel(BigDecimal.valueOf(242), BigDecimal.valueOf(21))).thenReturn(vatModel);
         //when
-        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
+        commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateDto.builder()
+                .sellerId(1L)
+                .country("NL")
+                .currency("EUR")
+                .automaticInvoiceStartDate(automaticInvoiceStartDate)
+                .endDate(endDate)
+                .build());
         //then
         ArgumentCaptor<CommissionInvoice> commissionInvoiceCaptor = ArgumentCaptor.forClass(CommissionInvoice.class);
         verify(commissionInvoiceRepository).save(commissionInvoiceCaptor.capture());
@@ -92,111 +237,60 @@ public class CommissionInvoiceServiceTest {
         assertThat(actualCommissionInvoice.getCountry()).isEqualTo("NL");
         assertThat(actualCommissionInvoice.getCurrency()).isEqualTo("EUR");
         assertThat(actualCommissionInvoice.getInvoiceStatus()).isEqualTo(InvoiceStatus.CREATED);
+        assertThat(actualCommissionInvoice.getStartDate()).isEqualTo(automaticInvoiceStartDate);
+        assertThat(actualCommissionInvoice.getEndDate()).isEqualTo(endDate);
     }
 
     @Test
-    public void it_should_not_create_commission_invoice_when_there_is_no_settlement() {
+    public void it_should_create_commission_invoice_for_seller_when_seller_has_previous_commission_invoice() {
         //given
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of());
-        //when
-        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
-        //then
-        verify(commissionInvoiceRepository, never()).save(any());
-        verifyNoInteractions(vatCalculatorService);
-    }
+        Date previousCommissionInvoiceEndDate = new Date(1648771199999L);
+        Date automaticInvoiceStartDate = new Date(1648771200000L);
+        Date endDate = new Date(1651363199000L);
 
-    @Test
-    public void it_should_not_create_commission_invoice_when_total_amount_is_negative() {
-        //given
         SettlementItem settlement1 = SettlementItem.builder()
                 .sellerId(1L)
                 .commissionAmount(BigDecimal.valueOf(121))
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
                 .itemCreationDate(new Date())
-                .transactionType(TransactionType.Sale)
+                .transactionType(TransactionType.SALE)
                 .build();
 
         SettlementItem settlement2 = SettlementItem.builder()
                 .sellerId(1L)
-                .commissionAmount(BigDecimal.valueOf(122))
+                .commissionAmount(BigDecimal.valueOf(121))
                 .deliveryDate(new Date())
                 .paymentDate(new Date())
-                .transactionType(TransactionType.Return)
+                .transactionType(TransactionType.SALE)
                 .itemCreationDate(new Date())
                 .build();
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
-
-        //when
-        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
-        //then
-        verify(commissionInvoiceRepository, never()).save(any());
-        verifyNoInteractions(vatCalculatorService);
-    }
-
-    @Test
-    public void it_should_not_create_commission_invoice_when_total_amount_is_zero() {
-        //given
-        SettlementItem settlement1 = SettlementItem.builder()
-                .sellerId(1L)
-                .commissionAmount(BigDecimal.valueOf(122))
-                .deliveryDate(new Date())
-                .paymentDate(new Date())
-                .itemCreationDate(new Date())
-                .transactionType(TransactionType.Sale)
-                .build();
-
-        SettlementItem settlement2 = SettlementItem.builder()
-                .sellerId(1L)
-                .commissionAmount(BigDecimal.valueOf(122))
-                .deliveryDate(new Date())
-                .paymentDate(new Date())
-                .transactionType(TransactionType.Return)
-                .itemCreationDate(new Date())
-                .build();
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
-
-        //when
-        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
-        //then
-        verify(commissionInvoiceRepository, never()).save(any());
-        verifyNoInteractions(vatCalculatorService);
-    }
-
-    @Test
-    @DisplayName("Create commission invoice with a start date of 1ms after the end date of the previous invoice")
-    public void it_should_create_commission_invoice_1ms_after_the_previous_invoice() {
-        //given
-        SettlementItem settlement1 = SettlementItem.builder()
-                .sellerId(1L)
-                .commissionAmount(BigDecimal.valueOf(122))
-                .deliveryDate(new Date())
-                .paymentDate(new Date())
-                .itemCreationDate(new Date())
-                .transactionType(TransactionType.Sale)
-                .build();
-
-        SettlementItem settlement2 = SettlementItem.builder()
-                .sellerId(1L)
-                .commissionAmount(BigDecimal.valueOf(122))
-                .deliveryDate(new Date())
-                .paymentDate(new Date())
-                .transactionType(TransactionType.Sale)
-                .itemCreationDate(new Date())
-                .build();
-        CommissionInvoice commissionInvoice = CommissionInvoice.builder().endDate(new Date(2L)).build();
-        when(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L)).thenReturn(commissionInvoice);
+        CommissionInvoice commissionInvoice = CommissionInvoice.builder().endDate(previousCommissionInvoiceEndDate).build();
+        when(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L)).thenReturn(Optional.of(commissionInvoice));
         when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
         VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
         when(vatCalculatorService.calculateVatModel(any(), any())).thenReturn(vatModel);
-
         //when
-        commissionInvoiceService.create(CommissionInvoiceCreateDto.builder().sellerId(1L).jobExecutionDate(new Date()).country("NL").currency("EUR").build());
+        commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateDto.builder()
+                .sellerId(1L)
+                .country("NL")
+                .currency("EUR")
+                .automaticInvoiceStartDate(automaticInvoiceStartDate)
+                .endDate(endDate)
+                .build());
         //then
         ArgumentCaptor<CommissionInvoice> commissionInvoiceCaptor = ArgumentCaptor.forClass(CommissionInvoice.class);
         verify(commissionInvoiceRepository).save(commissionInvoiceCaptor.capture());
+
         CommissionInvoice actualCommissionInvoice = commissionInvoiceCaptor.getValue();
-        assertThat(actualCommissionInvoice.getStartDate().getTime()).isEqualTo(3L);
+        assertThat(actualCommissionInvoice.getAmount().compareTo(BigDecimal.valueOf(242))).isEqualTo(0);
+        assertThat(actualCommissionInvoice.getNetAmount().compareTo(BigDecimal.valueOf(200))).isEqualTo(0);
+        assertThat(actualCommissionInvoice.getVatAmount().compareTo(BigDecimal.valueOf(42))).isEqualTo(0);
+        assertThat(actualCommissionInvoice.getCountry()).isEqualTo("NL");
+        assertThat(actualCommissionInvoice.getCurrency()).isEqualTo("EUR");
+        assertThat(actualCommissionInvoice.getInvoiceStatus()).isEqualTo(InvoiceStatus.CREATED);
+        assertThat(actualCommissionInvoice.getStartDate()).isEqualTo(new Date(1648771200000L));
+        assertThat(actualCommissionInvoice.getEndDate()).isEqualTo(endDate);
     }
 
     @Test

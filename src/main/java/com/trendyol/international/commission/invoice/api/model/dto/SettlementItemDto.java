@@ -13,7 +13,7 @@ public class SettlementItemDto {
     private Long id;
     private Date createdDate;
     private Long sellerId;
-    private TransactionType transactionType;
+    private Integer transactionType;
     private Date deliveryDate;
     private Date paymentDate;
     private BigDecimal commission;
