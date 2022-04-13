@@ -11,28 +11,32 @@ import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.retry.support.RetryTemplate;
 
 @Configuration
-public class SettlementItemsDebeziumConsumerConfig {
+public class SettlementItemDebeziumConsumerConfig {
     private Consumer consumer;
     private final KafkaConsumerUtil kafkaConsumerUtil;
 
-    public SettlementItemsDebeziumConsumerConfig(KafkaConsumerUtil kafkaConsumerUtil, KafkaProducerConsumerProps kafkaProducerConsumerProps) {
+    public SettlementItemDebeziumConsumerConfig(KafkaConsumerUtil kafkaConsumerUtil, KafkaProducerConsumerProps kafkaProducerConsumerProps) {
         this.kafkaConsumerUtil = kafkaConsumerUtil;
-        consumer = kafkaProducerConsumerProps.getConsumers().get("settlement-items-debezium-consumer");
+        consumer = kafkaProducerConsumerProps.getConsumers().get("settlement-item-debezium-consumer");
     }
 
     @Bean
-    public ConsumerFactory<String, SettlementItemDebeziumMessage> settlementItemsDebeziumConsumerFactory() {
+    public ConsumerFactory<String, SettlementItemDebeziumMessage> settlementItemDebeziumConsumerFactory() {
         return kafkaConsumerUtil.createConsumerFactory(consumer, SettlementItemDebeziumMessage.class);
     }
 
     @Bean
-    public RetryTemplate settlementItemsDebeziumConsumerRetryTemplate() {
+    public RetryTemplate settlementItemDebeziumConsumerRetryTemplate() {
         return kafkaConsumerUtil.createRetryTemplate(consumer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, SettlementItemDebeziumMessage> settlementItemsDebeziumKafkaListenerContainerFactory(KafkaOperations<String, Object> kafkaOperations) {
-        return kafkaConsumerUtil.createSingleKafkaListenerContainerFactory(kafkaOperations, settlementItemsDebeziumConsumerFactory(),
-                consumer, settlementItemsDebeziumConsumerRetryTemplate());
+    public ConcurrentKafkaListenerContainerFactory<String, SettlementItemDebeziumMessage> settlementItemDebeziumKafkaListenerContainerFactory(KafkaOperations<String, Object> kafkaOperations) {
+        return kafkaConsumerUtil.createSingleKafkaListenerContainerFactory(
+                kafkaOperations,
+                settlementItemDebeziumConsumerFactory(),
+                consumer,
+                settlementItemDebeziumConsumerRetryTemplate()
+        );
     }
 }

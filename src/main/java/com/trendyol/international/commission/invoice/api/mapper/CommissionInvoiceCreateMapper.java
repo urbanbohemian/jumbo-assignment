@@ -1,7 +1,7 @@
 package com.trendyol.international.commission.invoice.api.mapper;
 
+import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateMessage;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
-import com.trendyol.international.commission.invoice.api.model.request.CommissionInvoiceCreateRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
@@ -11,5 +11,5 @@ public interface CommissionInvoiceCreateMapper {
     CommissionInvoiceCreateMapper INSTANCE = Mappers.getMapper(CommissionInvoiceCreateMapper.class);
 
     @Mappings({})
-    CommissionInvoiceCreateDto commissionInvoiceCreateDto(CommissionInvoiceCreateRequest commissionInvoiceCreateRequest);
+    CommissionInvoiceCreateDto commissionInvoiceCreateDto(CommissionInvoiceCreateMessage commissionInvoiceCreateMessage);
 }

@@ -3,13 +3,16 @@ package com.trendyol.international.commission.invoice.api.service;
 import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
+import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateMessage;
 import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateMessage;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
 import com.trendyol.international.commission.invoice.api.model.response.Seller.Address;
+import com.trendyol.international.commission.invoice.api.model.response.SellerIdWithAutomaticInvoiceStartDate;
 import com.trendyol.international.commission.invoice.api.model.response.SellerResponse;
+import com.trendyol.international.commission.invoice.api.producer.CommissionInvoiceCreateProducer;
 import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
@@ -21,39 +24,48 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class CommissionInvoiceService {
+    private static final String ZONE_ID = "Europe/Amsterdam";
+    private static final String COUNTRY = "NL";
+    private static final String CURRENCY = "EUR";
+
     private final CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
     private final VatCalculatorService vatCalculatorService;
     private final SellerApiClient sellerApiClient;
+    private final CommissionInvoiceCreateProducer commissionInvoiceCreateProducer;
     private final DocumentCreateProducer documentCreateProducer;
     private final CommissionInvoiceRepository commissionInvoiceRepository;
     private final SettlementItemRepository settlementItemRepository;
 
-    private Date getStartDateForSeller(Long sellerId) {
-        return Optional.ofNullable(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(sellerId))
-                .map(commissionInvoice -> new Date(commissionInvoice.getEndDate().getTime() + 1))
-                .orElse(new Date());
+    private void produceCommissionInvoiceCreateMessageForSeller(SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate) {
+        commissionInvoiceCreateProducer.produceCommissionInvoiceCreateMessage(CommissionInvoiceCreateMessage.builder()
+                .sellerId(sellerIdWithAutomaticInvoiceStartDate.getSellerId())
+                .country(COUNTRY)
+                .currency(CURRENCY)
+                .automaticInvoiceStartDate(sellerIdWithAutomaticInvoiceStartDate.getAutomaticInvoiceStartDate())
+                .endDate(DateUtils.getLastDateOfMonthFromDate(new Date(), ZONE_ID))
+                .build());
     }
 
-    private Date getEndDate(Date date) {
-        LocalDateTime localDateTime = DateUtils.convertToLocalDateTime(date).minusDays(1);
-        return Date.from(LocalDateTime.of(
-                localDateTime.getYear(),
-                localDateTime.getMonth(),
-                localDateTime.getDayOfMonth(),
-                23,
-                59,
-                59,
-                999_000_000).atZone(ZoneId.of("Europe/Amsterdam")).toInstant());
+    public void create() {
+        // TODO: response model should be pageable!
+        sellerApiClient.getWeeklyInvoiceEnabledSellers().getSellerIds().forEach(this::produceCommissionInvoiceCreateMessageForSeller);
+    }
+
+    private Date getStartDateForSeller(Long sellerId, Date automaticInvoiceStartDate) {
+        return commissionInvoiceRepository
+                .findTopBySellerIdOrderByEndDateDesc(sellerId)
+                .map(commissionInvoice -> new Date(commissionInvoice.getEndDate().getTime() + 1))
+                .orElse(automaticInvoiceStartDate);
     }
 
     private BigDecimal calculateCommissionForSeller(List<SettlementItem> settlementItems) {
@@ -65,9 +77,9 @@ public class CommissionInvoiceService {
 
     // collects all settlement items and process
     @Transactional
-    public void create(CommissionInvoiceCreateDto commissionInvoiceCreateDto) {
-        Date startDate = getStartDateForSeller(commissionInvoiceCreateDto.getSellerId());
-        Date endDate = getEndDate(commissionInvoiceCreateDto.getJobExecutionDate());
+    public void createCommissionInvoiceForSeller(CommissionInvoiceCreateDto commissionInvoiceCreateDto) {
+        Date startDate = getStartDateForSeller(commissionInvoiceCreateDto.getSellerId(), commissionInvoiceCreateDto.getAutomaticInvoiceStartDate());
+        Date endDate = commissionInvoiceCreateDto.getEndDate();
 
         List<SettlementItem> settlementItems = settlementItemRepository.findBySellerIdAndItemCreationDateBetween(commissionInvoiceCreateDto.getSellerId(), startDate, endDate);
         if (settlementItems.isEmpty()) {

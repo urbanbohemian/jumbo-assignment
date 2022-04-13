@@ -25,10 +25,10 @@ kafka-config:
         "[acks]": "1"
         "[request.timeout.ms]": 30000
   consumers:
-    "[settlement-items-debezium-consumer]":
+    "[settlement-item-debezium-consumer]":
       topic: seller.settlement.int-settlement-debezium.settlement-cdc
       error-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.error
-      factory-bean-name: settlementItemsDebeziumKafkaListenerContainerFactory
+      factory-bean-name: settlementItemDebeziumKafkaListenerContainerFactory
       concurrency: 1
       retry-count: 1
       sync-commit: true
@@ -47,5 +47,28 @@ kafka-config:
         "[auto.offset.reset]": earliest
         "[fetch.max.bytes]": 52428800
         "[fetch.max.wait.ms]": 500
+    "[commission-invoice-create-consumer]":
+      topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0
+      error-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.error
+      factory-bean-name: commissionInvoiceCreateKafkaListenerContainerFactory
+      concurrency: 1
+      retry-count: 1
+      sync-commit: true
+      sync-commit-timeout-second: 5
+      backoffIntervalMillis: 5000 #wait time for retry
+      missingTopicAlertEnable: false
+      props:
+        "[bootstrap.servers]": ${kafka.bootstrap.servers}
+        #"[spring.json.trusted.packages]": com.trendyol
+        "[group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.group
+        "[max.poll.records]": 500 #for batch listener
+        "[max.poll.interval.ms]": 300000 #poll time
+        "[session.timeout.ms]": 10000
+        "[heartbeat.interval.ms]": 3000
+        "[enable.auto.commit]": true
+        "[auto.offset.reset]": earliest
+        "[fetch.max.bytes]": 52428800
+        "[fetch.max.wait.ms]": 500
   integration-topics:
     document-create-topic: seller.finance.internationalcommissioninvoiceapi.documentCreate.0
+    commission-invoice-create-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0
