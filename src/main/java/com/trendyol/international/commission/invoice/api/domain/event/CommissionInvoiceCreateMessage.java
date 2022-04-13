@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Builder
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Data
 public class CommissionInvoiceCreateMessage {
     private Long sellerId;
     private String country;

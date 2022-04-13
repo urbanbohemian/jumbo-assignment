@@ -24,17 +24,16 @@ public class SettlementItemDebeziumConsumer {
             groupId = "${kafka-config.consumers[settlement-item-debezium-consumer].props[group.id]}",
             containerFactory = "${kafka-config.consumers[settlement-item-debezium-consumer].factory-bean-name}"
     )
-    public void consume(@Payload SettlementItemDebeziumMessage settlementItemDebeziumMessage,
+    public void consume(@Payload SettlementItemDebeziumMessage message,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                         @Header(KafkaHeaders.OFFSET) Long offset,
-                        @Header(KafkaHeaders.RECEIVED_TOPIC) String topic
-                        ) {
-        log.info("SettlementItemDebeziumConsumer consumed with topic: {}, and partition: {}, and offset: {}, {}", topic, partition, offset, settlementItemDebeziumMessage);
+                        @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        log.info("SettlementItemDebeziumConsumer consumed with topic: {}, and partition: {}, and offset: {}, and message: {}", topic, partition, offset, message);
         try {
-            settlementItemService.process(SettlementItemMapper.INSTANCE.settlementItemDto(settlementItemDebeziumMessage.getAfter()));
-        } catch (Exception e) {
-            log.error("SettlementItemDebeziumConsumer error occurred: ", e);
-            throw e;
+            settlementItemService.process(SettlementItemMapper.INSTANCE.settlementItemDto(message.getAfter()));
+        } catch (Exception exception) {
+            log.error("SettlementItemDebeziumConsumer error occurred: ", exception);
+            throw exception;
         }
     }
 }
