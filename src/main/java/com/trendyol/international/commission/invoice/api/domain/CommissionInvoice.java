@@ -78,7 +78,8 @@ public class CommissionInvoice extends AuditingEntity {
     @OneToMany
     @JoinTable(
             name = "commission_invoice_settlement_items",
-            joinColumns = {@JoinColumn(name = "commission_invoice_id")},
+            joinColumns = {@JoinColumn(name = "commission_invoice_id", referencedColumnName = "id"),
+                    @JoinColumn(name = "seller_id", referencedColumnName = "seller_id")},
             inverseJoinColumns = {@JoinColumn(name = "settlement_item_id")},
             uniqueConstraints = @UniqueConstraint(columnNames = {"settlement_item_id"})
 

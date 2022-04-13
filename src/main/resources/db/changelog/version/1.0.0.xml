@@ -39,32 +39,33 @@
 
             create table settlement_items
             (
-            id int8 not null,
-            created_date timestamp not null,
-            last_modified_date timestamp not null,
-            item_creation_date timestamp not null,
-            seller_id int8 not null,
-            transaction_type_id int4 not null,
-            commission_amount numeric(19, 2) not null,
-            delivery_date timestamp,
-            payment_date timestamp not null,
-            primary key (id)
+                id                  int8           not null,
+                created_date        timestamp      not null,
+                last_modified_date  timestamp      not null,
+                item_creation_date  timestamp      not null,
+                seller_id           int8           not null,
+                transaction_type_id int4           not null,
+                commission_amount   numeric(19, 2) not null,
+                delivery_date       timestamp,
+                payment_date        timestamp      not null,
+                primary key (id)
             );
 
             create table commission_invoice_settlement_items
             (
-            commission_invoice_id bigint not null
-            constraint fk_commission_invoice_settlement_items_commission_invoice
-            references commission_invoices,
-            settlement_item_id bigint not null
-            constraint commission_invoice_settlement_items_settlement_item_id_key
-            unique
-            constraint fk_commission_invoice_settlement_items_settlement_item
-            references settlement_items
+                commission_invoice_id bigint not null
+                    constraint fk_commission_invoice_settlement_items_commission_invoice
+                        references commission_invoices,
+                settlement_item_id    bigint not null
+                    constraint commission_invoice_settlement_items_settlement_item_id_key
+                        unique
+                    constraint fk_commission_invoice_settlement_items_settlement_item
+                        references settlement_items,
+                seller_id             bigint not null
             );
 
             create unique index idx_commission_invoice_settlement_items_settlement_item
-            on commission_invoice_settlement_items (settlement_item_id desc);
+                on commission_invoice_settlement_items (settlement_item_id desc);
         </sql>
     </changeSet>
     <changeSet id="2022-03-11 15:15" author="mert.okan">
