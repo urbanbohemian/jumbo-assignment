@@ -18,7 +18,7 @@ public class CommissionInvoiceController {
     public void create() {
         log.info("Commission Invoice Create Job Execution is started.");
         commissionInvoiceService.create();
-        log.info("Commission Invoice Create Job Execution is started.");
+        log.info("Commission Invoice Create Job Execution is ended successfully.");
     }
 
     @PostMapping("/generate-serial-number")
