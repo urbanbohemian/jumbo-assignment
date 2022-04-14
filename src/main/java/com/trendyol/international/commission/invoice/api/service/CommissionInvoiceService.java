@@ -37,6 +37,8 @@ public class CommissionInvoiceService {
     private static final String ZONE_ID = "Europe/Amsterdam";
     private static final String COUNTRY = "NL";
     private static final String CURRENCY = "EUR";
+    private static final String STORE_FRONT_ID = "1";
+    private static final String DESCRIPTION_FORMAT = "Trendyol Commission Fee between %s - %s";
 
     private final CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
     private final VatCalculatorService vatCalculatorService;
@@ -52,7 +54,7 @@ public class CommissionInvoiceService {
                 .country(COUNTRY)
                 .currency(CURRENCY)
                 .automaticInvoiceStartDate(sellerIdWithAutomaticInvoiceStartDate.getAutomaticInvoiceStartDate())
-                .endDate(DateUtils.getLastDateOfMonthFromDate(new Date(), ZONE_ID))
+                .endDate(DateUtils.getLastDateOfMonth(DateUtils.getLocalDateTime(new Date()).minusDays(1), ZONE_ID))
                 .build());
     }
 
@@ -69,10 +71,7 @@ public class CommissionInvoiceService {
     }
 
     private BigDecimal calculateCommissionForSeller(List<SettlementItem> settlementItems) {
-        return settlementItems
-                .stream()
-                .map(SettlementItem::getCommissionAmountSignedValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return settlementItems.stream().map(SettlementItem::getCommissionAmountSignedValue).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // collects all settlement items and process
@@ -93,10 +92,9 @@ public class CommissionInvoiceService {
             return;
         }
 
-        VatModel vatModel = vatCalculatorService.calculateVatModel(commissionAmount, "NL".equals(commissionInvoiceCreateDto.getCountry()) ? BigDecimal.valueOf(21) : BigDecimal.ZERO);
+        VatModel vatModel = vatCalculatorService.calculateVatModel(commissionAmount, COUNTRY.equals(commissionInvoiceCreateDto.getCountry()) ? BigDecimal.valueOf(21) : BigDecimal.ZERO);
 
-        CommissionInvoice commissionInvoice = CommissionInvoice
-                .builder()
+        commissionInvoiceRepository.save(CommissionInvoice.builder()
                 .sellerId(commissionInvoiceCreateDto.getSellerId())
                 .amount(commissionAmount)
                 .settlementItems(Set.copyOf(settlementItems))
@@ -107,23 +105,17 @@ public class CommissionInvoiceService {
                 .vatRate(vatModel.getVatRate())
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .invoiceDate(endDate)
-                .description(createDescription(startDate, endDate))
+                .description(String.format(DESCRIPTION_FORMAT, DateUtils.getDateAsStringWithoutYear(startDate), DateUtils.getDateAsStringWithoutYear(endDate)))
                 .endDate(endDate)
                 .startDate(startDate)
-                .storeFrontId("1")
-                .vatStatusType("NL".equals(commissionInvoiceCreateDto.getCountry()) ? VatStatusType.DOMESTIC : VatStatusType.INTRA_COMMUNITY)
+                .storeFrontId(STORE_FRONT_ID)
+                .vatStatusType(COUNTRY.equals(commissionInvoiceCreateDto.getCountry()) ? VatStatusType.DOMESTIC : VatStatusType.INTRA_COMMUNITY)
                 .referenceId(UUID.randomUUID().toString())
-                .build();
-        commissionInvoiceRepository.save(commissionInvoice);
-    }
-
-    private String createDescription(Date startDate, Date endDate) {
-        return String.format("Trendyol Commission Fee between %s - %s", DateUtils.dateAsStringWithoutYear(startDate),
-                DateUtils.dateAsStringWithoutYear(endDate));
+                .build());
     }
 
     private void generateSerialNumberForCommissionInvoice(CommissionInvoice commissionInvoice) {
-        Integer invoiceYear = DateUtils.getYear(commissionInvoice.getEndDate());
+        Integer invoiceYear = DateUtils.getYearOfDate(commissionInvoice.getEndDate());
         commissionInvoice.setSerialNumber(commissionInvoiceSerialNumberGenerateService.generate(invoiceYear));
         commissionInvoice.setInvoiceStatus(InvoiceStatus.NUMBER_GENERATED);
         commissionInvoiceRepository.save(commissionInvoice);

@@ -8,21 +8,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class CommissionInvoiceSerialNumberGenerateService {
-
     private static final String SERIAL_NUMBER_PREFIX = "TBV";
     private static final String SEQUENCE_FORMAT = "%09d";
     private static final Integer SEQUENCE_INCREASE_SIZE = 1;
 
     private final CommissionInvoiceNumberSequenceRepository commissionInvoiceNumberSequenceRepository;
-
-    public String generate(Integer invoiceYear) {
-        CommissionInvoiceNumberSequence commissionInvoiceNumberSequence = getLatestCommissionInvoiceNumberSequence(invoiceYear);
-        increaseLatestCommissionInvoiceNumberSequence(commissionInvoiceNumberSequence);
-
-        return SERIAL_NUMBER_PREFIX
-                .concat(invoiceYear.toString())
-                .concat(String.format(SEQUENCE_FORMAT, commissionInvoiceNumberSequence.getLatestSequence()));
-    }
 
     private CommissionInvoiceNumberSequence getLatestCommissionInvoiceNumberSequence(Integer invoiceYear) {
         return commissionInvoiceNumberSequenceRepository
@@ -41,5 +31,11 @@ public class CommissionInvoiceSerialNumberGenerateService {
     private void increaseLatestCommissionInvoiceNumberSequence(CommissionInvoiceNumberSequence commissionInvoiceNumberSequence) {
         commissionInvoiceNumberSequence.setLatestSequence(commissionInvoiceNumberSequence.getLatestSequence() + SEQUENCE_INCREASE_SIZE);
         commissionInvoiceNumberSequenceRepository.save(commissionInvoiceNumberSequence);
+    }
+
+    public String generate(Integer invoiceYear) {
+        CommissionInvoiceNumberSequence commissionInvoiceNumberSequence = getLatestCommissionInvoiceNumberSequence(invoiceYear);
+        increaseLatestCommissionInvoiceNumberSequence(commissionInvoiceNumberSequence);
+        return SERIAL_NUMBER_PREFIX.concat(invoiceYear.toString()).concat(String.format(SEQUENCE_FORMAT, commissionInvoiceNumberSequence.getLatestSequence()));
     }
 }
