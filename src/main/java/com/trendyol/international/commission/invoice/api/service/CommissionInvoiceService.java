@@ -80,7 +80,7 @@ public class CommissionInvoiceService {
         Date startDate = getStartDateForSeller(commissionInvoiceCreateDto.getSellerId(), commissionInvoiceCreateDto.getAutomaticInvoiceStartDate());
         Date endDate = commissionInvoiceCreateDto.getEndDate();
 
-        List<SettlementItem> settlementItems = settlementItemRepository.findBySellerIdAndItemCreationDateBetween(commissionInvoiceCreateDto.getSellerId(), startDate, endDate);
+        List<SettlementItem> settlementItems = settlementItemRepository.getSettlementItems(commissionInvoiceCreateDto.getSellerId(), startDate, endDate);
         if (settlementItems.isEmpty()) {
             log.warn("There is no eligible settlement record for creating commission invoice. sellerId: {}", commissionInvoiceCreateDto.getSellerId());
             return;

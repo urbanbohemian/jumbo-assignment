@@ -18,7 +18,6 @@ import com.trendyol.international.commission.invoice.api.producer.CommissionInvo
 import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -104,7 +103,7 @@ public class CommissionInvoiceServiceTest {
         Date automaticInvoiceStartDate = new Date(1648771200000L);
         Date endDate = new Date(1651363199000L);
 
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of());
+        when(settlementItemRepository.getSettlementItems(eq(1L), any(), any())).thenReturn(List.of());
         //when
         commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateDto.builder()
                 .sellerId(1L)
@@ -140,7 +139,7 @@ public class CommissionInvoiceServiceTest {
                 .transactionType(TransactionType.RETURN)
                 .itemCreationDate(new Date())
                 .build();
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+        when(settlementItemRepository.getSettlementItems(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
 
         //when
         commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateDto.builder()
@@ -177,7 +176,7 @@ public class CommissionInvoiceServiceTest {
                 .transactionType(TransactionType.RETURN)
                 .itemCreationDate(new Date())
                 .build();
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+        when(settlementItemRepository.getSettlementItems(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
 
         //when
         commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateDto.builder()
@@ -216,7 +215,7 @@ public class CommissionInvoiceServiceTest {
                 .build();
 
         when(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L)).thenReturn(Optional.empty());
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+        when(settlementItemRepository.getSettlementItems(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
         VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
         when(vatCalculatorService.calculateVatModel(BigDecimal.valueOf(242), BigDecimal.valueOf(21))).thenReturn(vatModel);
         //when
@@ -245,7 +244,7 @@ public class CommissionInvoiceServiceTest {
     public void it_should_create_commission_invoice_for_seller_when_seller_has_previous_commission_invoice() {
         //given
         Date previousCommissionInvoiceEndDate = new Date(1648771199999L);
-        Date automaticInvoiceStartDate = new Date(1648771200000L);
+        Date automaticInvoiceStartDate = new Date(1648771100000L);
         Date endDate = new Date(1651363199000L);
 
         SettlementItem settlement1 = SettlementItem.builder()
@@ -267,7 +266,7 @@ public class CommissionInvoiceServiceTest {
                 .build();
         CommissionInvoice commissionInvoice = CommissionInvoice.builder().endDate(previousCommissionInvoiceEndDate).build();
         when(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L)).thenReturn(Optional.of(commissionInvoice));
-        when(settlementItemRepository.findBySellerIdAndItemCreationDateBetween(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+        when(settlementItemRepository.getSettlementItems(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
         VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
         when(vatCalculatorService.calculateVatModel(any(), any())).thenReturn(vatModel);
         //when
