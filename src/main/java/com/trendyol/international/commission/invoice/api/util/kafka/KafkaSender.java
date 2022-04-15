@@ -1,7 +1,6 @@
-package com.trendyol.international.commission.invoice.api.util;
+package com.trendyol.international.commission.invoice.api.util.kafka;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -10,9 +9,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+@Slf4j
 @Component
 public class KafkaSender {
-    private final Logger logger = LoggerFactory.getLogger(KafkaSender.class);
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
@@ -25,15 +24,15 @@ public class KafkaSender {
                     .completable()
                     .handle((r, t) -> {
                         if (Optional.ofNullable(t).isPresent()) {
-                            logger.error("Sending Kafka Message is failed with the following exception: {}, topic: {}, key: {}, message: {} ", t.getMessage(), topic, key, message);
+                            log.error("Sending Kafka Message is failed with the following exception: {}, topic: {}, key: {}, message: {} ", t.getMessage(), topic, key, message);
                             throw new RuntimeException(t);
                         }
 
-                        logger.debug("Sending Kafka Message is successful with the following topic: {}, key: {}, message: {} ", topic, key, message);
+                        log.debug("Sending Kafka Message is successful with the following topic: {}, key: {}, message: {} ", topic, key, message);
                         return r;
                     }).get(30, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            logger.error("Sending Kafka Message is failed with the following exception: {}, topic: {}, key: {}, message: {} ", e.getMessage(), topic, key, message);
+            log.error("Sending Kafka Message is failed with the following exception: {}, topic: {}, key: {}, message: {} ", e.getMessage(), topic, key, message);
             throw new RuntimeException(e);
         }
     }

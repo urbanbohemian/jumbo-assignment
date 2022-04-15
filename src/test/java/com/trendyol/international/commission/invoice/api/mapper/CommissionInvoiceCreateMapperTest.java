@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.mapper;
 
-import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateMessage;
+import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class CommissionInvoiceCreateMapperTest {
         //given
         Date currentDate = new Date();
 
-        CommissionInvoiceCreateMessage commissionInvoiceCreateMessage = CommissionInvoiceCreateMessage.builder()
+        CommissionInvoiceCreateEvent commissionInvoiceCreateEvent = CommissionInvoiceCreateEvent.builder()
                 .sellerId(1L)
                 .country("NL")
                 .currency("EUR")
@@ -24,13 +24,13 @@ public class CommissionInvoiceCreateMapperTest {
                 .build();
 
         //when
-        CommissionInvoiceCreateDto commissionInvoiceCreateDto = CommissionInvoiceCreateMapper.INSTANCE.commissionInvoiceCreateDto(commissionInvoiceCreateMessage);
+        CommissionInvoiceCreateDto commissionInvoiceCreateDto = CommissionInvoiceCreateMapper.INSTANCE.commissionInvoiceCreateDto(commissionInvoiceCreateEvent);
 
         //then
-        assertEquals(commissionInvoiceCreateDto.getSellerId(), commissionInvoiceCreateMessage.getSellerId());
-        assertEquals(commissionInvoiceCreateDto.getCountry(), commissionInvoiceCreateMessage.getCountry());
-        assertEquals(commissionInvoiceCreateDto.getCurrency(), commissionInvoiceCreateMessage.getCurrency());
-        assertEquals(commissionInvoiceCreateDto.getAutomaticInvoiceStartDate(), commissionInvoiceCreateMessage.getAutomaticInvoiceStartDate());
-        assertEquals(commissionInvoiceCreateDto.getEndDate(), commissionInvoiceCreateMessage.getEndDate());
+        assertEquals(commissionInvoiceCreateDto.getSellerId(), commissionInvoiceCreateEvent.getSellerId());
+        assertEquals(commissionInvoiceCreateDto.getCountry(), commissionInvoiceCreateEvent.getCountry());
+        assertEquals(commissionInvoiceCreateDto.getCurrency(), commissionInvoiceCreateEvent.getCurrency());
+        assertEquals(commissionInvoiceCreateDto.getAutomaticInvoiceStartDate(), commissionInvoiceCreateEvent.getAutomaticInvoiceStartDate());
+        assertEquals(commissionInvoiceCreateDto.getEndDate(), commissionInvoiceCreateEvent.getEndDate());
     }
 }

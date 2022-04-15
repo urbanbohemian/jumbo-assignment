@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.mapper;
 
-import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemMessage;
+import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemEvent;
 import com.trendyol.international.commission.invoice.api.model.dto.SettlementItemDto;
 import org.junit.jupiter.api.Test;
 
@@ -16,29 +16,29 @@ public class SettlementItemMapperTest {
         //given
         Date currentDate = new Date();
 
-        SettlementItemMessage settlementItemMessage = new SettlementItemMessage();
-        settlementItemMessage.setId(1L);
-        settlementItemMessage.setCreatedDate(currentDate);
-        settlementItemMessage.setSellerId(1L);
-        settlementItemMessage.setTransactionTypeId(1);
-        settlementItemMessage.setDeliveryDate(currentDate);
-        settlementItemMessage.setPaymentDate(currentDate);
-        settlementItemMessage.setTotalCommission(BigDecimal.ONE);
-        settlementItemMessage.setStoreFrontId(1L);
-        settlementItemMessage.setCurrency("EUR");
+        SettlementItemEvent settlementItemEvent = new SettlementItemEvent();
+        settlementItemEvent.setId(1L);
+        settlementItemEvent.setCreatedDate(currentDate);
+        settlementItemEvent.setSellerId(1L);
+        settlementItemEvent.setTransactionTypeId(1);
+        settlementItemEvent.setDeliveryDate(currentDate);
+        settlementItemEvent.setPaymentDate(currentDate);
+        settlementItemEvent.setTotalCommission(BigDecimal.ONE);
+        settlementItemEvent.setStoreFrontId(1L);
+        settlementItemEvent.setCurrency("EUR");
 
         //when
-        SettlementItemDto settlementItemDto = SettlementItemMapper.INSTANCE.settlementItemDto(settlementItemMessage);
+        SettlementItemDto settlementItemDto = SettlementItemMapper.INSTANCE.settlementItemDto(settlementItemEvent);
 
         //then
-        assertEquals(settlementItemDto.getId(), settlementItemMessage.getId());
-        assertEquals(settlementItemDto.getCreatedDate(), settlementItemMessage.getCreatedDate());
-        assertEquals(settlementItemDto.getSellerId(), settlementItemMessage.getSellerId());
-        assertEquals(settlementItemDto.getTransactionType(), settlementItemMessage.getTransactionTypeId());
-        assertEquals(settlementItemDto.getDeliveryDate(), settlementItemMessage.getDeliveryDate());
-        assertEquals(settlementItemDto.getPaymentDate(), settlementItemMessage.getPaymentDate());
-        assertEquals(settlementItemDto.getCommission(), settlementItemMessage.getTotalCommission());
-        assertEquals(settlementItemDto.getStoreFrontId(), settlementItemMessage.getStoreFrontId());
-        assertEquals(settlementItemDto.getCurrency(), settlementItemMessage.getCurrency());
+        assertEquals(settlementItemDto.getId(), settlementItemEvent.getId());
+        assertEquals(settlementItemDto.getCreatedDate(), settlementItemEvent.getCreatedDate());
+        assertEquals(settlementItemDto.getSellerId(), settlementItemEvent.getSellerId());
+        assertEquals(settlementItemDto.getTransactionType(), settlementItemEvent.getTransactionTypeId());
+        assertEquals(settlementItemDto.getDeliveryDate(), settlementItemEvent.getDeliveryDate());
+        assertEquals(settlementItemDto.getPaymentDate(), settlementItemEvent.getPaymentDate());
+        assertEquals(settlementItemDto.getCommission(), settlementItemEvent.getTotalCommission());
+        assertEquals(settlementItemDto.getStoreFrontId(), settlementItemEvent.getStoreFrontId());
+        assertEquals(settlementItemDto.getCurrency(), settlementItemEvent.getCurrency());
     }
 }

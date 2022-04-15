@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.domain.event;
+package com.trendyol.international.commission.invoice.api.domain.retryEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Data
-public class CommissionInvoiceCreateMessage {
+public class CommissionInvoiceCreateRetryEvent {
     private Long sellerId;
     private String country;
     private String currency;

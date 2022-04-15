@@ -1,7 +1,7 @@
 package com.trendyol.international.commission.invoice.api.config.kafka;
 
-import com.trendyol.international.commission.invoice.api.util.Consumer;
-import com.trendyol.international.commission.invoice.api.util.Producer;
+import com.trendyol.international.commission.invoice.api.util.kafka.Consumer;
+import com.trendyol.international.commission.invoice.api.util.kafka.Producer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 

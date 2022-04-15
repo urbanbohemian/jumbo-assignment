@@ -3,8 +3,8 @@ package com.trendyol.international.commission.invoice.api.service;
 import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
-import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateMessage;
-import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateMessage;
+import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
+import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateEvent;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
@@ -21,8 +21,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +50,7 @@ public class CommissionInvoiceService {
     private final SettlementItemRepository settlementItemRepository;
 
     private void produceCommissionInvoiceCreateMessageForSeller(SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate) {
-        commissionInvoiceCreateProducer.produceCommissionInvoiceCreateMessage(CommissionInvoiceCreateMessage.builder()
+        commissionInvoiceCreateProducer.produceCommissionInvoiceCreateMessage(CommissionInvoiceCreateEvent.builder()
                 .sellerId(sellerIdWithAutomaticInvoiceStartDate.getSellerId())
                 .country(COUNTRY)
                 .currency(CURRENCY)
@@ -75,7 +76,7 @@ public class CommissionInvoiceService {
     }
 
     // collects all settlement items and process
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     public void createCommissionInvoiceForSeller(CommissionInvoiceCreateDto commissionInvoiceCreateDto) {
         Date startDate = getStartDateForSeller(commissionInvoiceCreateDto.getSellerId(), commissionInvoiceCreateDto.getAutomaticInvoiceStartDate());
         Date endDate = commissionInvoiceCreateDto.getEndDate();
@@ -128,8 +129,8 @@ public class CommissionInvoiceService {
                 .forEach(this::generateSerialNumberForCommissionInvoice);
     }
 
-    private DocumentCreateMessage getDocumentCreateMessage(SellerResponse sellerResponse, CommissionInvoice commissionInvoice) {
-        return DocumentCreateMessage.builder()
+    private DocumentCreateEvent getDocumentCreateMessage(SellerResponse sellerResponse, CommissionInvoice commissionInvoice) {
+        return DocumentCreateEvent.builder()
                 .sellerId(commissionInvoice.getSellerId())
                 .sellerName(sellerResponse.getCompanyName())
                 .addressLine(sellerResponse.getInvoiceAddress().map(Address::getFormattedAddress).orElse(StringUtils.EMPTY))
@@ -151,8 +152,8 @@ public class CommissionInvoiceService {
     private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
         SellerResponse sellerResponse = sellerApiClient.getSellerById(sellerId);
         commissionInvoices.forEach(commissionInvoice -> {
-            DocumentCreateMessage documentCreateMessage = getDocumentCreateMessage(sellerResponse, commissionInvoice);
-            documentCreateProducer.produceDocumentCreateMessage(documentCreateMessage);
+            DocumentCreateEvent documentCreateEvent = getDocumentCreateMessage(sellerResponse, commissionInvoice);
+            documentCreateProducer.produceDocumentCreateMessage(documentCreateEvent);
         });
     }
 

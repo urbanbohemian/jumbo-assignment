@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.util;
+package com.trendyol.international.commission.invoice.api.util.kafka;
 
 import java.util.Map;
 

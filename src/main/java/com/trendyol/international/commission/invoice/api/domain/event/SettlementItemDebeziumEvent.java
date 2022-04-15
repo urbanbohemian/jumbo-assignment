@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class SettlementItemDebeziumMessage {
-    private SettlementItemMessage before;
-    private SettlementItemMessage after;
+public class SettlementItemDebeziumEvent {
+    private SettlementItemEvent before;
+    private SettlementItemEvent after;
     private String op;
 }

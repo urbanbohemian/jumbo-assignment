@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Builder
 @Data
-public class DocumentCreateMessage {
+public class DocumentCreateEvent {
     private Long sellerId;
     private String sellerName;
     private String addressLine;

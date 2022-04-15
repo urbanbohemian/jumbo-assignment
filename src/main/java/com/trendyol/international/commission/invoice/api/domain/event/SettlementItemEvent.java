@@ -15,7 +15,7 @@ import java.util.Date;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class SettlementItemMessage {
+public class SettlementItemEvent {
     private Long id;
     private Date createdDate;
     private Long sellerId;

@@ -1,14 +1,13 @@
 package com.trendyol.international.commission.invoice.api.config.kafka;
 
-import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumMessage;
-import com.trendyol.international.commission.invoice.api.util.Consumer;
-import com.trendyol.international.commission.invoice.api.util.KafkaConsumerUtil;
+import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumEvent;
+import com.trendyol.international.commission.invoice.api.util.kafka.Consumer;
+import com.trendyol.international.commission.invoice.api.util.kafka.KafkaConsumerUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaOperations;
-import org.springframework.retry.support.RetryTemplate;
 
 @Configuration
 public class SettlementItemDebeziumConsumerConfig {
@@ -21,22 +20,16 @@ public class SettlementItemDebeziumConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, SettlementItemDebeziumMessage> settlementItemDebeziumConsumerFactory() {
-        return kafkaConsumerUtil.createConsumerFactory(consumer, SettlementItemDebeziumMessage.class);
+    public ConsumerFactory<String, SettlementItemDebeziumEvent> settlementItemDebeziumConsumerFactory() {
+        return kafkaConsumerUtil.createConsumerFactory(consumer, SettlementItemDebeziumEvent.class);
     }
 
     @Bean
-    public RetryTemplate settlementItemDebeziumConsumerRetryTemplate() {
-        return kafkaConsumerUtil.createRetryTemplate(consumer);
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, SettlementItemDebeziumMessage> settlementItemDebeziumKafkaListenerContainerFactory(KafkaOperations<String, Object> kafkaOperations) {
+    public ConcurrentKafkaListenerContainerFactory<String, SettlementItemDebeziumEvent> settlementItemDebeziumKafkaListenerContainerFactory(KafkaOperations<String, Object> kafkaOperations) {
         return kafkaConsumerUtil.createSingleKafkaListenerContainerFactory(
                 kafkaOperations,
                 settlementItemDebeziumConsumerFactory(),
-                consumer,
-                settlementItemDebeziumConsumerRetryTemplate()
+                consumer
         );
     }
 }

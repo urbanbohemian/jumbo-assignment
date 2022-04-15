@@ -1,7 +1,7 @@
 package com.trendyol.international.commission.invoice.api.consumer;
 
 import com.newrelic.api.agent.Trace;
-import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumMessage;
+import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumEvent;
 import com.trendyol.international.commission.invoice.api.mapper.SettlementItemMapper;
 import com.trendyol.international.commission.invoice.api.service.SettlementItemService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class SettlementItemDebeziumConsumer {
             groupId = "${kafka-config.consumers[settlement-item-debezium-consumer].props[group.id]}",
             containerFactory = "${kafka-config.consumers[settlement-item-debezium-consumer].factory-bean-name}"
     )
-    public void consume(@Payload SettlementItemDebeziumMessage message,
+    public void consume(@Payload SettlementItemDebeziumEvent message,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                         @Header(KafkaHeaders.OFFSET) Long offset,
                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
