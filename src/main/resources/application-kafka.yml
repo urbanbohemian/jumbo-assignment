@@ -35,6 +35,12 @@ kafka-config:
       sync-commit-timeout-second: 5
       backoffIntervalMillis: 5000 #wait time for retry
       missingTopicAlertEnable: false
+      conf:
+        exception1:
+          backoffMillis:
+          retryCount:
+        exception2:
+
       props:
         "[bootstrap.servers]": ${kafka.bootstrap.servers}
         #"[spring.json.trusted.packages]": com.trendyol

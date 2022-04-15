@@ -1,10 +1,14 @@
-package com.trendyol.international.commission.invoice.api.util;
+package com.trendyol.international.commission.invoice.api.util.kafka;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trendyol.international.commission.invoice.api.config.kafka.KafkaConsumerInterceptor;
 import com.trendyol.international.commission.invoice.api.config.kafka.KafkaProducerConsumerProps;
+import com.trendyol.international.commission.invoice.api.util.JsonSupport;
+import com.trendyol.international.commission.invoice.api.util.SpringContext;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -13,16 +17,11 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.kafka.listener.ContainerProperties;
-import org.springframework.kafka.listener.ErrorHandler;
-import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
-import org.springframework.kafka.listener.adapter.RetryingMessageListenerAdapter;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.mapping.DefaultJackson2JavaTypeMapper;
 import org.springframework.kafka.support.mapping.Jackson2JavaTypeMapper;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
-import org.springframework.retry.policy.SimpleRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.backoff.FixedBackOff;
 
@@ -30,14 +29,12 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Component
-public class KafkaConsumerUtil {
-
+@RequiredArgsConstructor
+public class KafkaConsumerUtil implements JsonSupport {
     private final KafkaProducerConsumerProps kafkaProducerConsumerProps;
-
-    public KafkaConsumerUtil(KafkaProducerConsumerProps kafkaProducerConsumerProps) {
-        this.kafkaProducerConsumerProps = kafkaProducerConsumerProps;
-    }
+    private final ObjectMapper objectMapper;
 
     public <T> ConsumerFactory<String, T> createConsumerFactory(Consumer consumer, TypeReference<T> typeReference) {
         DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
@@ -73,51 +70,44 @@ public class KafkaConsumerUtil {
         return new DefaultKafkaConsumerFactory<>(consumerProps, keyDeserializer, valueDeserializer);
     }
 
-    public RetryTemplate createRetryTemplate(Consumer consumer) {
-        RetryTemplate retryTemplate = new RetryTemplate();
+    public void failoverProcessCustom(Consumer consumer, ConsumerRecord record,Exception exception) {
+        FailoverHandler failoverService = SpringContext.context.getBean(consumer.getFailoverHandlerBeanName(), FailoverHandler.class);
+        failoverService.handle(record, exception);
+    }
 
-        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-        fixedBackOffPolicy.setBackOffPeriod(consumer.getBackoffIntervalMillis());
-        retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
-
-        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-        retryPolicy.setMaxAttempts(consumer.getRetryCount() + 1);
-        retryTemplate.setRetryPolicy(retryPolicy);
-
-        return retryTemplate;
+    public void failoverProcessKafka(KafkaOperations<String, Object> kafkaOperations, Consumer consumer, ConsumerRecord consumerRecord) {
+        try {
+            kafkaOperations.send(consumer.getErrorTopic(), consumerRecord.key().toString(), consumerRecord.value());
+        } catch (Exception e) {
+            log.error("Consumer Failover has an error while sending error to error topic. topic: {}, key: {}, val: {}",
+                    consumer.getErrorTopic(),
+                    consumerRecord.key(),
+                    asJson(objectMapper, consumerRecord.value())
+            );
+        }
     }
 
     public <T> ConcurrentKafkaListenerContainerFactory<String, T> createSingleKafkaListenerContainerFactory(
             KafkaOperations<String, Object> kafkaOperations,
             ConsumerFactory<String, T> consumerFactory,
-            Consumer consumer,
-            RetryTemplate retryTemplate
+            Consumer consumer
     ) {
         ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
-        factory.getContainerProperties().setMissingTopicsFatal(Optional.ofNullable(consumer.getMissingTopicAlertEnable()).orElse(true));
+        factory.getContainerProperties().setMissingTopicsFatal(Optional.ofNullable(consumer.getMissingTopicAlertEnable()).orElse(false));
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
-        factory.getContainerProperties().setSyncCommits(consumer.isSyncCommit());
-        factory.getContainerProperties().setSyncCommitTimeout(Duration.ofSeconds(consumer.getSyncCommitTimeoutSecond()));
-        factory.setConcurrency(consumer.getConcurrency());
-
-        //TODO: Daha sonra retry-count'u max-attempt olarak refactor edebilirsin.
-        if(consumer.getRetryCount() >= 0) {
-            factory.setRetryTemplate(retryTemplate);
-            Optional.ofNullable(consumer.getErrorTopic())
-                    .ifPresent(errorTopic -> {
-                        ErrorHandler errorHandler = new SeekToCurrentErrorHandler(new FixedBackOff(consumer.getBackoffIntervalMillis(),
-                                consumer.getRetryCount() + 1));
-                        factory.setRecoveryCallback(context -> {
-                            ConsumerRecord record = (ConsumerRecord) context.getAttribute(RetryingMessageListenerAdapter.CONTEXT_RECORD);
-                            kafkaOperations.send(consumer.getErrorTopic(), record.key().toString(), record.value());
-                            return Optional.empty();
-                        });
-                        factory.setErrorHandler(errorHandler);
-                    });
-        }
+        factory.getContainerProperties().setSyncCommits(Optional.of(consumer.isSyncCommit()).orElse(true));
+        factory.getContainerProperties().setSyncCommitTimeout(Duration.ofSeconds(Optional.of(consumer.getSyncCommitTimeoutSecond()).orElse(5)));
+        factory.setConcurrency(Optional.of(consumer.getConcurrency()).orElse(1));
         factory.setBatchListener(false);
+        factory.setAutoStartup(Optional.ofNullable(consumer.getAutoStartup()).orElse(true));
+        factory.setCommonErrorHandler(new DefaultErrorHandler((record, exception) -> {
+            Optional.ofNullable(consumer.getFailoverHandlerBeanName())
+                    .ifPresent(_any -> failoverProcessCustom(consumer, record, exception));
 
+            Optional.ofNullable(consumer.getErrorTopic())
+                    .ifPresent(_any -> failoverProcessKafka(kafkaOperations, consumer, record));
+        }, new FixedBackOff(Optional.of(consumer.getBackoffIntervalMillis()).orElse(50L), Optional.of(consumer.getRetryCount() + 1).orElse(1))));
         return factory;
     }
 }

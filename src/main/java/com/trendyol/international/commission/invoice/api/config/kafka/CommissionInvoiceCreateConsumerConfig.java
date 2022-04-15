@@ -1,8 +1,8 @@
 package com.trendyol.international.commission.invoice.api.config.kafka;
 
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateMessage;
-import com.trendyol.international.commission.invoice.api.util.Consumer;
-import com.trendyol.international.commission.invoice.api.util.KafkaConsumerUtil;
+import com.trendyol.international.commission.invoice.api.util.kafka.Consumer;
+import com.trendyol.international.commission.invoice.api.util.kafka.KafkaConsumerUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -26,17 +26,11 @@ public class CommissionInvoiceCreateConsumerConfig {
     }
 
     @Bean
-    public RetryTemplate commissionInvoiceCreateConsumerRetryTemplate() {
-        return kafkaConsumerUtil.createRetryTemplate(consumer);
-    }
-
-    @Bean
     public ConcurrentKafkaListenerContainerFactory<String, CommissionInvoiceCreateMessage> commissionInvoiceCreateKafkaListenerContainerFactory(KafkaOperations<String, Object> kafkaOperations) {
         return kafkaConsumerUtil.createSingleKafkaListenerContainerFactory(
                 kafkaOperations,
                 commissionInvoiceCreateConsumerFactory(),
-                consumer,
-                commissionInvoiceCreateConsumerRetryTemplate()
+                consumer
         );
     }
 }
