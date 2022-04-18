@@ -21,14 +21,15 @@ import javax.persistence.Table;
 @Data
 @TypeDefs({@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 @Entity
-@Table(name = "customer_invoice_errors")
-public class CustomerInvoiceError extends AuditingEntity {
+@Table(name = "kafka_consumer_exceptions")
+public class KafkaConsumerException extends AuditingEntity {
     @Id
     private String id;
-    private String key;
     private String topic;
-    private String exceptionDetail;
-    @Type(type = "jsonb")
+    private String key;
     @Column(name = "content", columnDefinition = "jsonb")
     private Object content;
+    private String exceptionType;
+    @Type(type = "jsonb")
+    private String dataClass;
 }

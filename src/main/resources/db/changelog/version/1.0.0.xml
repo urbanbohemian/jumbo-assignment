@@ -118,4 +118,20 @@
         </sql>
     </changeSet>
 
+    <changeSet id="2022-04-18 11:20" author="mert.okan">
+        <sql>
+            create table if not exists shovel_exceptions
+            (
+                id                         varchar(255),
+                created_date               timestamp not null,
+                last_modified_date         timestamp not null,
+                topic                      varchar(255),
+                key                        varchar(255),
+                content                    jsonb,
+                exception_type             varchar(255),
+                content_class_type         varchar(255),
+                primary key (id)
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

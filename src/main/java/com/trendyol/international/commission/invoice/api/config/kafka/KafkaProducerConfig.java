@@ -22,7 +22,7 @@ public class KafkaProducerConfig {
     ProducerFactory<String, Object> producerFactory() {
         // Add kafka consumer correlationid interceptor
         Map<String, Object> producerProps = kafkaProducerConsumerProps.getProducers().get("default").getProps();
-        producerProps.putAll(kafkaProducerConsumerProps.getStretch());
+//        producerProps.putAll(kafkaProducerConsumerProps.getStretch());
         producerProps.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, KafkaProducerInterceptor.class.getName());
 
         return new DefaultKafkaProducerFactory<>(producerProps);

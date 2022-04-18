@@ -64,7 +64,7 @@ public class KafkaConsumerUtil implements JsonSupport {
 
         // Add kafka consumer correlationid interceptor
         Map<String, Object> consumerProps = consumer.getProps();
-        consumerProps.putAll(kafkaProducerConsumerProps.getStretch());
+//        consumerProps.putAll(kafkaProducerConsumerProps.getStretch());
         consumerProps.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, KafkaConsumerInterceptor.class.getName());
 
         return new DefaultKafkaConsumerFactory<>(consumerProps, keyDeserializer, valueDeserializer);
@@ -72,7 +72,7 @@ public class KafkaConsumerUtil implements JsonSupport {
 
     public void failoverProcessCustom(Consumer consumer, ConsumerRecord record,Exception exception) {
         FailoverHandler failoverService = SpringContext.context.getBean(consumer.getFailoverHandlerBeanName(), FailoverHandler.class);
-        failoverService.handle(record, exception);
+        failoverService.handle(record, exception, consumer.getDataClass());
     }
 
     public void failoverProcessKafka(KafkaOperations<String, Object> kafkaOperations, Consumer consumer, ConsumerRecord consumerRecord) {
@@ -107,6 +107,8 @@ public class KafkaConsumerUtil implements JsonSupport {
 
             Optional.ofNullable(consumer.getErrorTopic())
                     .ifPresent(_any -> failoverProcessKafka(kafkaOperations, consumer, record));
+
+            //TODO: LOG.ERROR HERE FOR KIBANA
         }, new FixedBackOff(Optional.of(consumer.getBackoffIntervalMillis()).orElse(50L), Optional.of(consumer.getRetryCount() + 1).orElse(1))));
         return factory;
     }

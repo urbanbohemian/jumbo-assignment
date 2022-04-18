@@ -1,0 +1,94 @@
+version: '3.1'
+services:
+  commission_invoice-postgre:
+    image: "kartoza/postgis:9.6-2.4"
+    restart: unless-stopped
+    hostname: commission_invoice-postgre
+    domainname: commission_invoice-postgre
+    environment:
+      POSTGRES_USER: int_seller_commission_invoice_appuser
+      POSTGRES_PASS: 1234567890
+      POSTGRES_DBNAME: int_seller_commission_invoice
+      ALLOW_IP_RANGE: 0.0.0.0/0
+    ports:
+      - "5432:5432"
+    volumes:
+      - commission_invoice-postgre:/var
+    networks:
+      - seller-finance-net
+
+  commission_invoice-zookeeper-server:
+    image: bitnami/zookeeper:latest
+    restart: unless-stopped
+    networks:
+      - seller-finance-net
+    container_name: commission_invoice-zookeeper-server
+    hostname: commission_invoice-zookeeper-server
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    volumes:
+      - ./commission_invoice-zookeeper-server:/bitnami/zookeeper
+    ports:
+      - "2181:2181"
+
+  commission_invoice-kafka-1:
+    image: bitnami/kafka:2.3.0
+    container_name: commission_invoice-kafka-1
+    restart: unless-stopped
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=commission_invoice-zookeeper-server:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ADVERTISED_HOST_NAME=localhost
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=2
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=2
+      - KAFKA_NUM_PARTITIONS=2
+      - KAFKA_PORT_NUMBER=9092
+      - KAFKA_LISTENERS=PLAINTEXT://commission_invoice-kafka-1:9092,PLAINTEXT_HOST://:29092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://commission_invoice-kafka-1:9092,PLAINTEXT_HOST://localhost:29092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    networks:
+      - seller-finance-net
+    depends_on:
+      - commission_invoice-zookeeper-server
+    volumes:
+      - ./commission_invoice-kafka-1:/bitnami/kafka
+
+  commission_invoice-kafka-2:
+    image: bitnami/kafka:2.3.0
+    container_name: commission_invoice-kafka-2
+    restart: unless-stopped
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=commission_invoice-zookeeper-server:2181
+      - KAFKA_ADVERTISED_HOST_NAME=localhost
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_BROKER_ID=2
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=2
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=2
+      - KAFKA_NUM_PARTITIONS=1
+      - KAFKA_PORT_NUMBER=9093
+      - KAFKA_LISTENERS=PLAINTEXT://commission_invoice-kafka-2:9093,PLAINTEXT_HOST://:29093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://commission_invoice-kafka-2:9093,PLAINTEXT_HOST://localhost:29093
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    ports:
+      - "9093:9093"
+      - "29093:29093"
+    networks:
+      - seller-finance-net
+    depends_on:
+      - commission_invoice-zookeeper-server
+    volumes:
+      - ./commission_invoice-kafka-2:/bitnami/kafka
+
+
+networks:
+  seller-finance-net:
+    driver: bridge
+
+volumes:
+  commission_invoice-postgre:

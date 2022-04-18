@@ -6,10 +6,13 @@ spring:
   jpa:
     properties:
       jdbc.batch_size: 50
-      hibernate.order_inserts: true
-      hibernate.order_updates: true
-      hibernate.show_sql: true
-      hibernate.dialect: org.hibernate.dialect.PostgreSQL10Dialect
+      hibernate:
+        order_inserts: true
+        order_updates: true
+        show_sql: true
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml

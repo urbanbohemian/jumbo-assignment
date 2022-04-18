@@ -1,8 +1,10 @@
 package com.trendyol.international.commission.invoice.api.util.kafka;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -23,4 +25,9 @@ public class Consumer {
     private Boolean autoStartup;
     private String failoverHandlerBeanName;
     private String factoryBeanName;
+    private String dataClass;
+//    @JsonIgnore
+//    public String getDataClass() {
+//        return Objects.nonNull(dataClass) ? dataClass : props.get("[json.value.type]").toString();
+//    }
 }

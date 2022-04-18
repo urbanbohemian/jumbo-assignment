@@ -18,6 +18,6 @@ application:
   urls:
     seller-api: http://localhost:8081
 
-logging:
-  pattern:
-    console: "{\"time\": \"%d\", \"level\": \"%p\", \"agent-name\": \"%X{x-agentname}\", \"correlation-id\": \"%X{x-correlationId}\", \"trace-id\": \"%X{traceId}\", \"span-id\": \"%X{spanId}\", \"executor-user\": \"%X{x-executor-user}\", \"request-body\": \"%X{x-request-body}\", \"log_type\": \"%X{x-log-type}\", \"app_name\": \"seller-invoice-api\", \"remote-host\": \"%X{x-remote-host}\", \"status\": \"%X{x-status}\", \"source\": \"%logger{63}:%L\", \"message\": \"%replace(%m%wEx{6}){'[\r\n]+', '\\n'}%nopex\"}%n"
+#logging:
+#  pattern:
+#    console: "{\"time\": \"%d\", \"level\": \"%p\", \"agent-name\": \"%X{x-agentname}\", \"correlation-id\": \"%X{x-correlationId}\", \"trace-id\": \"%X{traceId}\", \"span-id\": \"%X{spanId}\", \"executor-user\": \"%X{x-executor-user}\", \"request-body\": \"%X{x-request-body}\", \"log_type\": \"%X{x-log-type}\", \"app_name\": \"seller-invoice-api\", \"remote-host\": \"%X{x-remote-host}\", \"status\": \"%X{x-status}\", \"source\": \"%logger{63}:%L\", \"message\": \"%replace(%m%wEx{6}){'[\r\n]+', '\\n'}%nopex\"}%n"
