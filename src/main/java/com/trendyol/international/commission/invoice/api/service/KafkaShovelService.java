@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ShovelExceptionService implements JsonSupport {
+public class KafkaShovelService implements JsonSupport {
     private final KafkaConsumerExceptionRepository kafkaConsumerExceptionRepository;
     private final KafkaSender kafkaSender;
     private final ObjectMapper objectMapper;
@@ -26,12 +26,12 @@ public class ShovelExceptionService implements JsonSupport {
         log.info("Shovel job is started.");
         List<KafkaConsumerException> kafkaConsumerExceptionList;
         do {
-            kafkaConsumerExceptionList = kafkaConsumerExceptionRepository.findFirst1000ByExceptionDetailInOrderByCreatedDateAsc(retryableExceptionList);
+            kafkaConsumerExceptionList = kafkaConsumerExceptionRepository.findFirst1000ByExceptionTypeInOrderByCreatedDateAsc(retryableExceptionList);
             kafkaConsumerExceptionList.forEach(kafkaConsumerException -> {
                 try {
                     kafkaSender.send(kafkaConsumerException.getTopic(),
                             kafkaConsumerException.getKey(),
-                            fromJson(objectMapper, Class.forName(kafkaConsumerException.getDataClass()), kafkaConsumerException.getContent()));
+                            fromJson(objectMapper, Class.forName(kafkaConsumerException.getContentClassType()), kafkaConsumerException.getContent()));
                 } catch (ClassNotFoundException exception) {
                     log.error("An error has occurred on casting from JSON ,{}",exception.getMessage());;
                 }

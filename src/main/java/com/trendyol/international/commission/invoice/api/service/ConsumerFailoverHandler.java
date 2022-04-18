@@ -29,7 +29,7 @@ public class ConsumerFailoverHandler implements FailoverHandler {
                     .topic(consumerRecord.topic())
                     .key(consumerRecord.key().toString())
                     .content(contentAsJson)
-                    .dataClass(dataClass)
+                    .contentClassType(dataClass)
                     .exceptionType(Optional.ofNullable(exception.getCause())
                             .map(cause -> cause.getClass().getName().substring(cause.getClass().getName().lastIndexOf(".") + 1))
                             .orElseGet(() -> exception.getClass().getName().substring(exception.getClass().getName().lastIndexOf(".") + 1)))

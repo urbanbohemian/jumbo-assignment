@@ -1,15 +1,18 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
+import com.trendyol.international.commission.invoice.api.model.request.ShovelRequest;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
-import com.trendyol.international.commission.invoice.api.service.ShovelExceptionService;
+import com.trendyol.international.commission.invoice.api.service.KafkaShovelService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -18,7 +21,7 @@ import java.util.List;
 @RequestMapping("/commission-invoice")
 public class CommissionInvoiceController {
     private final CommissionInvoiceService commissionInvoiceService;
-    private final ShovelExceptionService shovelExceptionService;
+    private final KafkaShovelService kafkaShovelService;
 
     @PostMapping
     public void create() {
@@ -42,9 +45,9 @@ public class CommissionInvoiceController {
     }
 
     @PostMapping("/shovel-exceptions")
-    public void shovelExceptions(@RequestParam(value="retryableExceptionList") List<String> retryableExceptionList) {
+    public void shovelExceptions(@RequestBody ShovelRequest shovelRequest) {
         log.info("Commission Invoice Generate PDF Job Execution is started.");
-        shovelExceptionService.shovelAllExceptions(retryableExceptionList);
+//        kafkaShovelService.shovelAllExceptions(shovelRequest.retryableExceptionList);
         log.info("Commission Invoice Generate PDF Job Execution is ended successfully.");
     }
 }

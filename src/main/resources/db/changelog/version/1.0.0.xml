@@ -120,7 +120,7 @@
 
     <changeSet id="2022-04-18 11:20" author="mert.okan">
         <sql>
-            create table if not exists shovel_exceptions
+            create table if not exists kafka_consumer_exceptions
             (
                 id                         varchar(255),
                 created_date               timestamp not null,

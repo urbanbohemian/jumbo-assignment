@@ -28,8 +28,8 @@ public class KafkaConsumerException extends AuditingEntity {
     private String topic;
     private String key;
     @Column(name = "content", columnDefinition = "jsonb")
-    private Object content;
-    private String exceptionType;
     @Type(type = "jsonb")
-    private String dataClass;
+    private Object content;
+    private String contentClassType;
+    private String exceptionType;
 }
