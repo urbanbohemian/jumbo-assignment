@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,11 +27,12 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
                 .filter(m -> Objects.nonNull(m.getCreatedDate()))
                 .filter(m -> Objects.nonNull(m.getSellerId()))
                 .filter(m -> Objects.nonNull(m.getTransactionType()))
-                .filter(m -> Objects.nonNull(m.getCommission()))
+                .filter(m -> Objects.nonNull(m.getCommission()) && m.getCommission().compareTo(BigDecimal.ZERO) > 0)
                 .filter(m -> Objects.nonNull(m.getStoreFrontId()))
                 .filter(m -> Objects.nonNull(m.getCurrency()))
                 .filter(m -> Objects.nonNull(m.getPaymentDate()))
-                .filter(m -> List.of(TransactionType.SALE.getId(), TransactionType.RETURN.getId()).contains(m.getTransactionType()))
+                .filter(m -> TransactionType.RETURN.getId() == m.getTransactionType() ||
+                        TransactionType.SALE.getId() == m.getTransactionType() && Objects.nonNull(m.getDeliveryDate()))
                 .isPresent();
     }
 
@@ -49,6 +50,7 @@ public class SettlementItemService implements FilterExtension<SettlementItemDto>
                 .currency(settlementItemDto.getCurrency())
                 .build();
         settlementItemRepository.save(settlementItem);
+        log.info("Settlement item has been written to db: {}", settlementItemDto);
     }
 
     @Override
