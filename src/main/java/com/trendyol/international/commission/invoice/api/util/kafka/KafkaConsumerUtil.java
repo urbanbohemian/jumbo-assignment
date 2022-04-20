@@ -94,6 +94,7 @@ public class KafkaConsumerUtil implements JsonSupport {
         }
     }
 
+    //TODO: Making all utils as a library
     public <T> ConcurrentKafkaListenerContainerFactory<String, T> createSingleKafkaListenerContainerFactory(
             KafkaOperations<String, Object> kafkaOperations,
             ConsumerFactory<String, T> consumerFactory,
@@ -108,6 +109,12 @@ public class KafkaConsumerUtil implements JsonSupport {
         factory.setConcurrency(Optional.of(consumer.getConcurrency()).orElse(1));
         factory.setBatchListener(false);
         factory.setAutoStartup(Optional.ofNullable(consumer.getAutoStartup()).orElse(true));
+        //TODO: Exponential BackOff Time
+        //    https://docs.spring.io/spring-kafka/reference/html/
+        //    ExponentialBackOffWithMaxRetries bo = new ExponentialBackOffWithMaxRetries(6);
+        //    bo.setInitialInterval(1_000L);
+        //    bo.setMultiplier(2.0);
+        //    bo.setMaxInterval(10_000L);
         factory.setCommonErrorHandler(new DefaultErrorHandler((record, exception) ->
                 handleFailover(kafkaOperations, consumer, record, exception),
                 new FixedBackOff(Optional.of(consumer.getBackoffIntervalMillis()).orElse(50L), Optional.of(consumer.getRetryCount()).orElse(0)))
