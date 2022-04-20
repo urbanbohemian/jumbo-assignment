@@ -56,7 +56,7 @@ kafka-config:
       error-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.error
       factory-bean-name: commissionInvoiceCreateKafkaListenerContainerFactory
       concurrency: 1
-      retry-count: 1
+      retry-count: 0
       sync-commit: true
       sync-commit-timeout-second: 5
       backoffIntervalMillis: 5000 #wait time for retry

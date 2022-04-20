@@ -111,7 +111,7 @@ public class KafkaConsumerUtil implements JsonSupport {
         factory.setAutoStartup(Optional.ofNullable(consumer.getAutoStartup()).orElse(true));
         factory.setCommonErrorHandler(new DefaultErrorHandler((record, exception) ->
                 handleFailover(kafkaOperations, consumer, record, exception),
-                new FixedBackOff(Optional.of(consumer.getBackoffIntervalMillis()).orElse(50L), Optional.of(consumer.getRetryCount() + 1).orElse(1)))
+                new FixedBackOff(Optional.of(consumer.getBackoffIntervalMillis()).orElse(50L), Optional.of(consumer.getRetryCount()).orElse(0)))
         );
         return factory;
     }
