@@ -21,6 +21,7 @@ public class CommissionInvoiceCreateConsumer {
     private final CommissionInvoiceService commissionInvoiceService;
     private final KafkaConsumerExceptionService kafkaConsumerExceptionService;
 
+    //TODO: CONSUMER GROUPS COULD BE SEPERATED
     @Trace(dispatcher = true)
     @KafkaListener(
             topics = "${kafka-config.consumers[commission-invoice-create-consumer].topic}",
@@ -40,6 +41,7 @@ public class CommissionInvoiceCreateConsumer {
         }
     }
 
+    //TODO: CONSUMER GROUPS COULD BE SEPERATED
     @Transactional
     @Trace(dispatcher = true)
     @KafkaListener(
