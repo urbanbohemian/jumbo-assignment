@@ -11,17 +11,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CommissionInvoiceCreateShovelService implements JsonSupport {
+public class KafkaConsumerExceptionService implements JsonSupport {
 
     @Value("${retryable-exceptions}")
     private List<String> retryableExceptions;
@@ -50,5 +49,10 @@ public class CommissionInvoiceCreateShovelService implements JsonSupport {
             pageRequest = pageRequest.next();
         } while (kafkaConsumerExceptionList.hasNext());
         log.info("Shovel job is finished.");
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void deleteException(String hashId) {
+        kafkaConsumerExceptionRepository.deleteById(hashId);
     }
 }

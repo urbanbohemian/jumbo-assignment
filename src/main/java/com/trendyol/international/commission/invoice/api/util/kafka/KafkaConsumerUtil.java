@@ -65,8 +65,7 @@ public class KafkaConsumerUtil implements JsonSupport {
 
         // Add kafka consumer correlationid interceptor
         Map<String, Object> consumerProps = consumer.getProps();
-        //TODO: BUNLARI GERI AC, STRECH ONEMLI !
-//        consumerProps.putAll(kafkaProducerConsumerProps.getStretch());
+        consumerProps.putAll(kafkaProducerConsumerProps.getStretch());
         consumerProps.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, KafkaConsumerInterceptor.class.getName());
 
         return new DefaultKafkaConsumerFactory<>(consumerProps, keyDeserializer, valueDeserializer);

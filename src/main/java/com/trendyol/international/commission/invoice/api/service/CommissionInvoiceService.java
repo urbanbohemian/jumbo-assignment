@@ -21,8 +21,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +76,7 @@ public class CommissionInvoiceService {
     }
 
     // collects all settlement items and process
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     public void createCommissionInvoiceForSeller(CommissionInvoiceCreateDto commissionInvoiceCreateDto) {
         Date startDate = getStartDateForSeller(commissionInvoiceCreateDto.getSellerId(), commissionInvoiceCreateDto.getAutomaticInvoiceStartDate());
         Date endDate = commissionInvoiceCreateDto.getEndDate();

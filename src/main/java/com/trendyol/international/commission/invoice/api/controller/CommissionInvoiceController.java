@@ -1,7 +1,7 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
-import com.trendyol.international.commission.invoice.api.service.shovel.CommissionInvoiceCreateShovelService;
+import com.trendyol.international.commission.invoice.api.service.shovel.KafkaConsumerExceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/commission-invoice")
 public class CommissionInvoiceController {
     private final CommissionInvoiceService commissionInvoiceService;
-    private final CommissionInvoiceCreateShovelService commissionInvoiceCreateShovelService;
+    private final KafkaConsumerExceptionService kafkaConsumerExceptionService;
 
     @PostMapping
     public void create() {
@@ -40,7 +40,7 @@ public class CommissionInvoiceController {
     @PostMapping("/shovel-exceptions")
     public void shovelExceptions() throws ClassNotFoundException {
         log.info("Commission Invoice shovel exceptions job execution is started.");
-        commissionInvoiceCreateShovelService.shovelExceptions();
+        kafkaConsumerExceptionService.shovelExceptions();
         log.info("Commission Invoice shovel exceptions Job Execution is ended successfully.");
     }
 }
