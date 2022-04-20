@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface KafkaConsumerExceptionRepository extends JpaRepository<KafkaConsumerException, String> {
-    List<KafkaConsumerException> findFirst1000ByExceptionTypeInOrderByCreatedDateAsc(List<String> exceptionDetailList);
+    List<KafkaConsumerException> findFirst1000ByExceptionTypeInAndRetryCountLessThanOrderByCreatedDateAsc(List<String> exceptionDetailList,Integer maxAttempt);
 }

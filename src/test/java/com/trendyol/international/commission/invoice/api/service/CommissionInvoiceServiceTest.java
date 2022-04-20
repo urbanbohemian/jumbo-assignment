@@ -3,8 +3,8 @@ package com.trendyol.international.commission.invoice.api.service;
 import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
-import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateMessage;
-import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateMessage;
+import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
+import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateEvent;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
@@ -89,12 +89,12 @@ public class CommissionInvoiceServiceTest {
         //when
         commissionInvoiceService.create();
         //then
-        ArgumentCaptor<CommissionInvoiceCreateMessage> commissionInvoiceCreateMessageArgumentCaptor = ArgumentCaptor.forClass(CommissionInvoiceCreateMessage.class);
+        ArgumentCaptor<CommissionInvoiceCreateEvent> commissionInvoiceCreateMessageArgumentCaptor = ArgumentCaptor.forClass(CommissionInvoiceCreateEvent.class);
         verify(commissionInvoiceCreateProducer, times(3)).produceCommissionInvoiceCreateMessage(commissionInvoiceCreateMessageArgumentCaptor.capture());
 
-        List<CommissionInvoiceCreateMessage> commissionInvoiceCreateMessageList = commissionInvoiceCreateMessageArgumentCaptor.getAllValues();
+        List<CommissionInvoiceCreateEvent> commissionInvoiceCreateEventList = commissionInvoiceCreateMessageArgumentCaptor.getAllValues();
 
-        assertThat(commissionInvoiceCreateMessageList.stream().map(CommissionInvoiceCreateMessage::getSellerId).collect(Collectors.toList())).containsExactly(1L, 2L, 3L);
+        assertThat(commissionInvoiceCreateEventList.stream().map(CommissionInvoiceCreateEvent::getSellerId).collect(Collectors.toList())).containsExactly(1L, 2L, 3L);
     }
 
     @Test
@@ -420,12 +420,12 @@ public class CommissionInvoiceServiceTest {
         commissionInvoiceService.generatePdf();
 
         //then
-        ArgumentCaptor<DocumentCreateMessage> documentCreateMessageArgumentCaptor = ArgumentCaptor.forClass(DocumentCreateMessage.class);
+        ArgumentCaptor<DocumentCreateEvent> documentCreateMessageArgumentCaptor = ArgumentCaptor.forClass(DocumentCreateEvent.class);
         verify(documentCreateProducer, times(2)).produceDocumentCreateMessage(documentCreateMessageArgumentCaptor.capture());
 
-        List<DocumentCreateMessage> documentCreateMessages = documentCreateMessageArgumentCaptor.getAllValues();
+        List<DocumentCreateEvent> documentCreateEvents = documentCreateMessageArgumentCaptor.getAllValues();
 
-        Optional<DocumentCreateMessage> documentCreateMessage1 = documentCreateMessages.stream().filter(f -> f.getSellerId().equals(1L)).findFirst();
+        Optional<DocumentCreateEvent> documentCreateMessage1 = documentCreateEvents.stream().filter(f -> f.getSellerId().equals(1L)).findFirst();
         assertThat(documentCreateMessage1).isPresent();
         assertThat(documentCreateMessage1.get().getSellerId()).isEqualTo(1L);
         assertThat(documentCreateMessage1.get().getSellerName()).isEqualTo("Mert Unsal");
@@ -443,7 +443,7 @@ public class CommissionInvoiceServiceTest {
         assertThat(documentCreateMessage1.get().getVatRate()).isEqualTo(BigDecimal.valueOf(21L));
         assertThat(documentCreateMessage1.get().getAmount()).isEqualTo(BigDecimal.valueOf(121L));
 
-        Optional<DocumentCreateMessage> documentCreateMessage2 = documentCreateMessages.stream().filter(f -> f.getSellerId().equals(2L)).findFirst();
+        Optional<DocumentCreateEvent> documentCreateMessage2 = documentCreateEvents.stream().filter(f -> f.getSellerId().equals(2L)).findFirst();
         assertThat(documentCreateMessage2).isPresent();
         assertThat(documentCreateMessage2.get().getSellerId()).isEqualTo(2L);
         assertThat(documentCreateMessage2.get().getSellerName()).isEqualTo("Okan Uslu");

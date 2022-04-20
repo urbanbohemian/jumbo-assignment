@@ -9,7 +9,7 @@ spring:
       hibernate:
         order_inserts: true
         order_updates: true
-        show_sql: true
+        show_sql: false
         dialect: org.hibernate.dialect.PostgreSQL10Dialect
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl

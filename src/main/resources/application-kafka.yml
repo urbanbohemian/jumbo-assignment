@@ -27,6 +27,7 @@ kafka-config:
   consumers:
     "[settlement-item-debezium-consumer]":
       topic: seller.settlement.int-settlement-debezium.settlement-cdc
+      retry-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.retry
       error-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.error
       factory-bean-name: settlementItemDebeziumKafkaListenerContainerFactory
       concurrency: 1
@@ -35,8 +36,7 @@ kafka-config:
       sync-commit-timeout-second: 5
       backoffIntervalMillis: 5000 #wait time for retry
       missingTopicAlertEnable: false
-      failover-handler-bean-name: ConsumerFailoverHandler
-      data-class: com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumMessage
+      failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
       props:
         "[bootstrap.servers]": ${kafka.bootstrap.servers}
         #"[spring.json.trusted.packages]": com.trendyol
@@ -51,6 +51,8 @@ kafka-config:
         "[fetch.max.wait.ms]": 500
     "[commission-invoice-create-consumer]":
       topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0
+      retry-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.retry
+      reproduce-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.reproduce
       error-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.error
       factory-bean-name: commissionInvoiceCreateKafkaListenerContainerFactory
       concurrency: 1
@@ -59,11 +61,10 @@ kafka-config:
       sync-commit-timeout-second: 5
       backoffIntervalMillis: 5000 #wait time for retry
       missingTopicAlertEnable: false
-      failover-handler-bean-name: ConsumerFailoverHandler
-      data-class: com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateMessage
+      failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
       props:
         "[bootstrap.servers]": ${kafka.bootstrap.servers}
-        #"[spring.json.trusted.packages]": com.trendyol
+#        "[spring.json.trusted.packages]": com.trendyol.international.commission.invoice.api.domain.event
         "[group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.group
         "[max.poll.records]": 500 #for batch listener
         "[max.poll.interval.ms]": 300000 #poll time

@@ -1,6 +1,5 @@
 package com.trendyol.international.commission.invoice.api.model.dto;
 
-import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import lombok.Builder;
 import lombok.Data;
 

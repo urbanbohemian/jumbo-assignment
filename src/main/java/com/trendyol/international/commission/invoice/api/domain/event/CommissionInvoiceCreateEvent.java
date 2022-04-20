@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Data
-public class CommissionInvoiceCreateMessage {
+public class CommissionInvoiceCreateEvent {
     private Long sellerId;
     private String country;
     private String currency;

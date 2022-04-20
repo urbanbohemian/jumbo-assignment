@@ -1,19 +1,12 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
-import com.trendyol.international.commission.invoice.api.model.request.ShovelRequest;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
-import com.trendyol.international.commission.invoice.api.service.KafkaShovelService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import com.trendyol.international.commission.invoice.api.service.shovel.CommissionInvoiceCreateShovelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,7 +14,7 @@ import java.util.List;
 @RequestMapping("/commission-invoice")
 public class CommissionInvoiceController {
     private final CommissionInvoiceService commissionInvoiceService;
-    private final KafkaShovelService kafkaShovelService;
+    private final CommissionInvoiceCreateShovelService commissionInvoiceCreateShovelService;
 
     @PostMapping
     public void create() {
@@ -45,9 +38,9 @@ public class CommissionInvoiceController {
     }
 
     @PostMapping("/shovel-exceptions")
-    public void shovelExceptions(@RequestBody ShovelRequest shovelRequest) {
-        log.info("Commission Invoice Generate PDF Job Execution is started.");
-//        kafkaShovelService.shovelAllExceptions(shovelRequest.retryableExceptionList);
-        log.info("Commission Invoice Generate PDF Job Execution is ended successfully.");
+    public void shovelExceptions() throws ClassNotFoundException {
+        log.info("Commission Invoice shovel exceptions job execution is started.");
+        commissionInvoiceCreateShovelService.shovelExceptions();
+        log.info("Commission Invoice shovel exceptions Job Execution is ended successfully.");
     }
 }

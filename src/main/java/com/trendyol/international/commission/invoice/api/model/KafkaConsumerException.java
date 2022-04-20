@@ -32,4 +32,6 @@ public class KafkaConsumerException extends AuditingEntity {
     private Object content;
     private String contentClassType;
     private String exceptionType;
+    private Integer retryCount;
+    //TODO: OPTIMISTIC LOCK, private Integer version;
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trendyol.international.commission.invoice.api.config.kafka.KafkaConsumerInterceptor;
 import com.trendyol.international.commission.invoice.api.config.kafka.KafkaProducerConsumerProps;
+import com.trendyol.international.commission.invoice.api.service.failoverHandler.FailoverHandler;
 import com.trendyol.international.commission.invoice.api.util.JsonSupport;
 import com.trendyol.international.commission.invoice.api.util.SpringContext;
 import lombok.RequiredArgsConstructor;
@@ -64,26 +65,33 @@ public class KafkaConsumerUtil implements JsonSupport {
 
         // Add kafka consumer correlationid interceptor
         Map<String, Object> consumerProps = consumer.getProps();
+        //TODO: BUNLARI GERI AC, STRECH ONEMLI !
 //        consumerProps.putAll(kafkaProducerConsumerProps.getStretch());
         consumerProps.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, KafkaConsumerInterceptor.class.getName());
 
         return new DefaultKafkaConsumerFactory<>(consumerProps, keyDeserializer, valueDeserializer);
     }
 
-    public void failoverProcessCustom(Consumer consumer, ConsumerRecord record,Exception exception) {
-        FailoverHandler failoverService = SpringContext.context.getBean(consumer.getFailoverHandlerBeanName(), FailoverHandler.class);
-        failoverService.handle(record, exception, consumer.getDataClass());
-    }
-
     public void failoverProcessKafka(KafkaOperations<String, Object> kafkaOperations, Consumer consumer, ConsumerRecord consumerRecord) {
         try {
-            kafkaOperations.send(consumer.getErrorTopic(), consumerRecord.key().toString(), consumerRecord.value());
+            Optional.ofNullable(consumer.getErrorTopic()).ifPresent(errorTopic -> kafkaOperations.send(consumer.getErrorTopic(), consumerRecord.key().toString(), consumerRecord.value()));
         } catch (Exception e) {
             log.error("Consumer Failover has an error while sending error to error topic. topic: {}, key: {}, val: {}",
                     consumer.getErrorTopic(),
                     consumerRecord.key(),
                     asJson(objectMapper, consumerRecord.value())
             );
+        }
+    }
+
+    public void handleFailover(KafkaOperations<String, Object> kafkaOperations, Consumer consumer, ConsumerRecord record, Exception exception) {
+        try {
+            Optional.ofNullable(consumer.getFailoverHandlerBeanName()).ifPresent(failoverHandlerBeanName -> {
+                FailoverHandler failoverService = SpringContext.context.getBean(failoverHandlerBeanName, FailoverHandler.class);
+                failoverService.handle(consumer, record, exception);
+            });
+        } catch (Exception e) {
+            failoverProcessKafka(kafkaOperations, consumer, record);
         }
     }
 
@@ -101,15 +109,10 @@ public class KafkaConsumerUtil implements JsonSupport {
         factory.setConcurrency(Optional.of(consumer.getConcurrency()).orElse(1));
         factory.setBatchListener(false);
         factory.setAutoStartup(Optional.ofNullable(consumer.getAutoStartup()).orElse(true));
-        factory.setCommonErrorHandler(new DefaultErrorHandler((record, exception) -> {
-            Optional.ofNullable(consumer.getFailoverHandlerBeanName())
-                    .ifPresent(_any -> failoverProcessCustom(consumer, record, exception));
-
-            Optional.ofNullable(consumer.getErrorTopic())
-                    .ifPresent(_any -> failoverProcessKafka(kafkaOperations, consumer, record));
-
-            //TODO: LOG.ERROR HERE FOR KIBANA
-        }, new FixedBackOff(Optional.of(consumer.getBackoffIntervalMillis()).orElse(50L), Optional.of(consumer.getRetryCount() + 1).orElse(1))));
+        factory.setCommonErrorHandler(new DefaultErrorHandler((record, exception) ->
+                handleFailover(kafkaOperations, consumer, record, exception),
+                new FixedBackOff(Optional.of(consumer.getBackoffIntervalMillis()).orElse(50L), Optional.of(consumer.getRetryCount() + 1).orElse(1)))
+        );
         return factory;
     }
 }

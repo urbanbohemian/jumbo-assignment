@@ -128,8 +128,9 @@
                 topic                      varchar(255),
                 key                        varchar(255),
                 content                    jsonb,
-                exception_type             varchar(255),
                 content_class_type         varchar(255),
+                exception_type             varchar(255),
+                retry_count                int4,
                 primary key (id)
             );
         </sql>
