@@ -40,8 +40,8 @@ public class KafkaConsumerExceptionService implements JsonSupport {
         Page<KafkaConsumerException> kafkaConsumerExceptionList;
 
         do {
-            kafkaConsumerExceptionList = kafkaConsumerExceptionRepository.findAllByExceptionTypeInAndRetryCountLessThanOrderByCreatedDateAsc(retryableExceptions,retryMaxAttempt,pageRequest);
-            for(KafkaConsumerException kafkaConsumerException : kafkaConsumerExceptionList) {
+            kafkaConsumerExceptionList = kafkaConsumerExceptionRepository.findAllByExceptionTypeInAndRetryCountLessThanOrderByCreatedDateAsc(retryableExceptions, retryMaxAttempt, pageRequest);
+            for (KafkaConsumerException kafkaConsumerException : kafkaConsumerExceptionList) {
                 kafkaSender.send(kafkaConsumerException.getTopic(),
                         kafkaConsumerException.getKey(),
                         fromJson(objectMapper, Class.forName(kafkaConsumerException.getContentClassType()), kafkaConsumerException.getContent()));
@@ -53,6 +53,9 @@ public class KafkaConsumerExceptionService implements JsonSupport {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public void deleteException(String hashId) {
-        kafkaConsumerExceptionRepository.deleteById(hashId);
+        kafkaConsumerExceptionRepository.findById(hashId).ifPresentOrElse(
+                kafkaConsumerExceptionRepository::delete,
+                () -> log.info("KafkaConsumerException is not found with hashId : {} to DELETE", hashId)
+        );
     }
 }

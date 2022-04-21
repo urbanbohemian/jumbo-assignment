@@ -7,6 +7,7 @@ import com.trendyol.international.commission.invoice.api.service.CommissionInvoi
 import com.trendyol.international.commission.invoice.api.service.shovel.KafkaConsumerExceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -17,11 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 @Component
+@DependsOn("KafkaFactories")
 public class CommissionInvoiceCreateConsumer {
     private final CommissionInvoiceService commissionInvoiceService;
     private final KafkaConsumerExceptionService kafkaConsumerExceptionService;
 
-    //TODO: CONSUMER GROUPS COULD BE SEPERATED
     @Trace(dispatcher = true)
     @KafkaListener(
             topics = "${kafka-config.consumers[commission-invoice-create-consumer].topic}",
@@ -41,12 +42,11 @@ public class CommissionInvoiceCreateConsumer {
         }
     }
 
-    //TODO: CONSUMER GROUPS COULD BE SEPERATED
     @Transactional
     @Trace(dispatcher = true)
     @KafkaListener(
             topics = "${kafka-config.consumers[commission-invoice-create-consumer].retry-topic}",
-            groupId = "${kafka-config.consumers[commission-invoice-create-consumer].props[group.id]}",
+            groupId = "${kafka-config.consumers[commission-invoice-create-consumer].props[retry-group.id]}",
             containerFactory = "${kafka-config.consumers[commission-invoice-create-consumer].factory-bean-name}"
     )
     public void consumeRetry(@Payload CommissionInvoiceCreateEvent message,

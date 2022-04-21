@@ -15,14 +15,17 @@ public class Consumer {
     private String reproduceTopic;
     private String errorTopic;
     private Map<String, Object> props;
-    private int concurrency;
-    private int retryCount;
-    private long backoffIntervalMillis;
-    private int timeoutMillis;
-    private int syncCommitTimeoutSecond;
-    private boolean syncCommit;
+    private Integer concurrency;
+    private Integer retryCount;
+    private Long backoffIntervalMillis;
+    private Double multiplier;
+    private Long maxInterval;
+    private Integer timeoutMillis;
+    private Integer syncCommitTimeoutSecond;
+    private Boolean syncCommit;
     private Boolean missingTopicAlertEnable;
     private Boolean autoStartup;
     private String failoverHandlerBeanName;
     private String factoryBeanName;
+    private String dataClass;
 }

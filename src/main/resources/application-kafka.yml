@@ -5,14 +5,14 @@ stretch-kafka:
   password: pass
 
 kafka-config:
-  stretch:
-    "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
-    "[sasl.mechanism]": SCRAM-SHA-512
-    "[security.protocol]": SASL_SSL
-    "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
-    "[ssl.truststore.password]": trendyolconfluentkeystorepassword
-    "[default.api.timeout.ms]": 20000
-    "[request.timeout.ms]": 20000
+#  stretch:
+#    "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
+#    "[sasl.mechanism]": SCRAM-SHA-512
+#    "[security.protocol]": SASL_SSL
+#    "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
+#    "[ssl.truststore.password]": trendyolconfluentkeystorepassword
+#    "[default.api.timeout.ms]": 20000
+#    "[request.timeout.ms]": 20000
   producers:
     "[default]":
       props:
@@ -37,6 +37,7 @@ kafka-config:
       backoffIntervalMillis: 5000 #wait time for retry
       missingTopicAlertEnable: false
       failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
+      data-class: com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumEvent
       props:
         "[bootstrap.servers]": ${kafka.bootstrap.servers}
         #"[spring.json.trusted.packages]": com.trendyol
@@ -61,10 +62,12 @@ kafka-config:
       backoffIntervalMillis: 5000 #wait time for retry
       missingTopicAlertEnable: false
       failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
+      data-class: com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent
       props:
         "[bootstrap.servers]": ${kafka.bootstrap.servers}
 #        "[spring.json.trusted.packages]": com.trendyol.international.commission.invoice.api.domain.event
         "[group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.group
+        "[retry-group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.retry.group
         "[max.poll.records]": 500 #for batch listener
         "[max.poll.interval.ms]": 300000 #poll time
         "[session.timeout.ms]": 10000
@@ -73,6 +76,7 @@ kafka-config:
         "[auto.offset.reset]": earliest
         "[fetch.max.bytes]": 52428800
         "[fetch.max.wait.ms]": 500
+        "[interceptor.classes]": com.trendyol.international.commission.invoice.api.config.kafka.KafkaConsumerInterceptor
   integration-topics:
     document-create-topic: seller.finance.internationalcommissioninvoiceapi.documentCreate.0
     commission-invoice-create-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0

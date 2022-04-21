@@ -6,6 +6,7 @@ import com.trendyol.international.commission.invoice.api.mapper.SettlementItemMa
 import com.trendyol.international.commission.invoice.api.service.SettlementItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 @Component
+@DependsOn("KafkaFactories")
 public class SettlementItemDebeziumConsumer {
     private final SettlementItemService settlementItemService;
 
