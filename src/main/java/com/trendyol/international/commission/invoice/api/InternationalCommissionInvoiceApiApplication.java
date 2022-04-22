@@ -1,12 +1,15 @@
 package com.trendyol.international.commission.invoice.api;
 
+import com.trendyol.kafkaconfig.annotation.EnableKafkaConfig;
 import com.trendyol.mpc.consul.configuration.processor.EnableConsulProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.kafka.annotation.EnableKafka;
 
+@EnableKafkaConfig
 @EnableFeignClients
 @EnableConfigurationProperties
 @EnableJpaAuditing

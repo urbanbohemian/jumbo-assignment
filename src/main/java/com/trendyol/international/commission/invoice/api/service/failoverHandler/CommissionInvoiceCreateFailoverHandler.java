@@ -5,10 +5,12 @@ import com.trendyol.international.commission.invoice.api.domain.event.Commission
 import com.trendyol.international.commission.invoice.api.model.KafkaConsumerException;
 import com.trendyol.international.commission.invoice.api.repository.KafkaConsumerExceptionRepository;
 import com.trendyol.international.commission.invoice.api.util.JsonSupport;
-import com.trendyol.international.commission.invoice.api.util.kafka.Consumer;
+import com.trendyol.kafkaconfig.kafka.FailoverHandler;
+import com.trendyol.kafkaconfig.kafka.dto.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -18,6 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service(value = "CommissionInvoiceCreateFailoverHandler")
 public class CommissionInvoiceCreateFailoverHandler implements FailoverHandler,JsonSupport {
+    @Value("${kafka-config.consumers[commission-invoice-create-consumer].retry-topic}")
+    private String retryTopic;
     private final KafkaConsumerExceptionRepository kafkaConsumerExceptionRepository;
     private final ObjectMapper objectMapper;
 
@@ -27,7 +31,7 @@ public class CommissionInvoiceCreateFailoverHandler implements FailoverHandler,J
         String hashId = fromJson(objectMapper, CommissionInvoiceCreateEvent.class, consumerRecord.value()).getHashId();
         KafkaConsumerException kafkaConsumerException = kafkaConsumerExceptionRepository.findById(hashId).orElseGet(() -> KafkaConsumerException.builder()
                 .id(hashId)
-                .topic(consumer.getRetryTopic())
+                .topic(retryTopic)
                 .key(consumerRecord.key().toString())
                 .content(consumerRecord.value())
                 .exceptionType(throwable.getClass().getName().substring(throwable.getClass().getName().lastIndexOf(".") + 1))

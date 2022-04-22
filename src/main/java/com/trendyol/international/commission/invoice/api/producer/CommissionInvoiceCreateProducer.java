@@ -1,8 +1,8 @@
 package com.trendyol.international.commission.invoice.api.producer;
 
-import com.trendyol.international.commission.invoice.api.config.kafka.producer.KafkaConfigurations;
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
-import com.trendyol.international.commission.invoice.api.util.kafka.KafkaSender;
+import com.trendyol.kafkaconfig.config.KafkaConfigurations;
+import com.trendyol.kafkaconfig.kafka.KafkaSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

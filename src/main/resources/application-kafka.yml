@@ -16,6 +16,7 @@ kafka-config:
         "[value.serializer]": org.springframework.kafka.support.serializer.JsonSerializer
         "[acks]": "1"
         "[request.timeout.ms]": 30000
+        "[interceptor.classes]": com.trendyol.international.commission.invoice.api.config.kafka.producer.KafkaProducerInterceptor
   consumers:
     "[default]":
       props:
@@ -45,10 +46,11 @@ kafka-config:
       retry-count: 1
       sync-commit: true
       sync-commit-timeout-second: 5
-      backoffIntervalMillis: 5000 #wait time for retry
+      backoffIntervalMillis: 1000 #wait time for retry
       missingTopicAlertEnable: false
       failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
       data-class: com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumEvent
+      isExponentialRetry: true
       props:
         "[group.id]": seller.finance.internationalcommissioninvoiceapi.settlementItems.0.group
         "[interceptor.classes]": com.trendyol.international.commission.invoice.api.config.kafka.consumer.KafkaConsumerInterceptor
@@ -65,6 +67,7 @@ kafka-config:
       missingTopicAlertEnable: false
       failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
       data-class: com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent
+      isExponentialRetry: true
       props:
         "[group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.group
         "[retry-group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.retry.group

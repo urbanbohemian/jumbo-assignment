@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trendyol.international.commission.invoice.api.model.KafkaConsumerException;
 import com.trendyol.international.commission.invoice.api.repository.KafkaConsumerExceptionRepository;
 import com.trendyol.international.commission.invoice.api.util.JsonSupport;
-import com.trendyol.international.commission.invoice.api.util.kafka.KafkaSender;
+import com.trendyol.kafkaconfig.kafka.KafkaSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -121,7 +121,13 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.trendyol</groupId>
+            <artifactId>kafka-config</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -133,6 +139,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <repositories>
         <repository>
             <id>trendyol-releases</id>
@@ -145,6 +152,7 @@
             </url>
         </repository>
     </repositories>
+
     <build>
         <plugins>
             <plugin>
