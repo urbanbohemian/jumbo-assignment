@@ -41,6 +41,7 @@ variables:
 stages:
   - QA 🕵🏻‍♀️
   - Build 📦
+  - Security Gates 🛡︎
   - Deploy PREPROD 🔫
 
 Test:
@@ -51,6 +52,10 @@ SonarQube:
 
 Image:
   extends: .build
+
+Security Gates:
+  extends: .security-gates
+  stage: Security Gates 🛡︎
 
 Deploy QA:
   extends: .deploy_qa
