@@ -76,7 +76,7 @@ public class CommissionInvoiceService {
     }
 
     // collects all settlement items and process
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void createCommissionInvoiceForSeller(CommissionInvoiceCreateDto commissionInvoiceCreateDto) {
         Date startDate = getStartDateForSeller(commissionInvoiceCreateDto.getSellerId(), commissionInvoiceCreateDto.getAutomaticInvoiceStartDate());
         Date endDate = commissionInvoiceCreateDto.getEndDate();

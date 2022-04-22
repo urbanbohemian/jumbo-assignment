@@ -2,14 +2,12 @@ package com.trendyol.international.commission.invoice.api.util.kafka;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trendyol.international.commission.invoice.api.config.kafka.KafkaConsumerInterceptor;
-import com.trendyol.international.commission.invoice.api.config.kafka.KafkaProducerConsumerProps;
+import com.trendyol.international.commission.invoice.api.config.kafka.producer.KafkaConfigurations;
 import com.trendyol.international.commission.invoice.api.service.failoverHandler.FailoverHandler;
 import com.trendyol.international.commission.invoice.api.util.JsonSupport;
 import com.trendyol.international.commission.invoice.api.util.SpringContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -37,7 +35,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class KafkaConsumerUtil implements JsonSupport {
-    private final KafkaProducerConsumerProps kafkaProducerConsumerProps;
+    private final KafkaConfigurations kafkaConfigurations;
     private final ObjectMapper objectMapper;
 
     public <T> ConsumerFactory<String, T> createConsumerFactory(Consumer consumer, Class<T> classT) {
@@ -48,12 +46,10 @@ public class KafkaConsumerUtil implements JsonSupport {
         var jsonDeserializer = new JsonDeserializer<>(classT, objectMapper);
         jsonDeserializer.setTypeMapper(typeMapper);
         var valueDeserializer = new ErrorHandlingDeserializer<>(jsonDeserializer);
-        //Add kafka consumer correlation-id interceptor
+        Map<String,Object> defaultProps = Optional.ofNullable(kafkaConfigurations.getConsumers()).map(stringConsumerMap -> stringConsumerMap.get("default")).map(Consumer::getProps).orElseGet(HashMap::new);
         Map<String, Object> consumerProps = consumer.getProps();
-        //TODO: IF PRESENT
-        consumerProps.putAll(Optional.ofNullable(kafkaProducerConsumerProps.getStretch()).orElse(new HashMap<>()));
-//        consumerProps.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, KafkaConsumerInterceptor.class.getName());
-        return new DefaultKafkaConsumerFactory<>(consumer.getProps(), keyDeserializer, valueDeserializer);
+        defaultProps.putAll(consumerProps);
+        return new DefaultKafkaConsumerFactory<>(defaultProps, keyDeserializer, valueDeserializer);
     }
 
     public void defaultFailoverStrategy(KafkaOperations<String, Object> kafkaOperations, Consumer consumer, ConsumerRecord consumerRecord) {

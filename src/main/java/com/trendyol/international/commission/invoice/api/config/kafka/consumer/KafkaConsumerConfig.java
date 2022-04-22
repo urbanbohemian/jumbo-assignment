@@ -1,5 +1,6 @@
-package com.trendyol.international.commission.invoice.api.config.kafka;
+package com.trendyol.international.commission.invoice.api.config.kafka.consumer;
 
+import com.trendyol.international.commission.invoice.api.config.kafka.producer.KafkaConfigurations;
 import com.trendyol.international.commission.invoice.api.util.kafka.Consumer;
 import com.trendyol.international.commission.invoice.api.util.kafka.KafkaConsumerUtil;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,27 +12,29 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaOperations;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Configuration
 public class KafkaConsumerConfig {
     private final KafkaConsumerUtil kafkaConsumerUtil;
-    private final KafkaProducerConsumerProps kafkaProducerConsumerProps;
+    private final KafkaConfigurations kafkaConfigurations;
     private final ApplicationContext applicationContext;
 
     public KafkaConsumerConfig(KafkaConsumerUtil kafkaConsumerUtil,
-                               KafkaProducerConsumerProps kafkaProducerConsumerProps,
+                               KafkaConfigurations kafkaConfigurations,
                                ApplicationContext applicationContext) {
         this.kafkaConsumerUtil = kafkaConsumerUtil;
-        this.kafkaProducerConsumerProps = kafkaProducerConsumerProps;
+        this.kafkaConfigurations = kafkaConfigurations;
         this.applicationContext = applicationContext;
     }
 
     @Bean("KafkaFactories")
     public Map<String, ConcurrentKafkaListenerContainerFactory<?, ?>> kafkaFactories(KafkaOperations<String, Object> kafkaOperations) {
-        return kafkaProducerConsumerProps.getConsumers()
+        return kafkaConfigurations.getConsumers()
                 .entrySet()
                 .stream()
+                .filter(stringConsumerEntry -> !Objects.equals(stringConsumerEntry.getKey(), "default") )
                 .map(entry -> {
                     Consumer consumer = entry.getValue();
                     Class<?> consumerClass = kafkaConsumerUtil.getDataClass(consumer);

@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.config.kafka;
+package com.trendyol.international.commission.invoice.api.config.kafka.consumer;
 
 import org.apache.kafka.clients.consumer.ConsumerInterceptor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

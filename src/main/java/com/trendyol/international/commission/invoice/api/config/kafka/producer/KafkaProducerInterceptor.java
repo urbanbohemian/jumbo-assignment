@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.config.kafka;
+package com.trendyol.international.commission.invoice.api.config.kafka.producer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.ProducerInterceptor;

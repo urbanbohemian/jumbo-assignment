@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.config.kafka;
+package com.trendyol.international.commission.invoice.api.config.kafka.producer;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.context.annotation.Bean;
@@ -12,16 +12,16 @@ import java.util.Map;
 
 @Configuration
 public class KafkaProducerConfig {
-    private final KafkaProducerConsumerProps kafkaProducerConsumerProps;
+    private final KafkaConfigurations kafkaConfigurations;
 
-    public KafkaProducerConfig(KafkaProducerConsumerProps kafkaProducerConsumerProps) {
-        this.kafkaProducerConsumerProps = kafkaProducerConsumerProps;
+    public KafkaProducerConfig(KafkaConfigurations kafkaConfigurations) {
+        this.kafkaConfigurations = kafkaConfigurations;
     }
 
     @Bean
     ProducerFactory<String, Object> producerFactory() {
-        // Add kafka consumer correlationid interceptor
-        Map<String, Object> producerProps = kafkaProducerConsumerProps.getProducers().get("default").getProps();
+        // Add kafka consumer correlation-id interceptor
+        Map<String, Object> producerProps = kafkaConfigurations.getProducers().get("default").getProps();
 //        producerProps.putAll(kafkaProducerConsumerProps.getStretch());
         producerProps.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, KafkaProducerInterceptor.class.getName());
 

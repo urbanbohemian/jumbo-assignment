@@ -51,7 +51,7 @@ public class KafkaConsumerExceptionService implements JsonSupport {
         log.info("Shovel job is finished.");
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void deleteException(String hashId) {
         kafkaConsumerExceptionRepository.findById(hashId).ifPresentOrElse(
                 kafkaConsumerExceptionRepository::delete,

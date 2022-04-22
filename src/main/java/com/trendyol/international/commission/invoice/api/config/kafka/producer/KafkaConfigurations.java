@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.config.kafka;
+package com.trendyol.international.commission.invoice.api.config.kafka.producer;
 
 import com.trendyol.international.commission.invoice.api.util.kafka.Consumer;
 import com.trendyol.international.commission.invoice.api.util.kafka.Producer;
@@ -13,8 +13,7 @@ import java.util.Map;
 @Getter
 @Component
 @ConfigurationProperties(prefix = "kafka-config")
-public class KafkaProducerConsumerProps {
-    private Map<String, String> stretch;
+public class KafkaConfigurations {
     private Map<String, Consumer> consumers;
     private Map<String, Producer> producers;
     private Map<String, String> integrationTopics;
