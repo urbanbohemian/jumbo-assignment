@@ -19,17 +19,24 @@ kafka-config:
         "[interceptor.classes]": com.trendyol.international.commission.invoice.api.kafka.interceptor.KafkaProducerInterceptor
   consumers:
     "[default]":
+      concurrency: 1
+      retry-count: 1
+      sync-commit: true
+      sync-commit-timeout-second: 5
+      backoffIntervalMillis: 1000 #wait time for retry
+      missingTopicAlertEnable: false
+      isExponentialRetry: true
       props:
-       "[bootstrap.servers]": ${kafka.bootstrap.servers}
-       #"[spring.json.trusted.packages]": com.trendyol
-       "[max.poll.records]": 500 #for batch listener
-       "[max.poll.interval.ms]": 300000 #poll time
-       "[session.timeout.ms]": 10000
-       "[heartbeat.interval.ms]": 3000
-       "[enable.auto.commit]": true
-       "[auto.offset.reset]": earliest
-       "[fetch.max.bytes]": 52428800
-       "[fetch.max.wait.ms]": 500
+        "[bootstrap.servers]": ${kafka.bootstrap.servers}
+        #"[spring.json.trusted.packages]": com.trendyol
+        "[max.poll.records]": 500 #for batch listener
+        "[max.poll.interval.ms]": 300000 #poll time
+        "[session.timeout.ms]": 10000
+        "[heartbeat.interval.ms]": 3000
+        "[enable.auto.commit]": true
+        "[auto.offset.reset]": earliest
+        "[fetch.max.bytes]": 52428800
+        "[fetch.max.wait.ms]": 500
       "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
       "[sasl.mechanism]": SCRAM-SHA-512
       "[security.protocol]": SASL_SSL
@@ -42,15 +49,9 @@ kafka-config:
       retry-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.retry
       error-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.error
       factory-bean-name: settlementItemDebeziumKafkaListenerContainerFactory
-      concurrency: 1
-      retry-count: 1
-      sync-commit: true
-      sync-commit-timeout-second: 5
-      backoffIntervalMillis: 1000 #wait time for retry
-      missingTopicAlertEnable: false
       failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
       data-class: com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumEvent
-      isExponentialRetry: true
+      concurrency: 1
       props:
         "[group.id]": seller.finance.internationalcommissioninvoiceapi.settlementItems.0.group
         "[interceptor.classes]": com.trendyol.international.commission.invoice.api.kafka.interceptor.KafkaConsumerInterceptor
@@ -59,15 +60,8 @@ kafka-config:
       retry-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.retry
       error-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.error
       factory-bean-name: commissionInvoiceCreateKafkaListenerContainerFactory
-      concurrency: 1
-      retry-count: 0
-      sync-commit: true
-      sync-commit-timeout-second: 5
-      backoffIntervalMillis: 5000 #wait time for retry
-      missingTopicAlertEnable: false
       failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
       data-class: com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent
-      isExponentialRetry: true
       props:
         "[group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.group
         "[retry-group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.retry.group

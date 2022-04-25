@@ -4,7 +4,7 @@ spring:
     description: '@project.description@'
     termsOfService: https://www.trendyol.com/kullanim_kosullari.html
   profiles:
-    active: local
+    active: test
     include: kafka, postgresql, shovel
 
 springdoc:
