@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.service;
 
-import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
+import com.trendyol.international.commission.invoice.api.feign.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
@@ -14,8 +14,8 @@ import com.trendyol.international.commission.invoice.api.model.response.Seller.*
 import com.trendyol.international.commission.invoice.api.model.response.SellerIdWithAutomaticInvoiceStartDate;
 import com.trendyol.international.commission.invoice.api.model.response.SellerIdsWithAutomaticInvoiceStartDate;
 import com.trendyol.international.commission.invoice.api.model.response.SellerResponse;
-import com.trendyol.international.commission.invoice.api.producer.CommissionInvoiceCreateProducer;
-import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
+import com.trendyol.international.commission.invoice.api.kafka.producer.CommissionInvoiceCreateProducer;
+import com.trendyol.international.commission.invoice.api.kafka.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,6 @@ public class CommissionInvoiceServiceTest {
 
     @Mock
     private VatCalculatorService vatCalculatorService;
-
 
     @Mock
     private SellerApiClient sellerApiClient;

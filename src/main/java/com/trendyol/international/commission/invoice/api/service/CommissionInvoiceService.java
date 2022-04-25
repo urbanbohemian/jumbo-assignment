@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.service;
 
-import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
+import com.trendyol.international.commission.invoice.api.feign.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
@@ -12,8 +12,8 @@ import com.trendyol.international.commission.invoice.api.model.enums.VatStatusTy
 import com.trendyol.international.commission.invoice.api.model.response.Seller.Address;
 import com.trendyol.international.commission.invoice.api.model.response.SellerIdWithAutomaticInvoiceStartDate;
 import com.trendyol.international.commission.invoice.api.model.response.SellerResponse;
-import com.trendyol.international.commission.invoice.api.producer.CommissionInvoiceCreateProducer;
-import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
+import com.trendyol.international.commission.invoice.api.kafka.producer.CommissionInvoiceCreateProducer;
+import com.trendyol.international.commission.invoice.api.kafka.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import com.trendyol.international.commission.invoice.api.util.DateUtils;

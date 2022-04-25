@@ -2,6 +2,7 @@ package com.trendyol.international.commission.invoice.api.mapper;
 
 import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemEvent;
 import com.trendyol.international.commission.invoice.api.model.dto.SettlementItemDto;
+import com.trendyol.international.commission.invoice.api.util.mapper.SettlementItemMapper;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
