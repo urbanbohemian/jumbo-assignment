@@ -37,13 +37,13 @@ kafka-config:
         "[auto.offset.reset]": earliest
         "[fetch.max.bytes]": 52428800
         "[fetch.max.wait.ms]": 500
-      "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
-      "[sasl.mechanism]": SCRAM-SHA-512
-      "[security.protocol]": SASL_SSL
-      "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
-      "[ssl.truststore.password]": trendyolconfluentkeystorepassword
-      "[default.api.timeout.ms]": 20000
-      "[request.timeout.ms]": 20000
+        "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
+        "[sasl.mechanism]": SCRAM-SHA-512
+        "[security.protocol]": SASL_SSL
+        "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
+        "[ssl.truststore.password]": trendyolconfluentkeystorepassword
+        "[default.api.timeout.ms]": 20000
+        "[request.timeout.ms]": 20000
     "[settlement-item-debezium-consumer]":
       topic: seller.settlement.int-settlement-debezium.settlement-cdc
       retry-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.retry

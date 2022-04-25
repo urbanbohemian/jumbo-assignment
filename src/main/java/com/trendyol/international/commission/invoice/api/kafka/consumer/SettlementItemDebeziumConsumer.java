@@ -4,9 +4,9 @@ import com.newrelic.api.agent.Trace;
 import com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumEvent;
 import com.trendyol.international.commission.invoice.api.util.mapper.SettlementItemMapper;
 import com.trendyol.international.commission.invoice.api.service.SettlementItemService;
+import com.trendyol.kafkaconfig.annotation.DependsOnKafkaFactories;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-@DependsOn("KafkaFactories")
+@DependsOnKafkaFactories
 public class SettlementItemDebeziumConsumer {
     private final SettlementItemService settlementItemService;
 

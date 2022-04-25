@@ -2,12 +2,12 @@ package com.trendyol.international.commission.invoice.api.kafka.consumer;
 
 import com.newrelic.api.agent.Trace;
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
-import com.trendyol.international.commission.invoice.api.util.mapper.CommissionInvoiceCreateMapper;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
 import com.trendyol.international.commission.invoice.api.service.shovel.KafkaConsumerExceptionService;
+import com.trendyol.international.commission.invoice.api.util.mapper.CommissionInvoiceCreateMapper;
+import com.trendyol.kafkaconfig.annotation.DependsOnKafkaFactories;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-@DependsOn("KafkaFactories")
+@DependsOnKafkaFactories
 public class CommissionInvoiceCreateConsumer {
     private final CommissionInvoiceService commissionInvoiceService;
     private final KafkaConsumerExceptionService kafkaConsumerExceptionService;
