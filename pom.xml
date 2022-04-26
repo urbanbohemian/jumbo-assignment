@@ -147,11 +147,6 @@
 
     <repositories>
         <repository>
-            <id>trendyol-releases</id>
-            <name>Trendyol release</name>
-            <url>http://sfrontregistry.trendyol.com:8081/repository/maven-releases/</url>
-        </repository>
-        <repository>
             <id>gitlab-maven</id>
             <url>https://gitlab.trendyol.com/api/v4/projects/${seller-base-package-registry.project-id}/packages/maven
             </url>
