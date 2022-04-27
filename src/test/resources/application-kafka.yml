@@ -15,10 +15,16 @@ kafka-config:
         "[key.serializer]": org.apache.kafka.common.serialization.StringSerializer
         "[value.serializer]": org.springframework.kafka.support.serializer.JsonSerializer
         "[acks]": "1"
-        "[request.timeout.ms]": 30000
         "[interceptor.classes]": com.trendyol.international.commission.invoice.api.kafka.interceptor.KafkaProducerInterceptor
+        "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
+        "[sasl.mechanism]": SCRAM-SHA-512
+        "[security.protocol]": SASL_SSL
+        "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
+        "[ssl.truststore.password]": trendyolconfluentkeystorepassword
+        "[default.api.timeout.ms]": 20000
+        "[request.timeout.ms]": 20000
   consumers:
-    "[default]":
+    "[common-configurations]":
       concurrency: 1
       retry-count: 1
       sync-commit: true
@@ -37,13 +43,13 @@ kafka-config:
         "[auto.offset.reset]": earliest
         "[fetch.max.bytes]": 52428800
         "[fetch.max.wait.ms]": 500
-      "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
-      "[sasl.mechanism]": SCRAM-SHA-512
-      "[security.protocol]": SASL_SSL
-      "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
-      "[ssl.truststore.password]": trendyolconfluentkeystorepassword
-      "[default.api.timeout.ms]": 20000
-      "[request.timeout.ms]": 20000
+        "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
+        "[sasl.mechanism]": SCRAM-SHA-512
+        "[security.protocol]": SASL_SSL
+        "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
+        "[ssl.truststore.password]": trendyolconfluentkeystorepassword
+        "[default.api.timeout.ms]": 20000
+        "[request.timeout.ms]": 20000
     "[settlement-item-debezium-consumer]":
       topic: seller.settlement.int-settlement-debezium.settlement-cdc
       retry-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.retry
