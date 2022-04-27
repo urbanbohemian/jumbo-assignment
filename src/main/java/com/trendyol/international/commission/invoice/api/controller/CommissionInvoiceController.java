@@ -34,4 +34,11 @@ public class CommissionInvoiceController {
         commissionInvoiceService.generatePdf();
         log.info("Commission Invoice Generate PDF Job Execution is ended successfully.");
     }
+
+    @PostMapping("/envelope")
+    public void envelope() {
+        log.info("Deduction Invoice Envelope Job Execution is started.");
+        commissionInvoiceService.envelope();
+        log.info("Deduction Invoice Envelope Job Execution is ended successfully.");
+    }
 }

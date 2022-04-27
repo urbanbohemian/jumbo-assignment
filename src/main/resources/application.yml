@@ -12,7 +12,7 @@ springdoc:
     path: /api-docs
 
 server:
-  port: 8080
+  port: 9393
 
 application:
   urls:

@@ -2,9 +2,11 @@ package com.trendyol.international.commission.invoice.api.service;
 
 import com.trendyol.international.commission.invoice.api.client.SellerApiClient;
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
+import com.trendyol.international.commission.invoice.api.domain.ErpRequest;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateMessage;
 import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateMessage;
+import com.trendyol.international.commission.invoice.api.mapper.ErpRequestMapper;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
@@ -15,6 +17,7 @@ import com.trendyol.international.commission.invoice.api.model.response.SellerRe
 import com.trendyol.international.commission.invoice.api.producer.CommissionInvoiceCreateProducer;
 import com.trendyol.international.commission.invoice.api.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
+import com.trendyol.international.commission.invoice.api.repository.ErpRequestRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
 import com.trendyol.international.commission.invoice.api.util.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +50,10 @@ public class CommissionInvoiceService {
     private final DocumentCreateProducer documentCreateProducer;
     private final CommissionInvoiceRepository commissionInvoiceRepository;
     private final SettlementItemRepository settlementItemRepository;
+
+    private final ErpRequestRepository erpRequestRepository;
+
+    private final ErpRequestMapper erpRequestMapper;
 
     private void produceCommissionInvoiceCreateMessageForSeller(SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate) {
         commissionInvoiceCreateProducer.produceCommissionInvoiceCreateMessage(CommissionInvoiceCreateMessage.builder()
@@ -163,5 +170,23 @@ public class CommissionInvoiceService {
                 .stream()
                 .collect(Collectors.groupingBy(CommissionInvoice::getSellerId))
                 .forEach(this::generatePdfForSeller);
+    }
+
+    private void envelope(Long sellerId, List<CommissionInvoice> deductionInvoiceList) {
+        deductionInvoiceList.forEach(deductionInvoice -> {
+            deductionInvoice.setInvoiceStatus(InvoiceStatus.ENVELOPED);
+            commissionInvoiceRepository.save(deductionInvoice);
+            ErpRequest erpRequest = erpRequestMapper.mapEntityToErpRequest(deductionInvoice);
+            erpRequestRepository.save(erpRequest);
+        });
+    }
+
+    @Transactional
+    public void envelope() {
+        commissionInvoiceRepository
+                .findByInvoiceStatus(InvoiceStatus.PDF_GENERATED)
+                .stream()
+                .collect(Collectors.groupingBy(CommissionInvoice::getSellerId))
+                .forEach(this::envelope);
     }
 }
