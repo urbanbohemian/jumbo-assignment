@@ -24,7 +24,7 @@ kafka-config:
         "[default.api.timeout.ms]": 20000
         "[request.timeout.ms]": 20000
   consumers:
-    "[default]":
+    "[common-configurations]":
       concurrency: 1
       retry-count: 1
       sync-commit: true
@@ -57,7 +57,6 @@ kafka-config:
       factory-bean-name: settlementItemDebeziumKafkaListenerContainerFactory
       failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
       data-class: com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumEvent
-      concurrency: 1
       props:
         "[group.id]": seller.finance.internationalcommissioninvoiceapi.settlementItems.0.group
         "[interceptor.classes]": com.trendyol.international.commission.invoice.api.kafka.interceptor.KafkaConsumerInterceptor
