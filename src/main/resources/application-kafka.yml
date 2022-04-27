@@ -1,8 +1,8 @@
 kafka.bootstrap.servers: localhost:29092
 stretch-kafka:
   certificate-location: src/main/resources/globaltrust.jks
-  username: user
-  password: pass
+  username: seller.finance.int-commission-invoice-consumer
+  password: DmEnLRJMGnID
 
 kafka-config:
   producers:

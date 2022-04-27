@@ -37,7 +37,7 @@ public class CommissionInvoiceCreateConsumer {
         try {
             commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateMapper.INSTANCE.commissionInvoiceCreateDto(message));
         } catch (Exception exception) {
-            log.error("CommissionInvoiceCreateConsumer error occurred: ", exception);
+            log.warn("CommissionInvoiceCreateConsumer error occurred: {}", exception.getMessage());
             throw exception;
         }
     }
@@ -53,12 +53,12 @@ public class CommissionInvoiceCreateConsumer {
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                         @Header(KafkaHeaders.OFFSET) Long offset,
                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        log.info("CommissionInvoiceCreateConsumer consumed with topic: {}, and partition: {}, and offset: {}, and message: {}", topic, partition, offset, message);
+        log.info("CommissionInvoiceCreateRetryConsumer consumed with topic: {}, and partition: {}, and offset: {}, and message: {}", topic, partition, offset, message);
         try {
             commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateMapper.INSTANCE.commissionInvoiceCreateDto(message));
             kafkaConsumerExceptionService.deleteException(message.getHashId());
         } catch (Exception exception) {
-            log.error("CommissionInvoiceCreateConsumer error occurred: ", exception);
+            log.warn("CommissionInvoiceCreateRetryConsumer error occurred: {}", exception.getMessage());
             throw exception;
         }
     }

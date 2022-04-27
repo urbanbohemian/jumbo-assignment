@@ -1,5 +1,6 @@
 package com.trendyol.international.commission.invoice.api.domain.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trendyol.international.commission.invoice.api.util.Hashing;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class CommissionInvoiceCreateEvent {
     private Date automaticInvoiceStartDate;
     private Date endDate;
 
+    @JsonIgnore
     public String getHashId() {
         return Hashing.md5(Optional.ofNullable(sellerId).orElse(0L).toString()
                 .concat(Optional.ofNullable(country).orElse(""))

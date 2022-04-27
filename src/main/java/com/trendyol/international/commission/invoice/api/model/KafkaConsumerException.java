@@ -2,6 +2,7 @@ package com.trendyol.international.commission.invoice.api.model;
 
 import com.trendyol.international.commission.invoice.api.domain.base.AuditingEntity;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
