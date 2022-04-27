@@ -123,7 +123,7 @@
         <dependency>
             <groupId>com.trendyol</groupId>
             <artifactId>kafka-config</artifactId>
-            <version>4f7519e4</version>
+            <version>ff066512</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
