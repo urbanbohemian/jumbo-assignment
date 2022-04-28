@@ -127,7 +127,7 @@
                 seller_id int8 not null,
                 document_number varchar not null,
                 document_date timestamp not null,
-                payload jsonb as json not null
+                payload jsonb not null
             );
         </sql>
     </changeSet>
