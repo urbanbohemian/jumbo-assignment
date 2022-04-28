@@ -39,6 +39,6 @@ public class CommissionInvoiceCreateFailoverHandler implements FailoverHandler,J
                 .build());
         kafkaConsumerException.setRetryCount(Objects.nonNull(kafkaConsumerException.getRetryCount()) ? kafkaConsumerException.getRetryCount() + 1 : 0);
         kafkaConsumerExceptionRepository.save(kafkaConsumerException);
-        log.error("CommissionInvoiceCreateFailoverHandler has an error while handling retry failover. Message: {}", exception.getMessage());
+        log.info("CommissionInvoiceCreateFailoverHandler handled successfully error message: {}", exception.getMessage());
     }
 }
