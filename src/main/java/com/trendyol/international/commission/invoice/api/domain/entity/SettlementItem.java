@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.domain;
+package com.trendyol.international.commission.invoice.api.domain.entity;
 
 import com.trendyol.international.commission.invoice.api.util.converter.TransactionTypeConverter;
 import com.trendyol.international.commission.invoice.api.domain.base.AuditingEntity;

@@ -3,7 +3,7 @@ package com.trendyol.international.commission.invoice.api.kafka.consumer;
 import com.newrelic.api.agent.Trace;
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
-import com.trendyol.international.commission.invoice.api.service.shovel.KafkaConsumerExceptionService;
+import com.trendyol.international.commission.invoice.api.kafka.failover.KafkaConsumerExceptionService;
 import com.trendyol.international.commission.invoice.api.util.mapper.CommissionInvoiceCreateMapper;
 import com.trendyol.kafkaconfig.annotation.DependsOnKafkaFactories;
 import lombok.RequiredArgsConstructor;

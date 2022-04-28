@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.repository;
 
-import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
+import com.trendyol.international.commission.invoice.api.domain.entity.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
 import org.junit.jupiter.api.Test;

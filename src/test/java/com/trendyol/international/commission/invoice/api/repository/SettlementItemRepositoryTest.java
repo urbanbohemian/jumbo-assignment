@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.repository;
 
-import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
+import com.trendyol.international.commission.invoice.api.domain.entity.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

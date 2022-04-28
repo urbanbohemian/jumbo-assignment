@@ -1,7 +1,7 @@
 package com.trendyol.international.commission.invoice.api.util.mapper;
 
-import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
-import com.trendyol.international.commission.invoice.api.domain.ErpRequest;
+import com.trendyol.international.commission.invoice.api.domain.entity.CommissionInvoice;
+import com.trendyol.international.commission.invoice.api.domain.entity.ErpRequest;
 import com.trendyol.international.commission.invoice.api.model.erp.ErpItem;
 import com.trendyol.international.commission.invoice.api.model.erp.ErpPayload;
 import org.springframework.stereotype.Component;

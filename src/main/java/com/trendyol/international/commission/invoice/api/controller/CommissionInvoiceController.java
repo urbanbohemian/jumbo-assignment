@@ -1,7 +1,7 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
+import com.trendyol.international.commission.invoice.api.kafka.failover.KafkaConsumerExceptionService;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
-import com.trendyol.international.commission.invoice.api.service.shovel.KafkaConsumerExceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

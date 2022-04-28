@@ -1,5 +1,6 @@
 package com.trendyol.international.commission.invoice.api.controller;
 
+import com.trendyol.international.commission.invoice.api.kafka.failover.KafkaConsumerExceptionService;
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,9 @@ public class CommissionInvoiceControllerTest {
 
     @Mock
     private CommissionInvoiceService commissionInvoiceService;
+
+    @Mock
+    private KafkaConsumerExceptionService kafkaConsumerExceptionService;
 
     @Test
     public void it_should_call_create() {
@@ -40,5 +44,21 @@ public class CommissionInvoiceControllerTest {
         commissionInvoiceController.generatePdf();
         //then
         verify(commissionInvoiceService).generatePdf();
+    }
+
+    @Test
+    public void it_should_call_envelope() {
+        //when
+        commissionInvoiceController.envelope();
+        //then
+        verify(commissionInvoiceService).envelope();
+    }
+
+    @Test
+    public void it_should_call_shovel_exceptions() throws ClassNotFoundException {
+        //when
+        commissionInvoiceController.shovelExceptions();
+        //then
+        verify(kafkaConsumerExceptionService).shovelExceptions();
     }
 }

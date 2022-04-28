@@ -1,8 +1,8 @@
 package com.trendyol.international.commission.invoice.api.service;
 
 import com.trendyol.international.commission.invoice.api.feign.client.SellerApiClient;
-import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
-import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
+import com.trendyol.international.commission.invoice.api.domain.entity.CommissionInvoice;
+import com.trendyol.international.commission.invoice.api.domain.entity.SettlementItem;
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
 import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateEvent;
 import com.trendyol.international.commission.invoice.api.model.VatModel;

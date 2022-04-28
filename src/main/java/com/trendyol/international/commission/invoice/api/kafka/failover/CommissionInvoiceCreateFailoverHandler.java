@@ -1,8 +1,8 @@
-package com.trendyol.international.commission.invoice.api.service.failoverHandler;
+package com.trendyol.international.commission.invoice.api.kafka.failover;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
-import com.trendyol.international.commission.invoice.api.model.KafkaConsumerException;
+import com.trendyol.international.commission.invoice.api.domain.entity.KafkaConsumerException;
 import com.trendyol.international.commission.invoice.api.repository.KafkaConsumerExceptionRepository;
 import com.trendyol.international.commission.invoice.api.util.JsonSupport;
 import com.trendyol.kafkaconfig.kafka.FailoverHandler;
@@ -20,8 +20,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service(value = "CommissionInvoiceCreateFailoverHandler")
 public class CommissionInvoiceCreateFailoverHandler implements FailoverHandler,JsonSupport {
+
     @Value("${kafka-config.consumers[commission-invoice-create-consumer].retry-topic}")
     private String retryTopic;
+
     private final KafkaConsumerExceptionRepository kafkaConsumerExceptionRepository;
     private final ObjectMapper objectMapper;
 

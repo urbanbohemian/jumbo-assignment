@@ -1,7 +1,7 @@
-package com.trendyol.international.commission.invoice.api.service.shovel;
+package com.trendyol.international.commission.invoice.api.kafka.failover;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trendyol.international.commission.invoice.api.model.KafkaConsumerException;
+import com.trendyol.international.commission.invoice.api.domain.entity.KafkaConsumerException;
 import com.trendyol.international.commission.invoice.api.repository.KafkaConsumerExceptionRepository;
 import com.trendyol.international.commission.invoice.api.util.JsonSupport;
 import com.trendyol.kafkaconfig.kafka.KafkaSender;
