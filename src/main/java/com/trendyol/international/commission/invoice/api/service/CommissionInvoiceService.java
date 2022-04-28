@@ -6,6 +6,7 @@ import com.trendyol.international.commission.invoice.api.domain.ErpRequest;
 import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
 import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateEvent;
+import com.trendyol.international.commission.invoice.api.util.mapper.ErpRequestMapper;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
 import com.trendyol.international.commission.invoice.api.model.dto.CommissionInvoiceCreateDto;
 import com.trendyol.international.commission.invoice.api.model.enums.InvoiceStatus;
@@ -50,9 +51,7 @@ public class CommissionInvoiceService {
     private final DocumentCreateProducer documentCreateProducer;
     private final CommissionInvoiceRepository commissionInvoiceRepository;
     private final SettlementItemRepository settlementItemRepository;
-
     private final ErpRequestRepository erpRequestRepository;
-
     private final ErpRequestMapper erpRequestMapper;
 
     private void produceCommissionInvoiceCreateMessageForSeller(SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate) {

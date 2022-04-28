@@ -1,4 +1,4 @@
-package com.trendyol.international.commission.invoice.api.mapper;
+package com.trendyol.international.commission.invoice.api.util.mapper;
 
 import com.trendyol.international.commission.invoice.api.domain.CommissionInvoice;
 import com.trendyol.international.commission.invoice.api.domain.ErpRequest;
