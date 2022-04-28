@@ -133,4 +133,21 @@
     </changeSet>
 
 
+    <changeSet id="2022-04-18 11:20" author="mert.okan">
+        <sql>
+            create table if not exists kafka_consumer_exceptions
+            (
+                id                         varchar(255),
+                created_date               timestamp not null,
+                last_modified_date         timestamp not null,
+                topic                      varchar(255),
+                key                        varchar(255),
+                content                    jsonb,
+                content_class_type         varchar(255),
+                exception_type             varchar(255),
+                retry_count                int4,
+                primary key (id)
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

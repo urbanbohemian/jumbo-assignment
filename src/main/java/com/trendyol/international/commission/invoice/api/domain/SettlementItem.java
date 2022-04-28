@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.domain;
 
-import com.trendyol.international.commission.invoice.api.converter.TransactionTypeConverter;
+import com.trendyol.international.commission.invoice.api.util.converter.TransactionTypeConverter;
 import com.trendyol.international.commission.invoice.api.domain.base.AuditingEntity;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import lombok.Data;
