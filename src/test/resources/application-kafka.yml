@@ -59,6 +59,7 @@ kafka-config:
       data-class: com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumEvent
       props:
         "[group.id]": seller.finance.internationalcommissioninvoiceapi.settlementItems.0.group
+        "[retry-group.id]": seller.finance.internationalcommissioninvoiceapi.settlementItems.0.retry.group
         "[interceptor.classes]": com.trendyol.international.commission.invoice.api.kafka.interceptor.KafkaConsumerInterceptor
     "[commission-invoice-create-consumer]":
       topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0
