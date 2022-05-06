@@ -37,7 +37,7 @@ public class SettlementItemDebeziumConsumer {
         try {
             settlementItemService.process(SettlementItemMapper.INSTANCE.settlementItemDto(message.getAfter()));
         } catch (Exception exception) {
-            log.error("SettlementItemDebeziumConsumer error occurred: ", exception);
+            log.error("SettlementItemDebeziumConsumer error occurred: {}", exception.getMessage());
             throw exception;
         }
     }
@@ -58,7 +58,7 @@ public class SettlementItemDebeziumConsumer {
             settlementItemService.process(SettlementItemMapper.INSTANCE.settlementItemDto(message.getAfter()));
             kafkaConsumerExceptionService.deleteException(message.getHashId());
         } catch (Exception exception) {
-            log.error("SettlementItemDebeziumRetryConsumer error occurred: ", exception);
+            log.error("SettlementItemDebeziumRetryConsumer error occurred: {}", exception.getMessage());
             throw exception;
         }
     }
