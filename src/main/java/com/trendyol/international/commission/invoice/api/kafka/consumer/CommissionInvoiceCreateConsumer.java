@@ -37,7 +37,7 @@ public class CommissionInvoiceCreateConsumer {
         try {
             commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateMapper.INSTANCE.commissionInvoiceCreateDto(message));
         } catch (Exception exception) {
-            log.warn("CommissionInvoiceCreateConsumer error occurred: {}", exception.getMessage());
+            log.error("CommissionInvoiceCreateConsumer error occurred: {}", exception.getMessage());
             throw exception;
         }
     }
@@ -58,7 +58,7 @@ public class CommissionInvoiceCreateConsumer {
             commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateMapper.INSTANCE.commissionInvoiceCreateDto(message));
             kafkaConsumerExceptionService.deleteException(message.getHashId());
         } catch (Exception exception) {
-            log.warn("CommissionInvoiceCreateRetryConsumer error occurred: {}", exception.getMessage());
+            log.error("CommissionInvoiceCreateRetryConsumer error occurred: {}", exception.getMessage());
             throw exception;
         }
     }
