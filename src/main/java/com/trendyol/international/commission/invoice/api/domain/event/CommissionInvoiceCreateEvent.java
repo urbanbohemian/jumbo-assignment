@@ -33,7 +33,7 @@ public class CommissionInvoiceCreateEvent {
         return Hashing.md5(Optional.ofNullable(sellerId).orElse(0L).toString()
                 .concat(Optional.ofNullable(country).orElse(""))
                 .concat(Optional.ofNullable(currency).orElse(""))
-                .concat(Optional.ofNullable(automaticInvoiceStartDate).orElse(new Date(1L)).toString())
-                .concat(Optional.ofNullable(endDate).orElse(new Date(1L)).toString()));
+                .concat(Optional.of(automaticInvoiceStartDate.getTime()).orElse(1L).toString())
+                .concat(Optional.of(endDate.getTime()).orElse(1L).toString()));
     }
 }
