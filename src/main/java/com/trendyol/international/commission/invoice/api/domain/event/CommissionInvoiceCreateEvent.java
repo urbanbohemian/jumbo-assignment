@@ -28,12 +28,12 @@ public class CommissionInvoiceCreateEvent {
         log.info(Optional.ofNullable(sellerId).orElse(0L).toString()
                 .concat(Optional.ofNullable(country).orElse(""))
                 .concat(Optional.ofNullable(currency).orElse(""))
-                .concat(Optional.ofNullable(automaticInvoiceStartDate).orElse(new Date(1L)).toString())
-                .concat(Optional.ofNullable(endDate).orElse(new Date(1L)).toString()));
+                .concat(String.valueOf(Optional.of(automaticInvoiceStartDate.getTime()).orElse(1L)))
+                .concat(String.valueOf(Optional.of(endDate.getTime()).orElse(1L))));
         return Hashing.md5(Optional.ofNullable(sellerId).orElse(0L).toString()
                 .concat(Optional.ofNullable(country).orElse(""))
                 .concat(Optional.ofNullable(currency).orElse(""))
-                .concat(Optional.of(automaticInvoiceStartDate.getTime()).orElse(1L).toString())
-                .concat(Optional.of(endDate.getTime()).orElse(1L).toString()));
+                .concat(String.valueOf(Optional.of(automaticInvoiceStartDate.getTime()).orElse(1L)))
+                .concat(String.valueOf(Optional.of(endDate.getTime()).orElse(1L))));
     }
 }
