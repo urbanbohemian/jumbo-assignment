@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.service;
 
-import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
+import com.trendyol.international.commission.invoice.api.domain.entity.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.dto.SettlementItemDto;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;

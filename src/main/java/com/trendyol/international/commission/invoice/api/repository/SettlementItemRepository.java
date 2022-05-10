@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.repository;
 
-import com.trendyol.international.commission.invoice.api.domain.SettlementItem;
+import com.trendyol.international.commission.invoice.api.domain.entity.SettlementItem;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

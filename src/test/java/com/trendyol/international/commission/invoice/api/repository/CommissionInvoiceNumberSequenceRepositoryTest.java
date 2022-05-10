@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.repository;
 
-import com.trendyol.international.commission.invoice.api.domain.CommissionInvoiceNumberSequence;
+import com.trendyol.international.commission.invoice.api.domain.entity.CommissionInvoiceNumberSequence;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

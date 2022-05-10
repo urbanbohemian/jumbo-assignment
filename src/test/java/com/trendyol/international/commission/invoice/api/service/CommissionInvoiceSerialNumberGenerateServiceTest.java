@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.service;
 
-import com.trendyol.international.commission.invoice.api.domain.CommissionInvoiceNumberSequence;
+import com.trendyol.international.commission.invoice.api.domain.entity.CommissionInvoiceNumberSequence;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceNumberSequenceRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

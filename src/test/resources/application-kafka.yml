@@ -5,14 +5,6 @@ stretch-kafka:
   password: pass
 
 kafka-config:
-  stretch:
-    "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
-    "[sasl.mechanism]": SCRAM-SHA-512
-    "[security.protocol]": SASL_SSL
-    "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
-    "[ssl.truststore.password]": trendyolconfluentkeystorepassword
-    "[default.api.timeout.ms]": 20000
-    "[request.timeout.ms]": 20000
   producers:
     "[default]":
       props:
@@ -23,22 +15,35 @@ kafka-config:
         "[key.serializer]": org.apache.kafka.common.serialization.StringSerializer
         "[value.serializer]": org.springframework.kafka.support.serializer.JsonSerializer
         "[acks]": "1"
-        "[request.timeout.ms]": 30000
+        "[interceptor.classes]": com.trendyol.international.commission.invoice.api.kafka.interceptor.KafkaProducerInterceptor
+        "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
+        "[sasl.mechanism]": SCRAM-SHA-512
+        "[security.protocol]": SASL_SSL
+        "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
+        "[ssl.truststore.password]": trendyolconfluentkeystorepassword
+        "[default.api.timeout.ms]": 20000
+        "[request.timeout.ms]": 20000
   consumers:
     "[settlement-item-debezium-consumer]":
       topic: seller.settlement.int-settlement-debezium.settlement-cdc
+      retry-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.retry
       error-topic: seller.finance.internationalcommissioninvoiceapi.settlementItems.0.error
       factory-bean-name: settlementItemDebeziumKafkaListenerContainerFactory
+      failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
+      data-class: com.trendyol.international.commission.invoice.api.domain.event.SettlementItemDebeziumEvent
       concurrency: 1
       retry-count: 1
       sync-commit: true
       sync-commit-timeout-second: 5
-      backoffIntervalMillis: 5000 #wait time for retry
+      backoffIntervalMillis: 1000 #wait time for retry
       missingTopicAlertEnable: false
+      isExponentialRetry: true
       props:
+        "[group.id]": seller.finance.internationalcommissioninvoiceapi.settlementItems.0.group
+        "[retry-group.id]": seller.finance.internationalcommissioninvoiceapi.settlementItems.0.retry.group
+        "[interceptor.classes]": com.trendyol.international.commission.invoice.api.kafka.interceptor.KafkaConsumerInterceptor
         "[bootstrap.servers]": ${kafka.bootstrap.servers}
         #"[spring.json.trusted.packages]": com.trendyol
-        "[group.id]": seller.finance.internationalcommissioninvoiceapi.settlementItems.0.group
         "[max.poll.records]": 500 #for batch listener
         "[max.poll.interval.ms]": 300000 #poll time
         "[session.timeout.ms]": 10000
@@ -47,20 +52,33 @@ kafka-config:
         "[auto.offset.reset]": earliest
         "[fetch.max.bytes]": 52428800
         "[fetch.max.wait.ms]": 500
+        "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
+        "[sasl.mechanism]": SCRAM-SHA-512
+        "[security.protocol]": SASL_SSL
+        "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
+        "[ssl.truststore.password]": trendyolconfluentkeystorepassword
+        "[default.api.timeout.ms]": 20000
+        "[request.timeout.ms]": 20000
     "[commission-invoice-create-consumer]":
       topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0
+      retry-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.retry
       error-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.error
       factory-bean-name: commissionInvoiceCreateKafkaListenerContainerFactory
+      failover-handler-bean-name: CommissionInvoiceCreateFailoverHandler
+      data-class: com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent
       concurrency: 1
       retry-count: 1
       sync-commit: true
       sync-commit-timeout-second: 5
-      backoffIntervalMillis: 5000 #wait time for retry
+      backoffIntervalMillis: 1000 #wait time for retry
       missingTopicAlertEnable: false
+      isExponentialRetry: true
       props:
+        "[group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.group
+        "[retry-group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.retry.group
+        "[interceptor.classes]": com.trendyol.international.commission.invoice.api.kafka.interceptor.KafkaConsumerInterceptor
         "[bootstrap.servers]": ${kafka.bootstrap.servers}
         #"[spring.json.trusted.packages]": com.trendyol
-        "[group.id]": seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0.group
         "[max.poll.records]": 500 #for batch listener
         "[max.poll.interval.ms]": 300000 #poll time
         "[session.timeout.ms]": 10000
@@ -69,6 +87,13 @@ kafka-config:
         "[auto.offset.reset]": earliest
         "[fetch.max.bytes]": 52428800
         "[fetch.max.wait.ms]": 500
+        "[sasl.jaas.config]": org.apache.kafka.common.security.scram.ScramLoginModule required username="${stretch-kafka.username}" password="${stretch-kafka.password}";
+        "[sasl.mechanism]": SCRAM-SHA-512
+        "[security.protocol]": SASL_SSL
+        "[ssl.truststore.location]": ${stretch-kafka.certificate-location}
+        "[ssl.truststore.password]": trendyolconfluentkeystorepassword
+        "[default.api.timeout.ms]": 20000
+        "[request.timeout.ms]": 20000
   integration-topics:
     document-create-topic: seller.finance.internationalcommissioninvoiceapi.documentCreate.0
     commission-invoice-create-topic: seller.finance.internationalcommissioninvoiceapi.commissionInvoiceCreate.0

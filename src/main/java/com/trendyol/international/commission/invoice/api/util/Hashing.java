@@ -1,6 +1,6 @@
 package com.trendyol.international.commission.invoice.api.util;
 
-import com.trendyol.international.commission.invoice.api.exception.TrendyolException;
+import com.trendyol.international.commission.invoice.api.model.exception.TrendyolException;
 import org.apache.commons.lang3.StringUtils;
 import org.hashids.Hashids;
 import org.springframework.util.DigestUtils;

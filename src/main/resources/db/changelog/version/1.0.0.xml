@@ -117,5 +117,37 @@
             create index idx_commission_invoice_status on commission_invoices(status);
         </sql>
     </changeSet>
+    <changeSet id="2022-04-27 13:30" author="ilker">
+        <sql>
+            create sequence seq_erp_requests start 1 increment 50;
 
+            CREATE TABLE erp_requests
+            (
+                id int8 not null primary key,
+                seller_id int8 not null,
+                document_number varchar not null,
+                document_date timestamp not null,
+                payload jsonb not null
+            );
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="2022-04-18 11:20" author="mert.okan">
+        <sql>
+            create table if not exists kafka_consumer_exceptions
+            (
+                id                         varchar(255),
+                created_date               timestamp not null,
+                last_modified_date         timestamp not null,
+                topic                      varchar(255),
+                key                        varchar(255),
+                content                    jsonb,
+                content_class_type         varchar(255),
+                exception_type             varchar(255),
+                retry_count                int4,
+                primary key (id)
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

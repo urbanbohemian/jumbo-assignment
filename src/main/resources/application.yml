@@ -5,14 +5,14 @@ spring:
     termsOfService: https://www.trendyol.com/kullanim_kosullari.html
   profiles:
     active: local
-    include: kafka, postgresql
+    include: kafka, postgresql, shovel
 
 springdoc:
   api-docs:
     path: /api-docs
 
 server:
-  port: 8080
+  port: 9393
 
 application:
   urls:
