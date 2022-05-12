@@ -31,4 +31,5 @@ After POST request is sent to [/commission-invoice/envelope](https://stage-selle
 its status is updated as ENVELOPED.
 
 [Data Models](https://wiki.trendyol.com/display/SF/Commission+Invoice+Data+Models)
+
 [Configuration Project](https://gitlab.trendyol.com/seller/finance/cfg/international/international-commission-invoice-api)
