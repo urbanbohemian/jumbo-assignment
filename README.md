@@ -30,6 +30,5 @@ PDF in [International Commission Invoice Document Consumer](https://gitlab.trend
 After POST request is sent to [/commission-invoice/envelope](https://stage-seller-finance-intcommissioninvoice-service.earth.trendyol.com/swagger-ui/index.html#/commission-invoice-controller/envelope) endpoint, for each commission invoice in PDF_GENERATED status in **commission_invoices** table, ERP Request is saved in **erp_requests** table and 
 its status is updated as ENVELOPED.
 
-[Data Models](https://wiki.trendyol.com/display/SF/Commission+Invoice+Data+Models)
-
-[Configuration Project](https://gitlab.trendyol.com/seller/finance/cfg/international/international-commission-invoice-api)
+- [Data Models](https://wiki.trendyol.com/display/SF/Commission+Invoice+Data+Models)
+- [Configuration Project](https://gitlab.trendyol.com/seller/finance/cfg/international/international-commission-invoice-api)
