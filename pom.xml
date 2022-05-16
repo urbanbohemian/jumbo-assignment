@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.trendyol</groupId>
-    <artifactId>international.commission.invoice.api</artifactId>
+    <artifactId>international-commission-invoice-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -166,6 +166,7 @@
                 <configuration>
                     <changeLogFile>src/main/resources/db/changelog/db.changelog-master.xml</changeLogFile>
                     <driver>org.postgresql.Driver</driver>
+                    <!--suppress UnresolvedMavenProperty -->
                     <url>jdbc:postgresql://${liquibase.host}:${liquibase.port}/${liquibase.database}</url>
                 </configuration>
                 <dependencies>

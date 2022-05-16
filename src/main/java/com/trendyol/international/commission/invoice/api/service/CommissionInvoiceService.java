@@ -57,8 +57,8 @@ public class CommissionInvoiceService {
     private void produceCommissionInvoiceCreateMessageForSeller(SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate) {
         commissionInvoiceCreateProducer.produceCommissionInvoiceCreateMessage(CommissionInvoiceCreateEvent.builder()
                 .sellerId(sellerIdWithAutomaticInvoiceStartDate.getSellerId())
-                .country(COUNTRY)
-                .currency(CURRENCY)
+                .country(sellerIdWithAutomaticInvoiceStartDate.getCountryBasedIn())
+                .currency(sellerIdWithAutomaticInvoiceStartDate.getCurrency())
                 .automaticInvoiceStartDate(sellerIdWithAutomaticInvoiceStartDate.getAutomaticInvoiceStartDate())
                 .endDate(DateUtils.getLastDateOfMonth(DateUtils.getLocalDateTime(new Date()).minusDays(1), ZONE_ID))
                 .build());

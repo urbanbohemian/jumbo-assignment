@@ -13,8 +13,12 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SellerIdWithAutomaticInvoiceStartDate {
-    @JsonProperty("s")
+    @JsonProperty("sellerId")
     public Long sellerId;
-    @JsonProperty("d")
+    @JsonProperty("automaticInvoiceStartDate")
     public Date automaticInvoiceStartDate;
+    @JsonProperty("currency")
+    public String currency;
+    @JsonProperty("countryBasedIn")
+    public String countryBasedIn;
 }
