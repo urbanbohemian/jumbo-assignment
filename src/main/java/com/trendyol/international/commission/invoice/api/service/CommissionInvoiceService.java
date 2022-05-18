@@ -28,10 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -155,11 +152,18 @@ public class CommissionInvoiceService {
     }
 
     private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
-        SellerResponse sellerResponse = sellerApiClient.getSellerById(sellerId);
-        commissionInvoices.forEach(commissionInvoice -> {
-            DocumentCreateEvent documentCreateEvent = getDocumentCreateMessage(sellerResponse, commissionInvoice);
-            documentCreateProducer.produceDocumentCreateMessage(documentCreateEvent);
-        });
+        var ref = new Object() { SellerResponse sellerResponse = null; };
+        try {
+            ref.sellerResponse = sellerApiClient.getSellerById(sellerId);
+        } catch (Exception exception) {
+            log.warn("An error occurred while fetching seller information {}",exception.getMessage());
+        }
+        if (Objects.nonNull(ref.sellerResponse)) {
+            commissionInvoices.forEach(commissionInvoice -> {
+                DocumentCreateEvent documentCreateEvent = getDocumentCreateMessage(ref.sellerResponse, commissionInvoice);
+                documentCreateProducer.produceDocumentCreateMessage(documentCreateEvent);
+            });
+        }
     }
 
     @Transactional
