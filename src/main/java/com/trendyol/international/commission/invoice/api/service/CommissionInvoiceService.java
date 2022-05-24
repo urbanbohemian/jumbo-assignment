@@ -65,9 +65,13 @@ public class CommissionInvoiceService {
 
     public void create() {
         Integer page = 1;
-        Pageable<SellerIdWithAutomaticInvoiceStartDate> sellerIdsWithAutomaticInvoiceStartDateList;
+        Pageable<SellerIdWithAutomaticInvoiceStartDate> sellerIdsWithAutomaticInvoiceStartDateList = null;
         do {
-            sellerIdsWithAutomaticInvoiceStartDateList = sellerApiClient.getWeeklyInvoiceEnabledSellers(page, PAGE_SIZE);
+            try {
+                sellerIdsWithAutomaticInvoiceStartDateList = sellerApiClient.getWeeklyInvoiceEnabledSellers(page, PAGE_SIZE);
+            }catch (Exception exception) {
+                exception.printStackTrace();
+            }
             for (SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate : sellerIdsWithAutomaticInvoiceStartDateList.getContent()) {
                 try {
                     produceCommissionInvoiceCreateMessageForSeller(sellerIdWithAutomaticInvoiceStartDate);
