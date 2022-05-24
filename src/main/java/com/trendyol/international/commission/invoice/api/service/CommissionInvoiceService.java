@@ -6,6 +6,7 @@ import com.trendyol.international.commission.invoice.api.domain.entity.Settlemen
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
 import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateEvent;
 import com.trendyol.international.commission.invoice.api.feign.client.SellerApiClient;
+import com.trendyol.international.commission.invoice.api.feign.domain.response.Pageable;
 import com.trendyol.international.commission.invoice.api.kafka.producer.CommissionInvoiceCreateProducer;
 import com.trendyol.international.commission.invoice.api.kafka.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
@@ -50,6 +51,7 @@ public class CommissionInvoiceService {
     private final SettlementItemRepository settlementItemRepository;
     private final ErpRequestRepository erpRequestRepository;
     private final ErpRequestMapper erpRequestMapper;
+    private static final Integer PAGE_SIZE = 5;
 
     private void produceCommissionInvoiceCreateMessageForSeller(SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate) {
         commissionInvoiceCreateProducer.produceCommissionInvoiceCreateMessage(CommissionInvoiceCreateEvent.builder()
@@ -62,8 +64,19 @@ public class CommissionInvoiceService {
     }
 
     public void create() {
-        // TODO: response model should be pageable!
-        sellerApiClient.getWeeklyInvoiceEnabledSellers().getSellerIds().forEach(this::produceCommissionInvoiceCreateMessageForSeller);
+        Integer page = 1;
+        Pageable<SellerIdWithAutomaticInvoiceStartDate> sellerIdsWithAutomaticInvoiceStartDateList;
+        do {
+            sellerIdsWithAutomaticInvoiceStartDateList = sellerApiClient.getWeeklyInvoiceEnabledSellers(page, PAGE_SIZE);
+            for (SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate : sellerIdsWithAutomaticInvoiceStartDateList.getContent()) {
+                try {
+                    produceCommissionInvoiceCreateMessageForSeller(sellerIdWithAutomaticInvoiceStartDate);
+                } catch (Exception exception) {
+                    log.warn("SellerIdWithAutomaticInvoiceStartDate in getWeeklyInvoiceEnabledSellers endpoint response, is not valid to process");
+                }
+            }
+            page++;
+        } while (sellerIdsWithAutomaticInvoiceStartDateList.getTotalPages() >= page);
     }
 
     private Date getStartDateForSeller(Long sellerId, Date automaticInvoiceStartDate) {
@@ -152,11 +165,13 @@ public class CommissionInvoiceService {
     }
 
     private void generatePdfForSeller(Long sellerId, List<CommissionInvoice> commissionInvoices) {
-        var ref = new Object() { SellerResponse sellerResponse = null; };
+        var ref = new Object() {
+            SellerResponse sellerResponse = null;
+        };
         try {
             ref.sellerResponse = sellerApiClient.getSellerById(sellerId);
         } catch (Exception exception) {
-            log.warn("An error occurred while fetching seller information {}",exception.getMessage());
+            log.warn("An error occurred while fetching seller information {}", exception.getMessage());
         }
         if (Objects.nonNull(ref.sellerResponse)) {
             commissionInvoices.forEach(commissionInvoice -> {

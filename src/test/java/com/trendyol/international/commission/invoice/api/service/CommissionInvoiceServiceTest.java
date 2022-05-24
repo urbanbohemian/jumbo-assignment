@@ -5,6 +5,7 @@ import com.trendyol.international.commission.invoice.api.domain.entity.Settlemen
 import com.trendyol.international.commission.invoice.api.domain.event.CommissionInvoiceCreateEvent;
 import com.trendyol.international.commission.invoice.api.domain.event.DocumentCreateEvent;
 import com.trendyol.international.commission.invoice.api.feign.client.SellerApiClient;
+import com.trendyol.international.commission.invoice.api.feign.domain.response.Pageable;
 import com.trendyol.international.commission.invoice.api.kafka.producer.CommissionInvoiceCreateProducer;
 import com.trendyol.international.commission.invoice.api.kafka.producer.DocumentCreateProducer;
 import com.trendyol.international.commission.invoice.api.model.VatModel;
@@ -14,7 +15,6 @@ import com.trendyol.international.commission.invoice.api.model.enums.Transaction
 import com.trendyol.international.commission.invoice.api.model.enums.VatStatusType;
 import com.trendyol.international.commission.invoice.api.model.response.Seller.*;
 import com.trendyol.international.commission.invoice.api.model.response.SellerIdWithAutomaticInvoiceStartDate;
-import com.trendyol.international.commission.invoice.api.model.response.SellerIdsWithAutomaticInvoiceStartDate;
 import com.trendyol.international.commission.invoice.api.model.response.SellerResponse;
 import com.trendyol.international.commission.invoice.api.repository.CommissionInvoiceRepository;
 import com.trendyol.international.commission.invoice.api.repository.SettlementItemRepository;
@@ -80,11 +80,12 @@ public class CommissionInvoiceServiceTest {
                 .sellerId(3L)
                 .automaticInvoiceStartDate(automaticInvoiceStartDate)
                 .build();
-        SellerIdsWithAutomaticInvoiceStartDate sellerIdsWithAutomaticInvoiceStartDate = SellerIdsWithAutomaticInvoiceStartDate.builder()
-                .count(3)
-                .sellerIds(List.of(sellerIdWithAutomaticInvoiceStartDate1, sellerIdWithAutomaticInvoiceStartDate2, sellerIdWithAutomaticInvoiceStartDate3))
-                .build();
-        when(sellerApiClient.getWeeklyInvoiceEnabledSellers()).thenReturn(sellerIdsWithAutomaticInvoiceStartDate);
+
+        Pageable<SellerIdWithAutomaticInvoiceStartDate> sellerIdWithAutomaticInvoiceStartDateList = new Pageable<>();
+        sellerIdWithAutomaticInvoiceStartDateList.setContent(List.of(sellerIdWithAutomaticInvoiceStartDate1, sellerIdWithAutomaticInvoiceStartDate2, sellerIdWithAutomaticInvoiceStartDate3));
+
+
+        when(sellerApiClient.getWeeklyInvoiceEnabledSellers(1, 5)).thenReturn(sellerIdWithAutomaticInvoiceStartDateList);
         //when
         commissionInvoiceService.create();
         //then
