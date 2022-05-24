@@ -26,6 +26,6 @@ public abstract class AuditingEntity extends BaseEntity {
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "last_modified_date", nullable = false, updatable = false)
+    @Column(name = "last_modified_date", nullable = false)
     private Date lastModifiedDate;
 }
