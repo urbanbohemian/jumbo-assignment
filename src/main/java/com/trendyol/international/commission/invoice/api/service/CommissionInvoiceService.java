@@ -69,9 +69,11 @@ public class CommissionInvoiceService {
         do {
             try {
                 sellerIdsWithAutomaticInvoiceStartDateList = sellerApiClient.getWeeklyInvoiceEnabledSellers(page, PAGE_SIZE);
+                log.info("WeeklyInvoiceEnabledSellers size : {}, current page : {}",sellerIdsWithAutomaticInvoiceStartDateList.getTotalElements(),sellerIdsWithAutomaticInvoiceStartDateList.getPage());
             }catch (Exception exception) {
                 exception.printStackTrace();
             }
+            assert sellerIdsWithAutomaticInvoiceStartDateList != null;
             for (SellerIdWithAutomaticInvoiceStartDate sellerIdWithAutomaticInvoiceStartDate : sellerIdsWithAutomaticInvoiceStartDateList.getContent()) {
                 try {
                     produceCommissionInvoiceCreateMessageForSeller(sellerIdWithAutomaticInvoiceStartDate);

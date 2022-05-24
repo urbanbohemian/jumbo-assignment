@@ -23,12 +23,12 @@ public class CommissionInvoiceCreateConsumer {
     private final CommissionInvoiceService commissionInvoiceService;
     private final KafkaConsumerExceptionService kafkaConsumerExceptionService;
 
-//    @Trace(dispatcher = true)
-//    @KafkaListener(
-//            topics = "${kafka-config.consumers[commission-invoice-create-consumer].topic}",
-//            groupId = "${kafka-config.consumers[commission-invoice-create-consumer].props[group.id]}",
-//            containerFactory = "${kafka-config.consumers[commission-invoice-create-consumer].factory-bean-name}"
-//    )
+    @Trace(dispatcher = true)
+    @KafkaListener(
+            topics = "${kafka-config.consumers[commission-invoice-create-consumer].topic}",
+            groupId = "${kafka-config.consumers[commission-invoice-create-consumer].props[group.id]}",
+            containerFactory = "${kafka-config.consumers[commission-invoice-create-consumer].factory-bean-name}"
+    )
     public void consume(@Payload CommissionInvoiceCreateEvent message,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                         @Header(KafkaHeaders.OFFSET) Long offset,
@@ -42,13 +42,13 @@ public class CommissionInvoiceCreateConsumer {
         }
     }
 
-//    @Transactional
-//    @Trace(dispatcher = true)
-//    @KafkaListener(
-//            topics = "${kafka-config.consumers[commission-invoice-create-consumer].retry-topic}",
-//            groupId = "${kafka-config.consumers[commission-invoice-create-consumer].props[retry-group.id]}",
-//            containerFactory = "${kafka-config.consumers[commission-invoice-create-consumer].factory-bean-name}"
-//    )
+    @Transactional
+    @Trace(dispatcher = true)
+    @KafkaListener(
+            topics = "${kafka-config.consumers[commission-invoice-create-consumer].retry-topic}",
+            groupId = "${kafka-config.consumers[commission-invoice-create-consumer].props[retry-group.id]}",
+            containerFactory = "${kafka-config.consumers[commission-invoice-create-consumer].factory-bean-name}"
+    )
     public void consumeRetry(@Payload CommissionInvoiceCreateEvent message,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                         @Header(KafkaHeaders.OFFSET) Long offset,

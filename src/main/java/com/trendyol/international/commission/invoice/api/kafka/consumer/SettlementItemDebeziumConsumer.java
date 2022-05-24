@@ -23,12 +23,12 @@ public class SettlementItemDebeziumConsumer {
     private final SettlementItemService settlementItemService;
     private final KafkaConsumerExceptionService kafkaConsumerExceptionService;
 
-//    @Trace(dispatcher = true)
-//    @KafkaListener(
-//            topics = "${kafka-config.consumers[settlement-item-debezium-consumer].topic}",
-//            groupId = "${kafka-config.consumers[settlement-item-debezium-consumer].props[group.id]}",
-//            containerFactory = "${kafka-config.consumers[settlement-item-debezium-consumer].factory-bean-name}"
-//    )
+    @Trace(dispatcher = true)
+    @KafkaListener(
+            topics = "${kafka-config.consumers[settlement-item-debezium-consumer].topic}",
+            groupId = "${kafka-config.consumers[settlement-item-debezium-consumer].props[group.id]}",
+            containerFactory = "${kafka-config.consumers[settlement-item-debezium-consumer].factory-bean-name}"
+    )
     public void consume(@Payload SettlementItemDebeziumEvent message,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                         @Header(KafkaHeaders.OFFSET) Long offset,
@@ -42,13 +42,13 @@ public class SettlementItemDebeziumConsumer {
         }
     }
 
-//    @Transactional
-//    @Trace(dispatcher = true)
-//    @KafkaListener(
-//            topics = "${kafka-config.consumers[settlement-item-debezium-consumer].retry-topic}",
-//            groupId = "${kafka-config.consumers[settlement-item-debezium-consumer].props[retry-group.id]}",
-//            containerFactory = "${kafka-config.consumers[settlement-item-debezium-consumer].factory-bean-name}"
-//    )
+    @Transactional
+    @Trace(dispatcher = true)
+    @KafkaListener(
+            topics = "${kafka-config.consumers[settlement-item-debezium-consumer].retry-topic}",
+            groupId = "${kafka-config.consumers[settlement-item-debezium-consumer].props[retry-group.id]}",
+            containerFactory = "${kafka-config.consumers[settlement-item-debezium-consumer].factory-bean-name}"
+    )
     public void consumeRetry(@Payload SettlementItemDebeziumEvent message,
                              @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                              @Header(KafkaHeaders.OFFSET) Long offset,
