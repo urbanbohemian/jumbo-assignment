@@ -171,6 +171,7 @@ public class CommissionInvoiceService {
         try {
             ref.sellerResponse = sellerApiClient.getSellerById(sellerId);
         } catch (Exception exception) {
+            exception.printStackTrace();
             log.warn("An error occurred while fetching seller information {}", exception.getMessage());
         }
         if (Objects.nonNull(ref.sellerResponse)) {
