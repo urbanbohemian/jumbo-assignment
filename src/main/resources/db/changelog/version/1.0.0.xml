@@ -74,7 +74,7 @@
     </changeSet>
     <changeSet id="2022-03-11 15:15" author="mert.okan">
         <sql>
-            create sequence seq_commission_invoice_number_sequences start 1 increment 50;
+            create sequence seq_commission_invoice_number_sequences start 0 increment 50;
 
             create table commission_invoice_number_sequences
             (
