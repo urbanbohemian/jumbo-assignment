@@ -28,6 +28,7 @@ spec:
         config.trendyol.com/inject-file-config-config.json: config
         config.trendyol.com/inject-file-config-toggle.json: toggle
         config.trendyol.com/inject-file-secret-secret.json: secret
+        authorization.trendyol.com/requester: "true"
       labels:
         app: ${CI_PROJECT_NAME}
         version: "${VERSION}"
