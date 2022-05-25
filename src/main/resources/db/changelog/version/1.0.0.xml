@@ -29,6 +29,7 @@
                 end_date           timestamp      not null,
                 status             smallint       not null,
                 reference_id       varchar        not null unique,
+                settlement_count   integer        not null,
                 primary key (id)
             );
 

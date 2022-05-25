@@ -133,6 +133,7 @@ public class CommissionInvoiceService {
                 .storeFrontId(STORE_FRONT_ID)
                 .vatStatusType(COUNTRY.equals(commissionInvoiceCreateDto.getCountry()) ? VatStatusType.DOMESTIC : VatStatusType.INTRA_COMMUNITY)
                 .referenceId(UUID.randomUUID().toString())
+                .settlementCount(settlementItems.size())
                 .build());
     }
 
@@ -196,11 +197,11 @@ public class CommissionInvoiceService {
                 .forEach(this::generatePdfForSeller);
     }
 
-    private void envelope(Long sellerId, List<CommissionInvoice> deductionInvoiceList) {
-        deductionInvoiceList.forEach(deductionInvoice -> {
-            deductionInvoice.setInvoiceStatus(InvoiceStatus.ENVELOPED);
-            commissionInvoiceRepository.save(deductionInvoice);
-            ErpRequest erpRequest = erpRequestMapper.mapEntityToErpRequest(deductionInvoice);
+    private void envelope(Long sellerId, List<CommissionInvoice> commissionInvoiceList) {
+        commissionInvoiceList.forEach(commissionInvoice -> {
+            commissionInvoice.setInvoiceStatus(InvoiceStatus.ENVELOPED);
+            commissionInvoiceRepository.save(commissionInvoice);
+            ErpRequest erpRequest = erpRequestMapper.mapEntityToErpRequest(commissionInvoice);
             erpRequestRepository.save(erpRequest);
         });
     }

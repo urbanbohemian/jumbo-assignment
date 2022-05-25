@@ -461,4 +461,49 @@ public class CommissionInvoiceServiceTest {
         assertThat(documentCreateMessage2.get().getVatRate()).isEqualTo(BigDecimal.valueOf(21L));
         assertThat(documentCreateMessage2.get().getAmount()).isEqualTo(BigDecimal.valueOf(242L));
     }
+
+    @Test
+    public void it_should_create_commission_invoice_with_settlement_count() {
+        //given
+        Date previousCommissionInvoiceEndDate = new Date(1648771199999L);
+        Date automaticInvoiceStartDate = new Date(1648771100000L);
+        Date endDate = new Date(1651363199000L);
+
+        SettlementItem settlement1 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(121))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .itemCreationDate(new Date())
+                .transactionType(TransactionType.SALE)
+                .build();
+
+        SettlementItem settlement2 = SettlementItem.builder()
+                .sellerId(1L)
+                .commissionAmount(BigDecimal.valueOf(121))
+                .deliveryDate(new Date())
+                .paymentDate(new Date())
+                .transactionType(TransactionType.SALE)
+                .itemCreationDate(new Date())
+                .build();
+        CommissionInvoice commissionInvoice = CommissionInvoice.builder().endDate(previousCommissionInvoiceEndDate).build();
+        when(commissionInvoiceRepository.findTopBySellerIdOrderByEndDateDesc(1L)).thenReturn(Optional.of(commissionInvoice));
+        when(settlementItemRepository.getSettlementItems(eq(1L), any(), any())).thenReturn(List.of(settlement1, settlement2));
+        VatModel vatModel = new VatModel(BigDecimal.valueOf(21), BigDecimal.valueOf(242), BigDecimal.valueOf(42), BigDecimal.valueOf(200));
+        when(vatCalculatorService.calculateVatModel(any(), any())).thenReturn(vatModel);
+        //when
+        commissionInvoiceService.createCommissionInvoiceForSeller(CommissionInvoiceCreateDto.builder()
+                .sellerId(1L)
+                .country("NL")
+                .currency("EUR")
+                .automaticInvoiceStartDate(automaticInvoiceStartDate)
+                .endDate(endDate)
+                .build());
+        //then
+        ArgumentCaptor<CommissionInvoice> commissionInvoiceArgumentCaptor = ArgumentCaptor.forClass(CommissionInvoice.class);
+        verify(commissionInvoiceRepository).save(commissionInvoiceArgumentCaptor.capture());
+
+        CommissionInvoice actualCommissionInvoice = commissionInvoiceArgumentCaptor.getValue();
+        assertThat(actualCommissionInvoice.getSettlementCount()).isEqualTo(2);
+    }
 }

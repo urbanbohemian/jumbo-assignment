@@ -40,6 +40,7 @@ public class CommissionInvoiceRepositoryTest {
                 .endDate(new Date(1L))
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .referenceId("reference-id")
+                .settlementCount(1)
                 .build();
 
         //when
@@ -69,6 +70,7 @@ public class CommissionInvoiceRepositoryTest {
                 .endDate(new Date(1L))
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .referenceId("reference-id-1")
+                .settlementCount(1)
                 .build();
 
         CommissionInvoice commissionInvoice2 = CommissionInvoice.builder()
@@ -88,6 +90,7 @@ public class CommissionInvoiceRepositoryTest {
                 .endDate(new Date(3L))
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .referenceId("reference-id-2")
+                .settlementCount(1)
                 .build();
 
         CommissionInvoice commissionInvoice3 = CommissionInvoice.builder()
@@ -107,6 +110,7 @@ public class CommissionInvoiceRepositoryTest {
                 .endDate(new Date(2L))
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .referenceId("reference-id-3")
+                .settlementCount(1)
                 .build();
 
         commissionInvoiceRepository.saveAll(List.of(commissionInvoice1, commissionInvoice2, commissionInvoice3));
@@ -137,6 +141,7 @@ public class CommissionInvoiceRepositoryTest {
                 .endDate(new Date(1L))
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .referenceId("reference-id-1")
+                .settlementCount(1)
                 .build();
 
         CommissionInvoice commissionInvoice2 = CommissionInvoice.builder()
@@ -156,6 +161,7 @@ public class CommissionInvoiceRepositoryTest {
                 .endDate(new Date(3L))
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .referenceId("reference-id-2")
+                .settlementCount(2)
                 .build();
 
         CommissionInvoice commissionInvoice3 = CommissionInvoice.builder()
@@ -175,6 +181,7 @@ public class CommissionInvoiceRepositoryTest {
                 .endDate(new Date(2L))
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .referenceId("reference-id-3")
+                .settlementCount(3)
                 .build();
 
         CommissionInvoice commissionInvoice4 = CommissionInvoice.builder()
@@ -194,6 +201,7 @@ public class CommissionInvoiceRepositoryTest {
                 .endDate(new Date(2L))
                 .invoiceStatus(InvoiceStatus.NUMBER_GENERATED)
                 .referenceId("reference-id-4")
+                .settlementCount(1)
                 .build();
 
         commissionInvoiceRepository.saveAll(List.of(commissionInvoice1, commissionInvoice2, commissionInvoice3, commissionInvoice4));

@@ -85,4 +85,7 @@ public class CommissionInvoice extends AuditingEntity {
 
     )
     private Set<SettlementItem> settlementItems;
+
+    @Column(name = "settlement_count", nullable = false)
+    private Integer settlementCount;
 }
