@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -24,16 +25,17 @@ public class SellerResponse {
     private MasterUser masterUser;
     private String taxNumber;
     private String countryBasedIn;
-
     private List<VatNumber> vatNumberList;
+    private String registrationNumber;
 
     public Optional<Address> getInvoiceAddress() {
         return addresses.stream().filter(f -> AddressType.INVOICE_ADDRESS.equals(f.getAddressType())).findFirst();
     }
 
     public String getVatRegistrationNumber() {
-        return Objects.nonNull(countryBasedIn) && Objects.nonNull(taxNumber)
-                ? countryBasedIn.concat(taxNumber)
-                : StringUtils.EMPTY;
+        return !ObjectUtils.isNotEmpty(countryBasedIn) || !ObjectUtils.isNotEmpty(vatNumberList) ? StringUtils.EMPTY : vatNumberList
+                .stream()
+                .filter(vatNumber -> vatNumber.getVat().split("-")[0].equalsIgnoreCase(countryBasedIn))
+                .map(VatNumber::getVat).findFirst().orElse(StringUtils.EMPTY);
     }
 }

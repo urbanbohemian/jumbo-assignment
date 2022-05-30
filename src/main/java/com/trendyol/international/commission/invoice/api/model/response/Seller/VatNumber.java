@@ -15,5 +15,5 @@ public class VatNumber {
      private Date createdDate;
      private Date updateDate;
      private Integer id;
-     private String vat; //NL-2112141264"
+     private String vat;
 }

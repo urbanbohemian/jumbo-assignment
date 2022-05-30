@@ -17,7 +17,8 @@ public class DocumentCreateEvent {
     private String invoiceNumber;
     private Date invoiceDate;
     private String taxIdentificationNumber;
-    private String vatRegistrationNumber;
+    private String vatIdentificationNumber;
+    private String registrationNumber;
     private String referenceId;
     private String vatStatusType;
     private BigDecimal netAmount;

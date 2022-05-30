@@ -393,7 +393,9 @@ public class CommissionInvoiceServiceTest {
                         .email("mert.unsal@trendyol.com")
                         .phone(Phone.builder().countryCode("+90").phone("5555555555").build())
                         .build()).build())
+                .vatNumberList(List.of(VatNumber.builder().id(115).vat("NL-1234567890").build()))
                 .taxNumber("1234567890")
+                .registrationNumber("11146262")
                 .countryBasedIn("NL")
                 .build();
         SellerResponse sellerResponse2 = SellerResponse.builder()
@@ -408,7 +410,9 @@ public class CommissionInvoiceServiceTest {
                         .email("okan.uslu@trendyol.com")
                         .phone(Phone.builder().countryCode("+90").phone("5555555556").build())
                         .build()).build())
+                .vatNumberList(List.of(VatNumber.builder().id(116).vat("NL-1234567891").build()))
                 .taxNumber("1234567891")
+                .registrationNumber("11146264")
                 .countryBasedIn("NL")
                 .build();
 
@@ -435,7 +439,8 @@ public class CommissionInvoiceServiceTest {
         assertThat(documentCreateMessage1.get().getInvoiceNumber()).isEqualTo("TBV2022000000001");
         assertThat(documentCreateMessage1.get().getInvoiceDate()).isEqualTo(currentDate);
         assertThat(documentCreateMessage1.get().getTaxIdentificationNumber()).isEqualTo("1234567890");
-        assertThat(documentCreateMessage1.get().getVatRegistrationNumber()).isEqualTo("NL1234567890");
+        assertThat(documentCreateMessage1.get().getVatIdentificationNumber()).isEqualTo("NL-1234567890");
+        assertThat(documentCreateMessage1.get().getRegistrationNumber()).isEqualTo("11146262");
         assertThat(documentCreateMessage1.get().getReferenceId()).isEqualTo("1234567890");
         assertThat(documentCreateMessage1.get().getVatStatusType()).isEqualTo(VatStatusType.DOMESTIC.name());
         assertThat(documentCreateMessage1.get().getNetAmount()).isEqualTo(BigDecimal.valueOf(100L));
@@ -453,7 +458,8 @@ public class CommissionInvoiceServiceTest {
         assertThat(documentCreateMessage2.get().getInvoiceNumber()).isEqualTo("TBV2022000000002");
         assertThat(documentCreateMessage2.get().getInvoiceDate()).isEqualTo(currentDate);
         assertThat(documentCreateMessage2.get().getTaxIdentificationNumber()).isEqualTo("1234567891");
-        assertThat(documentCreateMessage2.get().getVatRegistrationNumber()).isEqualTo("NL1234567891");
+        assertThat(documentCreateMessage2.get().getVatIdentificationNumber()).isEqualTo("NL-1234567891");
+        assertThat(documentCreateMessage2.get().getRegistrationNumber()).isEqualTo("11146264");
         assertThat(documentCreateMessage2.get().getReferenceId()).isEqualTo("1234567891");
         assertThat(documentCreateMessage2.get().getVatStatusType()).isEqualTo(VatStatusType.DOMESTIC.name());
         assertThat(documentCreateMessage2.get().getNetAmount()).isEqualTo(BigDecimal.valueOf(200L));

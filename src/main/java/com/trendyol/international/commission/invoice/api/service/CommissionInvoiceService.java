@@ -23,6 +23,7 @@ import com.trendyol.international.commission.invoice.api.util.DateUtils;
 import com.trendyol.international.commission.invoice.api.util.mapper.ErpRequestMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -161,7 +162,8 @@ public class CommissionInvoiceService {
                 .invoiceNumber(commissionInvoice.getSerialNumber())
                 .invoiceDate(commissionInvoice.getInvoiceDate())
                 .taxIdentificationNumber(sellerResponse.getTaxNumber())
-                .vatRegistrationNumber(sellerResponse.getVatRegistrationNumber())
+                .vatIdentificationNumber(sellerResponse.getVatRegistrationNumber())
+                .registrationNumber(ObjectUtils.isNotEmpty(sellerResponse.getRegistrationNumber()) ? sellerResponse.getRegistrationNumber() : "-")
                 .referenceId(commissionInvoice.getReferenceId())
                 .vatStatusType(commissionInvoice.getVatStatusType().name())
                 .netAmount(commissionInvoice.getNetAmount())
