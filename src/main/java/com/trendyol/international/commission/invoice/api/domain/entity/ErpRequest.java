@@ -1,6 +1,7 @@
 package com.trendyol.international.commission.invoice.api.domain.entity;
 
 
+import com.trendyol.international.commission.invoice.api.domain.base.AuditingEntity;
 import com.trendyol.international.commission.invoice.api.model.erp.ErpPayload;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ import java.util.Date;
 @TypeDefs({@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 @Table(name = "erp_requests")
 @SequenceGenerator(name = "seq_erp_requests", sequenceName = "seq_erp_requests")
-public class ErpRequest implements Serializable {
+public class ErpRequest extends AuditingEntity implements Serializable {
 
     @Id
     @Column(name = "id")

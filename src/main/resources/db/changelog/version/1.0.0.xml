@@ -101,7 +101,9 @@
                 seller_id int8 not null,
                 document_number varchar not null,
                 document_date timestamp not null,
-                payload jsonb not null
+                payload jsonb not null,
+                created_date timestamp not null,
+                last_modified_date timestamp not null
             );
         </sql>
     </changeSet>
