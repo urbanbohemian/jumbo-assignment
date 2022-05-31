@@ -1,5 +1,4 @@
 package com.trendyol.international.commission.invoice.api.model.response;
-import java.util.ArrayList;
 
 import com.trendyol.international.commission.invoice.api.model.response.Seller.Address;
 import com.trendyol.international.commission.invoice.api.model.response.Seller.AddressType;
@@ -14,7 +13,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 @Slf4j
 @Builder
@@ -27,7 +25,7 @@ public class SellerResponse {
     private MasterUser masterUser;
     private String taxNumber;
     private String countryBasedIn;
-    private List<VatNumber> vatNumberList;
+    private List<VatNumber> vatNumbers;
     private String registrationNumber;
 
     public Optional<Address> getInvoiceAddress() {
@@ -35,12 +33,12 @@ public class SellerResponse {
     }
 
     public String getVatRegistrationNumber() {
-    String vatRegistrationNumber = !ObjectUtils.isNotEmpty(countryBasedIn) || !ObjectUtils.isNotEmpty(vatNumberList) ? StringUtils.EMPTY : vatNumberList
+    String vatRegistrationNumber = !ObjectUtils.isNotEmpty(countryBasedIn) || !ObjectUtils.isNotEmpty(vatNumbers) ? StringUtils.EMPTY : vatNumbers
                 .stream()
                 .filter(vatNumber -> vatNumber.getVat().split("-")[0].equalsIgnoreCase(countryBasedIn))
                 .map(VatNumber::getVat).findFirst().orElse(StringUtils.EMPTY);
         log.info("countryBasedIn: {}",countryBasedIn);
-        log.info("vatNumberList: {}",vatNumberList);
+        log.info("vatNumberList: {}", vatNumbers);
         log.info("vat-value is {} ",vatRegistrationNumber);
         return vatRegistrationNumber;
     }
