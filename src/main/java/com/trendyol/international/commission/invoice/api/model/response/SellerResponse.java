@@ -1,4 +1,5 @@
 package com.trendyol.international.commission.invoice.api.model.response;
+import java.util.ArrayList;
 
 import com.trendyol.international.commission.invoice.api.model.response.Seller.Address;
 import com.trendyol.international.commission.invoice.api.model.response.Seller.AddressType;
@@ -8,13 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
+@Slf4j
 @Builder
 @Data
 @NoArgsConstructor
@@ -33,9 +35,13 @@ public class SellerResponse {
     }
 
     public String getVatRegistrationNumber() {
-        return !ObjectUtils.isNotEmpty(countryBasedIn) || !ObjectUtils.isNotEmpty(vatNumberList) ? StringUtils.EMPTY : vatNumberList
+    String vatRegistrationNumber = !ObjectUtils.isNotEmpty(countryBasedIn) || !ObjectUtils.isNotEmpty(vatNumberList) ? StringUtils.EMPTY : vatNumberList
                 .stream()
                 .filter(vatNumber -> vatNumber.getVat().split("-")[0].equalsIgnoreCase(countryBasedIn))
                 .map(VatNumber::getVat).findFirst().orElse(StringUtils.EMPTY);
+        log.info("countryBasedIn: {}",countryBasedIn);
+        log.info("vatNumberList: {}",vatNumberList);
+        log.info("vat-value is {} ",vatRegistrationNumber);
+        return vatRegistrationNumber;
     }
 }
