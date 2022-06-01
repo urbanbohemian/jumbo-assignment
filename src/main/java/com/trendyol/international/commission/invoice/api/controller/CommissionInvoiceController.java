@@ -4,6 +4,7 @@ import com.trendyol.international.commission.invoice.api.kafka.failover.KafkaCon
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,8 +38,9 @@ public class CommissionInvoiceController {
         log.info("Commission Invoice Generate PDF Job Execution is ended successfully.");
     }
 
-    @PostMapping("/envelope")
-    public void envelope() {
+    @PostMapping("/envelope/{runId}")
+    public void envelope(@PathVariable String runId) {
+        log.info(runId);
         log.info("Commission Invoice Envelope Job Execution is started.");
         commissionInvoiceService.envelope();
         log.info("Commission Invoice Envelope Job Execution is ended successfully.");

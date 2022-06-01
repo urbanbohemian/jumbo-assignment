@@ -49,7 +49,7 @@ public class CommissionInvoiceControllerTest {
     @Test
     public void it_should_call_envelope() {
         //when
-        commissionInvoiceController.envelope();
+        commissionInvoiceController.envelope("");
         //then
         verify(commissionInvoiceService).envelope();
     }
