@@ -39,9 +39,9 @@ public class CommissionInvoiceController {
 
     @PostMapping("/envelope")
     public void envelope() {
-        log.info("Deduction Invoice Envelope Job Execution is started.");
+        log.info("Commission Invoice Envelope Job Execution is started.");
         commissionInvoiceService.envelope();
-        log.info("Deduction Invoice Envelope Job Execution is ended successfully.");
+        log.info("Commission Invoice Envelope Job Execution is ended successfully.");
     }
 
     @PostMapping("/shovel-exceptions")
