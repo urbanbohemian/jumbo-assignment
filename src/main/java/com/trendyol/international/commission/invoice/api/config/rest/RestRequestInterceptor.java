@@ -1,5 +1,6 @@
 package com.trendyol.international.commission.invoice.api.config.rest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -7,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,11 +17,14 @@ import static com.trendyol.international.commission.invoice.api.util.HttpUtils.g
 import static com.trendyol.international.commission.invoice.api.util.HttpUtils.getRequestBody;
 
 
-@Component
+@Component @Slf4j
 public class RestRequestInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        String airflowRunId = getFromHeader(request, X_AIRFLOW_RUN_ID);
+        log.info(airflowRunId);
+
         String executorUser = getFromHeader(request, X_EXECUTOR_USER);
         MDC.put(X_EXECUTOR_USER, executorUser);
 
@@ -30,7 +35,11 @@ public class RestRequestInterceptor implements HandlerInterceptor {
         if (StringUtils.isBlank(correlationId)) {
             correlationId = UUID.randomUUID().toString();
         }
-        String airflowRunId = getFromHeader(request, X_AIRFLOW_RUN_ID);
+
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while(headerNames.hasMoreElements()) {
+            log.info(request.getHeader(headerNames.nextElement()));
+        }
 
         MDC.put(X_CORRELATION_ID, correlationId.concat(X_X_DELIMITER).concat(airflowRunId));
 
