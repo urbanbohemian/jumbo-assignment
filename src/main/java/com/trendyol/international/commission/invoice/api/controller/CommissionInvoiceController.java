@@ -38,9 +38,8 @@ public class CommissionInvoiceController {
         log.info("Commission Invoice Generate PDF Job Execution is ended successfully.");
     }
 
-    @PostMapping("/envelope/{runId}")
-    public void envelope(@PathVariable String runId) {
-        log.info(runId);
+    @PostMapping("/envelope")
+    public void envelope() {
         log.info("Commission Invoice Envelope Job Execution is started.");
         commissionInvoiceService.envelope();
         log.info("Commission Invoice Envelope Job Execution is ended successfully.");
