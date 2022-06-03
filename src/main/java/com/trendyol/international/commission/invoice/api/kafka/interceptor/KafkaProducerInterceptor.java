@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.trendyol.international.commission.invoice.api.util.AuditionConstants.X_CORRELATION_ID_CAMEL_CASE;
+import static com.trendyol.international.commission.invoice.api.util.AuditionConstants.X_CORRELATION_ID;
 
 public class KafkaProducerInterceptor implements ProducerInterceptor<String, Object> {
     @Override
@@ -35,10 +35,10 @@ public class KafkaProducerInterceptor implements ProducerInterceptor<String, Obj
     }
 
     private void setCorrelationId(ProducerRecord<String, Object> record) {
-        String correlationId = MDC.get(X_CORRELATION_ID_CAMEL_CASE);
+        String correlationId = MDC.get(X_CORRELATION_ID);
         if (StringUtils.isBlank(correlationId)) {
             correlationId = UUID.randomUUID().toString();
         }
-        record.headers().add(X_CORRELATION_ID_CAMEL_CASE, correlationId.getBytes(StandardCharsets.UTF_8));
+        record.headers().add(X_CORRELATION_ID, correlationId.getBytes(StandardCharsets.UTF_8));
     }
 }

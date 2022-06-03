@@ -12,7 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.trendyol.international.commission.invoice.api.util.AuditionConstants.X_CORRELATION_ID_CAMEL_CASE;
+import static com.trendyol.international.commission.invoice.api.util.AuditionConstants.X_CORRELATION_ID;
+
 
 public class KafkaConsumerInterceptor implements ConsumerInterceptor<String, String> {
 
@@ -20,7 +21,7 @@ public class KafkaConsumerInterceptor implements ConsumerInterceptor<String, Str
     public ConsumerRecords<String, String> onConsume(ConsumerRecords<String, String> consumerRecords) {
         ConsumerRecord<String, String> record = consumerRecords.iterator().next();
 
-        setCorrelationId(record.headers().headers(X_CORRELATION_ID_CAMEL_CASE));
+        setCorrelationId(record.headers().headers(X_CORRELATION_ID));
 
         return consumerRecords;
     }
@@ -47,7 +48,7 @@ public class KafkaConsumerInterceptor implements ConsumerInterceptor<String, Str
             correlationId = new String(header.value(), StandardCharsets.UTF_8);
         }
 
-        MDC.put(X_CORRELATION_ID_CAMEL_CASE, correlationId);
+        MDC.put(X_CORRELATION_ID, correlationId);
     }
 
 }
