@@ -38,7 +38,9 @@ public class RestRequestInterceptor implements HandlerInterceptor {
 
         Enumeration<String> headerNames = request.getHeaderNames();
         while(headerNames.hasMoreElements()) {
-            log.info(request.getHeader(headerNames.nextElement()));
+            String headerName = headerNames.nextElement();
+            log.info("Header name : {}",headerName );
+            log.info("Header value : {}",request.getHeader(headerName));
         }
 
         MDC.put(X_CORRELATION_ID, correlationId.concat(X_X_DELIMITER).concat(airflowRunId));
