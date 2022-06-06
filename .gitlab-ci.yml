@@ -43,6 +43,9 @@ stages:
   - Build 📦
   - Security Gates 🛡︎
   - Deploy PREPROD 🔫
+  - Retag 🏷
+  - UAT ✅
+  - Deploy MARS PROD 🚀
 
 Test:
   extends: .test-mvn-jdk-17
@@ -52,6 +55,33 @@ SonarQube:
 
 Image:
   extends: .build
+
+Retag:
+  stage: Retag 🏷
+  image: registry.trendyol.com/platform/base/image/docker:19.03.5
+  when: manual
+  services:
+    - registry.trendyol.com/platform/base/image/docker:19.03.5-dind
+  variables:
+    DOCKER_HOST: "tcp://localhost:2375"
+    DOCKER_TLS_CERTDIR: ""
+  <<: *only
+  <<: *only_except_skip_ci
+  script: >
+    docker login -u $GITLAB_REGISTRY_USER -p $GITLAB_REGISTRY_PASS $GITLAB_REGISTRY_HOST;
+    docker pull -q $DOCKER_IMAGE_RELEASE && exit 0;
+    docker pull $DOCKER_IMAGE;
+    docker tag $DOCKER_IMAGE $DOCKER_IMAGE_RELEASE;
+    docker push $DOCKER_IMAGE_RELEASE;
+    docker container prune -f;
+    docker rmi -f $DOCKER_IMAGE $DOCKER_IMAGE_RELEASE
+
+Check:
+  stage: UAT ✅
+  extends: .check_uat
+  variables:
+    TASK_PREFIX: "SF-"
+    TASK_STATUSES: "closed,released,done" # default "closed,done,resolved
 
 Security Gates:
   extends: .security-gates
@@ -75,5 +105,35 @@ Deploy SELLER Stage:
     LIMIT_MEMORY: 500Mi
     REQUEST_CPU: 75m
     REQUEST_MEMORY: 75Mi
+    PROMETHEUS_ENABLED: 'false'
+
+Deploy P1-1Mars Prod:
+  extends: .deploy_prod_p1_1mplc_mars
+  variables:
+    REPLICA: 1
+    LIMIT_CPU: 1
+    LIMIT_MEMORY: 1000Mi
+    REQUEST_CPU: 50m
+    REQUEST_MEMORY: 50Mi
+    PROMETHEUS_ENABLED: 'false'
+
+Deploy P1-2Mars Prod:
+  extends: .deploy_prod_p1_2mplc_mars
+  variables:
+    REPLICA: 1
+    LIMIT_CPU: 1
+    LIMIT_MEMORY: 1000Mi
+    REQUEST_CPU: 50m
+    REQUEST_MEMORY: 50Mi
+    PROMETHEUS_ENABLED: 'false'
+
+Deploy P1-3Mars Prod:
+  extends: .deploy_prod_p1_3mplc_mars
+  variables:
+    REPLICA: 1
+    LIMIT_CPU: 1
+    LIMIT_MEMORY: 1000Mi
+    REQUEST_CPU: 50m
+    REQUEST_MEMORY: 50Mi
     PROMETHEUS_ENABLED: 'false'
 
