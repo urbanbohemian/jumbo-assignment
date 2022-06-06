@@ -6,9 +6,9 @@
 
     <changeSet id="2022-02-28 11:24" author="mert.okan">
         <sql>
-            create sequence seq_commission_invoices start 1 increment 50;
+            create sequence if not exists seq_commission_invoices start 1 increment 50;
 
-            create table commission_invoices
+            create table if not exists commission_invoices
             (
                 id                 int8           not null,
                 seller_id          int8           not null,
@@ -33,14 +33,14 @@
                 primary key (id)
             );
 
-            create index idx_commission_invoice_status on commission_invoices (status);
+            create index if not exists idx_commission_invoice_status on commission_invoices (status);
 
         </sql>
     </changeSet>
 
     <changeSet id="2022-02-28 13:50" author="mert.okan">
         <sql>
-            create table settlement_items
+            create table if not exists settlement_items
             (
                 id                  int8           not null,
                 created_date        timestamp      not null,
@@ -56,7 +56,7 @@
                 primary key (id)
             );
 
-            create table commission_invoice_settlement_items
+            create table if not exists commission_invoice_settlement_items
             (
                 commission_invoice_id bigint not null
                     constraint fk_commission_invoice_settlement_items_commission_invoice
@@ -69,15 +69,15 @@
                 seller_id             bigint not null
             );
 
-            create unique index idx_commission_invoice_settlement_items_settlement_item
+            create unique index if not exists idx_commission_invoice_settlement_items_settlement_item
                 on commission_invoice_settlement_items (settlement_item_id desc);
         </sql>
     </changeSet>
     <changeSet id="2022-03-11 15:15" author="mert.okan">
         <sql>
-            create sequence seq_commission_invoice_number_sequences start 0 increment 50;
+            create sequence if not exists seq_commission_invoice_number_sequences start 1 increment 50;
 
-            create table commission_invoice_number_sequences
+            create table if not exists commission_invoice_number_sequences
             (
             id int8 not null,
             created_date timestamp not null,
@@ -93,9 +93,9 @@
 
     <changeSet id="2022-04-27 13:30" author="ilker">
         <sql>
-            create sequence seq_erp_requests start 1 increment 50;
+            create sequence if not exists seq_erp_requests start 1 increment 50;
 
-            CREATE TABLE erp_requests
+            CREATE TABLE if not exists erp_requests
             (
                 id int8 not null primary key,
                 seller_id int8 not null,

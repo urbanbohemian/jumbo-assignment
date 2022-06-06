@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(classes = InternationalCommissionInvoiceApiApplication.class)
-public class InternationalCommissionInvoiceApiApplicationTests {
+public class InternationalCommissionInvoiceApiApplicationTests extends AbstractPostgresContainer {
 
 	@Test
 	public void contextLoads() {

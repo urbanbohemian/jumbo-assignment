@@ -5,7 +5,7 @@ spring:
     termsOfService: https://www.trendyol.com/kullanim_kosullari.html
   profiles:
     active: test
-    include: kafka, postgresql, shovel
+    include: kafka, shovel, postgresql
 
 springdoc:
   api-docs:

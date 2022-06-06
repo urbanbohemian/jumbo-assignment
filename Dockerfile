@@ -1,4 +1,4 @@
-FROM registry.trendyol.com/platform/base/image/seller/productivity/jre-17:trendyol-semeru-openj9-jre-17-alpine_newrelic-7.4
+FROM registry.trendyol.com/platform/base/image/seller/productivity/jre-17:temurin-jre-17-alpine_newrelic-7.4
 ENV LANG en_GB.UTF-8
 ENV ARTIFACT_NAME="internationalcommissioninvoice-api.jar"
 COPY ./src/main/resources/globaltrust.jks /var/ssl/private/globaltrust.jks

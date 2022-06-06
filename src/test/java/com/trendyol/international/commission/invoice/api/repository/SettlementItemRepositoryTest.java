@@ -1,9 +1,11 @@
 package com.trendyol.international.commission.invoice.api.repository;
 
+import com.trendyol.international.commission.invoice.api.AbstractPostgresContainer;
 import com.trendyol.international.commission.invoice.api.domain.entity.SettlementItem;
 import com.trendyol.international.commission.invoice.api.model.enums.TransactionType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
@@ -13,7 +15,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(showSql = false)
-public class SettlementItemRepositoryTest {
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class SettlementItemRepositoryTest extends AbstractPostgresContainer {
 
     @Autowired
     private SettlementItemRepository settlementItemRepository;
@@ -48,6 +51,7 @@ public class SettlementItemRepositoryTest {
                 .transactionType(TransactionType.SALE)
                 .commissionAmount(BigDecimal.ONE)
                 .deliveryDate(new Date(25L))
+                .paymentDate(new Date(25L))
                 .storeFrontId(1L)
                 .currency("EU")
                 .build();
@@ -59,6 +63,7 @@ public class SettlementItemRepositoryTest {
                 .commissionAmount(BigDecimal.ONE)
                 .deliveryDate(new Date(65L))
                 .storeFrontId(1L)
+                .paymentDate(new Date(25L))
                 .currency("EU")
                 .build();
         SettlementItem settlementItem3 = SettlementItem.builder()
@@ -69,6 +74,7 @@ public class SettlementItemRepositoryTest {
                 .commissionAmount(BigDecimal.ONE)
                 .deliveryDate(new Date(60L))
                 .storeFrontId(1L)
+                .paymentDate(new Date(25L))
                 .currency("EU")
                 .build();
         SettlementItem settlementItem4 = SettlementItem.builder()
@@ -79,6 +85,7 @@ public class SettlementItemRepositoryTest {
                 .commissionAmount(BigDecimal.ONE)
                 .deliveryDate(new Date(25L))
                 .storeFrontId(1L)
+                .paymentDate(new Date(25L))
                 .currency("EU")
                 .build();
         SettlementItem settlementItem5 = SettlementItem.builder()
@@ -89,6 +96,7 @@ public class SettlementItemRepositoryTest {
                 .commissionAmount(BigDecimal.ONE)
                 .deliveryDate(new Date(35L))
                 .storeFrontId(1L)
+                .paymentDate(new Date(25L))
                 .currency("EU")
                 .build();
         settlementItemRepository.saveAll(List.of(settlementItem1, settlementItem2, settlementItem3, settlementItem4, settlementItem5));
