@@ -5,12 +5,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.trendyol.international.commission.invoice.api.util.AuditionConstants.*;
 import static com.trendyol.international.commission.invoice.api.util.HttpUtils.getClientIp;
@@ -23,7 +22,9 @@ public class RestRequestInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String airflowRunId = getFromHeader(request, X_AIRFLOW_RUN_ID);
-        log.info("Run id for airflow task is : {}",airflowRunId);
+        Map map = new TreeMap<>((Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
+        Object runId = map.get("runId");
+        log.info("Run id for airflow task is : {}",runId);
 
         String executorUser = getFromHeader(request, X_EXECUTOR_USER);
         MDC.put(X_EXECUTOR_USER, executorUser);
