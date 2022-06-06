@@ -31,8 +31,9 @@ public class CommissionInvoiceController {
         log.info("Commission Invoice Generate Serial Number Job Execution is ended successfully.");
     }
 
-    @PostMapping("/generate-pdf")
-    public void generatePdf() {
+    @PostMapping("/generate-pdf/{runId}")
+    public void generatePdf(@PathVariable String runId) {
+        log.info("RUN ID is {}", runId);
         log.info("Commission Invoice Generate PDF Job Execution is started.");
         commissionInvoiceService.generatePdf();
         log.info("Commission Invoice Generate PDF Job Execution is ended successfully.");
