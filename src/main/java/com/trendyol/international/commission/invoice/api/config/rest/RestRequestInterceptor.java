@@ -1,9 +1,11 @@
 package com.trendyol.international.commission.invoice.api.config.rest;
 
+import liquibase.pro.packaged.S;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -21,11 +23,6 @@ public class RestRequestInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-//        String airflowRunId = getFromHeader(request, X_AIRFLOW_RUN_ID);
-        Map map = new TreeMap<>((Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
-        Object airflowRunId = map.get("runId");
-        log.info("Run id for airflow task is : {}",airflowRunId);
-
         String executorUser = getFromHeader(request, X_EXECUTOR_USER);
         MDC.put(X_EXECUTOR_USER, executorUser);
 
@@ -36,8 +33,16 @@ public class RestRequestInterceptor implements HandlerInterceptor {
         if (StringUtils.isBlank(correlationId)) {
             correlationId = UUID.randomUUID().toString();
         }
+        var pathContainer = new Object() {String airflowRunId = "";};
 
-        MDC.put(X_CORRELATION_ID, correlationId.concat(X_X_DELIMITER).concat((String) airflowRunId));
+        Map<String, String> map = new TreeMap<>((Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
+        if(ObjectUtils.isEmpty(map)) {
+            if(map.containsKey("runId")) {
+                pathContainer.airflowRunId = map.get("runId");
+                log.info("Run id for airflow task is : {}",pathContainer.airflowRunId);
+            }
+        }
+        MDC.put(X_CORRELATION_ID, correlationId.concat(X_X_DELIMITER).concat(pathContainer.airflowRunId));
 
         String remoteHost = getClientIp(request);
         MDC.put(X_REMOTE_HOST, remoteHost);
