@@ -23,7 +23,7 @@ public class RestRequestInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String airflowRunId = getFromHeader(request, X_AIRFLOW_RUN_ID);
-        log.info(airflowRunId);
+        log.info("Run id for airflow task is : {}",airflowRunId);
 
         String executorUser = getFromHeader(request, X_EXECUTOR_USER);
         MDC.put(X_EXECUTOR_USER, executorUser);
@@ -37,11 +37,13 @@ public class RestRequestInterceptor implements HandlerInterceptor {
         }
 
         Enumeration<String> headerNames = request.getHeaderNames();
+        log.info("Header names toString : {}",request.getHeaderNames().toString());
         while(headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             log.info("Header name : {}",headerName );
             log.info("Header value : {}",request.getHeader(headerName));
         }
+        log.info("Request attributes : {}",request.getAttributeNames().toString());
 
         MDC.put(X_CORRELATION_ID, correlationId.concat(X_X_DELIMITER).concat(airflowRunId));
 
