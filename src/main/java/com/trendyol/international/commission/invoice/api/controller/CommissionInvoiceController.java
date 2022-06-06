@@ -31,14 +31,10 @@ public class CommissionInvoiceController {
     }
 
     @PostMapping("/generate-pdf/{runId}")
-    public void generatePdf(@PathVariable String runId, @RequestHeader Map<String, String> headers) {
-        headers.forEach((key, value) -> {
-            log.info(String.format("REQUEST_Header '%s' = %s", key, value));
-        });
-        log.info("RUN ID is {}", runId);
-        log.info("Commission Invoice Generate PDF Job Execution is started.");
+    public void generatePdf(@PathVariable String runId) {
+        log.info("Commission Invoice Generate PDF Job Execution is started with run_id : {}",runId);
         commissionInvoiceService.generatePdf();
-        log.info("Commission Invoice Generate PDF Job Execution is ended successfully.");
+        log.info("Commission Invoice Generate PDF Job Execution is ended successfully with run_id : {}",runId);
     }
 
     @PostMapping("/envelope")
