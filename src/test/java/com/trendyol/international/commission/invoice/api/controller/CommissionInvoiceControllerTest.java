@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashMap;
+
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +43,7 @@ public class CommissionInvoiceControllerTest {
     @Test
     public void it_should_call_generate_pdf() {
         //when
-        commissionInvoiceController.generatePdf("",null);
+        commissionInvoiceController.generatePdf("",new HashMap<>());
         //then
         verify(commissionInvoiceService).generatePdf();
     }
