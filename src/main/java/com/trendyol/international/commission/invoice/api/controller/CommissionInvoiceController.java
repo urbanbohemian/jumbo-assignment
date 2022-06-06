@@ -4,10 +4,9 @@ import com.trendyol.international.commission.invoice.api.kafka.failover.KafkaCon
 import com.trendyol.international.commission.invoice.api.service.CommissionInvoiceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +31,10 @@ public class CommissionInvoiceController {
     }
 
     @PostMapping("/generate-pdf/{runId}")
-    public void generatePdf(@PathVariable String runId) {
+    public void generatePdf(@PathVariable String runId, @RequestHeader Map<String, String> headers) {
+        headers.forEach((key, value) -> {
+            log.info(String.format("REQUEST_Header '%s' = %s", key, value));
+        });
         log.info("RUN ID is {}", runId);
         log.info("Commission Invoice Generate PDF Job Execution is started.");
         commissionInvoiceService.generatePdf();

@@ -41,7 +41,7 @@ public class CommissionInvoiceControllerTest {
     @Test
     public void it_should_call_generate_pdf() {
         //when
-        commissionInvoiceController.generatePdf("");
+        commissionInvoiceController.generatePdf("",null);
         //then
         verify(commissionInvoiceService).generatePdf();
     }
