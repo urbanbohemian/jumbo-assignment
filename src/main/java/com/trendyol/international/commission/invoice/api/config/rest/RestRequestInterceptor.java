@@ -30,22 +30,13 @@ public class RestRequestInterceptor implements HandlerInterceptor {
         MDC.put(X_AGENTNAME, agentName);
 
         String airflowRunId = getFromHeader(request, X_AIRFLOW_RUN_ID);
-        log.info("AIRFLOW RUN ID IS : {}", airflowRunId);
 
         String correlationId = getFromHeader(request, X_CORRELATION_ID);
         if (StringUtils.isBlank(correlationId)) {
             correlationId = UUID.randomUUID().toString();
         }
-        var pathContainer = new Object() {String airflowRunId = "";};
 
-        Map<String, String> map = new TreeMap<>((Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
-        if(!ObjectUtils.isEmpty(map)) {
-            if(map.containsKey("runId")) {
-                pathContainer.airflowRunId = map.get("runId");
-                log.info("Run id for airflow task is : {}",pathContainer.airflowRunId);
-            }
-        }
-        MDC.put(X_CORRELATION_ID, correlationId.concat(X_X_DELIMITER).concat(pathContainer.airflowRunId));
+        MDC.put(X_CORRELATION_ID, correlationId.concat(X_X_DELIMITER).concat(airflowRunId));
 
         String remoteHost = getClientIp(request);
         MDC.put(X_REMOTE_HOST, remoteHost);
