@@ -36,7 +36,7 @@ public class RestRequestInterceptor implements HandlerInterceptor {
         var pathContainer = new Object() {String airflowRunId = "";};
 
         Map<String, String> map = new TreeMap<>((Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
-        if(ObjectUtils.isEmpty(map)) {
+        if(!ObjectUtils.isEmpty(map)) {
             if(map.containsKey("runId")) {
                 pathContainer.airflowRunId = map.get("runId");
                 log.info("Run id for airflow task is : {}",pathContainer.airflowRunId);
