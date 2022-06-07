@@ -10,7 +10,7 @@ public class AuditionConstants {
     public static final String X_EXECUTOR_USER = "x-executor-user";
 
     public static final String X_X_DELIMITER = "__";
-    public static final String X_AIRFLOW_RUN_ID = "x_airflow_run_id";
+    public static final String X_AIRFLOW_RUN_ID = "x-airflow-run-id";
     public static final String X_REMOTE_HOST = "x-remote-host";
     public static final String X_REQUEST_BODY = "x-request-body";
     public static final String X_STATUS = "x-status";

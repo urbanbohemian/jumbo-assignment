@@ -29,6 +29,9 @@ public class RestRequestInterceptor implements HandlerInterceptor {
         String agentName = getFromHeader(request, X_AGENTNAME);
         MDC.put(X_AGENTNAME, agentName);
 
+        String airflowRunId = getFromHeader(request, X_AIRFLOW_RUN_ID);
+        log.info("AIRFLOW RUN ID IS : {}", airflowRunId);
+
         String correlationId = getFromHeader(request, X_CORRELATION_ID);
         if (StringUtils.isBlank(correlationId)) {
             correlationId = UUID.randomUUID().toString();
