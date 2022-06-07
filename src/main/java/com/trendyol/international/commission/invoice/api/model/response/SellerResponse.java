@@ -33,13 +33,9 @@ public class SellerResponse {
     }
 
     public String getVatRegistrationNumber() {
-    String vatRegistrationNumber = !ObjectUtils.isNotEmpty(countryBasedIn) || !ObjectUtils.isNotEmpty(vatNumbers) ? StringUtils.EMPTY : vatNumbers
-                .stream()
-                .filter(vatNumber -> vatNumber.getVat().split("-")[0].equalsIgnoreCase(countryBasedIn))
-                .map(VatNumber::getVat).findFirst().orElse(StringUtils.EMPTY);
-        log.info("countryBasedIn: {}",countryBasedIn);
-        log.info("vatNumberList: {}", vatNumbers);
-        log.info("vat-value is {} ",vatRegistrationNumber);
-        return vatRegistrationNumber;
+        return !ObjectUtils.isNotEmpty(countryBasedIn) || !ObjectUtils.isNotEmpty(vatNumbers) ? StringUtils.EMPTY : vatNumbers
+                    .stream()
+                    .filter(vatNumber -> vatNumber.getVat().split("-")[0].equalsIgnoreCase(countryBasedIn))
+                    .map(VatNumber::getVat).findFirst().orElse(StringUtils.EMPTY);
     }
 }
