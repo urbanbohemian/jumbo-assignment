@@ -75,6 +75,9 @@ public class CommissionInvoice extends AuditingEntity {
     @Column(name = "reference_id", nullable = false, unique = true)
     private String referenceId;
 
+    @Column(name = "invoice_type_unique_id", nullable = false)
+    private String invoiceTypeUniqueId;
+
     @OneToMany
     @JoinTable(
             name = "commission_invoice_settlement_items",

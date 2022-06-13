@@ -126,9 +126,10 @@
             );
         </sql>
     </changeSet>
+
     <changeSet id="2022-06-13 12:00" author="mert.okan.kaan.yasin">
         <sql>
-            alter table commission_invoices add column if not exists invoice_type_id varchar default '' not null;
+            alter table commission_invoices add column if not exists invoice_type_unique_id varchar default '' not null;
         </sql>
     </changeSet>
 </databaseChangeLog>

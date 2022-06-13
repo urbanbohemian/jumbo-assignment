@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,12 +38,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class CommissionInvoiceService {
+    @Value("${invoice-type-unique-id}")
+    String invoiceTypeId;
     private static final String ZONE_ID = "Europe/Amsterdam";
     private static final String COUNTRY = "NL";
     private static final String CURRENCY = "EUR";
     private static final String STORE_FRONT_ID = "1";
     private static final String DESCRIPTION_FORMAT = "Trendyol Commission Fee between %s - %s";
-
     private final CommissionInvoiceSerialNumberGenerateService commissionInvoiceSerialNumberGenerateService;
     private final VatCalculatorService vatCalculatorService;
     private final SellerApiClient sellerApiClient;
@@ -70,8 +72,8 @@ public class CommissionInvoiceService {
         do {
             try {
                 sellerIdsWithAutomaticInvoiceStartDateList = sellerApiClient.getWeeklyInvoiceEnabledSellers(page, PAGE_SIZE);
-                log.info("WeeklyInvoiceEnabledSellers size : {}, current page : {}",sellerIdsWithAutomaticInvoiceStartDateList.getTotalElements(),sellerIdsWithAutomaticInvoiceStartDateList.getPage());
-            }catch (Exception exception) {
+                log.info("WeeklyInvoiceEnabledSellers size : {}, current page : {}", sellerIdsWithAutomaticInvoiceStartDateList.getTotalElements(), sellerIdsWithAutomaticInvoiceStartDateList.getPage());
+            } catch (Exception exception) {
                 exception.printStackTrace();
             }
             assert sellerIdsWithAutomaticInvoiceStartDateList != null;
@@ -128,6 +130,7 @@ public class CommissionInvoiceService {
                 .vatRate(vatModel.getVatRate())
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .invoiceDate(endDate)
+                .invoiceTypeId(invoiceTypeId)
                 .description(String.format(DESCRIPTION_FORMAT, DateUtils.getDateAsStringWithoutYear(startDate), DateUtils.getDateAsStringWithoutYear(endDate)))
                 .endDate(endDate)
                 .startDate(startDate)
