@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 @Service
 public class CommissionInvoiceService {
     @Value("${invoice-type-unique-id}")
-    String invoiceTypeId;
+    String invoiceTypeUniqueId;
     private static final String ZONE_ID = "Europe/Amsterdam";
     private static final String COUNTRY = "NL";
     private static final String CURRENCY = "EUR";
@@ -130,7 +130,7 @@ public class CommissionInvoiceService {
                 .vatRate(vatModel.getVatRate())
                 .invoiceStatus(InvoiceStatus.CREATED)
                 .invoiceDate(endDate)
-                .invoiceTypeId(invoiceTypeId)
+                .invoiceTypeUniqueId(invoiceTypeUniqueId)
                 .description(String.format(DESCRIPTION_FORMAT, DateUtils.getDateAsStringWithoutYear(startDate), DateUtils.getDateAsStringWithoutYear(endDate)))
                 .endDate(endDate)
                 .startDate(startDate)
