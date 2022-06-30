@@ -1,7 +1,7 @@
 # Jumbo Store Locator UI
 
 URL below can be used for displaying the Store Locator UI, any location (city name, district name or neighbourhood etc.) can be written in the search location text box for locating nearby stores on the map)
-http://localhost:8080/storelocator
+http://localhost:7777/stores
 
 
 # Jumbo Store Locator Rest API
@@ -22,4 +22,4 @@ To run the application, just run this command under the base directory:
 
 You can try the closest store endpoint using SwaggerUI:
 
-http://localhost:8080/swagger-ui.html
+http://localhost:7777/swagger-ui.html

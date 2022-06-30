@@ -2,7 +2,6 @@ spring:
   application:
     name: '@project.name@'
     description: '@project.description@'
-    termsOfService: https://www.trendyol.com/kullanim_kosullari.html
   profiles:
     active: test
   data:
@@ -11,7 +10,7 @@ spring:
         enabled: true
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/mem/testdb;INIT=RUNSCRIPT FROM 'classpath:data.sql';DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    url: jdbc:h2:~/mem/testdb;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
   jpa:
@@ -41,3 +40,6 @@ distance:
 
 earth:
   radiues: 6371.13
+
+server:
+  port: 7777

@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(info = @Info(
         title = "${spring.application.name}",
-        description = "${spring.application.description}",
-        termsOfService = "${spring.application.termsOfService}"
+        description = "${spring.application.description}"
 ))
 @Configuration
 public class SwaggerConfig {
