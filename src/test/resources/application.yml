@@ -5,7 +5,6 @@ spring:
     termsOfService: https://www.trendyol.com/kullanim_kosullari.html
   profiles:
     active: test
-    include: kafka, shovel, postgresql
 
 springdoc:
   api-docs:
@@ -14,11 +13,6 @@ springdoc:
 server:
   port: 8080
 
-invoice-type-unique-id: '000000000010413427'
-
-application:
-  urls:
-    seller-api: http://localhost:8081
 
 #logging:
 #  pattern:

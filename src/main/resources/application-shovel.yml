@@ -1,2 +1,0 @@
-retryable-exceptions : TrendyolDBException,TrendyolKafkaException,TrendyolRestClientException,DeserializationException,InvalidDataAccessResourceUsageException,DataIntegrityViolationException
-retry-max-attempt : 5

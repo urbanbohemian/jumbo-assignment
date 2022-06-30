@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>Jumbo Store Locator</title>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLe1GbihJ7x610m_KaoDEV2v3jL0_BBxc&callback=initMap">
+    </script>
+
+    <script type="text/javascript"
+            src="webjars/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body style="margin:0px; padding:0px;" onload="initMap()">
+<div>
+    <label for="addressInput">Search location:</label>
+    <input type="text" id="addressInput" size="15" value="Netherlands"/>
+    <label for="distanceFormulaSelect">Distance Calculation Formula:</label>
+    <select id="distanceFormulaSelect" label="DistanceFormula">
+        <option value="haversineStrategy">Haversine</option>
+        <option value="vincentyStrategy">Vincenty</option>
+    </select>
+    <label for="storeNumberSelect">Number Of Stores:</label>
+    <select id="storeNumberSelect" label="Radius">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="300">300</option>
+        <option value="600" selected>600</option>
+    </select>
+
+    <input type="button" id="searchButton" value="Search"/>
+</div>
+<div><select id="locationSelect" style="width: 10%; visibility: hidden"></select></div>
+<div id="map" style="width: 100%; height: 90%"></div>
+<script>
+    var map;
+    var markers = [];
+    var infoWindow;
+    var locationSelect;
+
+    function initMap() {
+        var netherlands = {lat: 52.132633, lng: 5.2912659};
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: netherlands,
+            zoom: 8,
+            mapTypeId: 'roadmap',
+            mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
+        });
+        infoWindow = new google.maps.InfoWindow();
+
+        searchButton = document.getElementById("searchButton").onclick = searchLocations;
+
+        locationSelect = document.getElementById("locationSelect");
+        locationSelect.onchange = function() {
+            var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
+            if (markerNum != "none"){
+                google.maps.event.trigger(markers[markerNum], 'click');
+            }
+        };
+
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({address: 'netherlands'}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                searchLocationsNear(results[0].geometry.location);
+            } else {
+                alert(address + ' not found');
+            }
+        });
+    }
+
+    function searchLocations() {
+        var address = document.getElementById("addressInput").value;
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({address: address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                searchLocationsNear(results[0].geometry.location);
+            } else {
+                alert(address + ' not found');
+            }
+        });
+    }
+
+    function clearLocations() {
+        infoWindow.close();
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers.length = 0;
+
+        locationSelect.innerHTML = "";
+        var option = document.createElement("option");
+        option.value = "none";
+        option.innerHTML = "See all results:";
+        locationSelect.appendChild(option);
+    }
+
+    function searchLocationsNear(center) {
+        clearLocations();
+
+        var storeNumber = document.getElementById('storeNumberSelect').value;
+        var distanceCalculationFormula = document.getElementById('distanceFormulaSelect').value;
+        var token = "";
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "v1/stores/closest/?latitude="+center.lat()+"&longitude="+center.lng()+"&number_of_stores="+ storeNumber+"&distance_strategy="+distanceCalculationFormula,
+                    data: { get_param: 'value' },
+                    dataType: 'json',
+                    cache: false,
+                    timeout: 600000,
+                    success: function (data) {
+
+                        var bounds = new google.maps.LatLngBounds();
+
+                        jQuery(data).each(function(i, item){
+                            var id = item.id;
+                            var name = item.address_name;
+                            var address = item.street;
+                            var distance = parseFloat(item.distance);
+                            var storeOpen = item.today_open;
+                            var storeClose = item.today_close;
+                            var latlng = new google.maps.LatLng(
+                                parseFloat(item.latitude),
+                                parseFloat(item.longitude));
+
+                            createOption(name, distance, i);
+                            createMarker(latlng, name, address, distance, storeOpen, storeClose);
+                            bounds.extend(latlng);
+                        });
+
+                        map.fitBounds(bounds);
+                        locationSelect.style.visibility = "visible";
+                        locationSelect.onchange = function() {
+                            var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
+                            google.maps.event.trigger(markers[markerNum], 'click');
+                        };
+                    },
+                    error: function (e) {
+
+                        var json = "<h4>Ajax Response</h4><pre>"
+                            + e.responseText + "</pre>";
+                        $('#feedback').html(json);
+                        console.log("ERROR : ", e);
+                    }
+                });
+    }
+
+    function createMarker(latlng, name, address, distance, storeOpen, storeClose ) {
+        var html = "<b>" + name + "</b> <br/>" + address+ "<br/>Working hours: "+storeOpen+"-"+storeClose+"<br/>Distance: "+distance+" KM";
+        var marker = new google.maps.Marker({
+            map: map,
+            position: latlng
+        });
+        google.maps.event.addListener(marker, 'click', function() {
+            infoWindow.setContent(html);
+            infoWindow.open(map, marker);
+        });
+        markers.push(marker);
+    }
+
+    function createOption(name, distance, num) {
+        var option = document.createElement("option");
+        option.value = num;
+        option.innerHTML = name;
+        locationSelect.appendChild(option);
+    }
+
+    function doNothing() {}
+</script>
+</body>
+</html>
